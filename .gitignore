@@ -1,0 +1,20 @@
+
+
+# security concerns
+.env
+
+# git
+!.vscode/
+
+# devmode
+scripts/certificate/
+
+# npm related
+node_modules
+
+# build
+.next
+next-env.d.ts
+*storybook.log
+storybook-static
+tsconfig.typecheck.tsbuildinfo
