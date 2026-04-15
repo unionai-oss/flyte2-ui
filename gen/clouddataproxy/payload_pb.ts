@@ -25,7 +25,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file clouddataproxy/payload.proto.
  */
 export const file_clouddataproxy_payload: GenFile = /*@__PURE__*/
-  fileDesc("ChxjbG91ZGRhdGFwcm94eS9wYXlsb2FkLnByb3RvEhdjbG91ZGlkbC5jbG91ZGRhdGFwcm94eSL0AgocTWV0cmljUmFuZ2VRdWVyeVByb3h5UmVxdWVzdBI+CgpjbHVzdGVyX2lkGAEgASgLMiIuY2xvdWRpZGwuY29tbW9uLkNsdXN0ZXJJZGVudGlmaWVyQga6SAPIAQESTQoTcmFuZ2VfcXVlcnlfcmVxdWVzdBgCIAEoCzIwLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5Lk1ldHJpY1JhbmdlUXVlcnlSZXF1ZXN0EkMKEXRhc2tfZXhlY3V0aW9uX2lkGAMgASgLMiYuZmx5dGVpZGwuY29yZS5UYXNrRXhlY3V0aW9uSWRlbnRpZmllckgAEkYKEWFjdGlvbl9hdHRlbXB0X2lkGAQgASgLMikuZmx5dGVpZGwyLmNvbW1vbi5BY3Rpb25BdHRlbXB0SWRlbnRpZmllckgAEisKBmFwcF9pZBgFIAEoCzIZLmZseXRlaWRsMi5hcHAuSWRlbnRpZmllckgAQgsKCXJlZmVyZW5jZSLGAQoXTWV0cmljUmFuZ2VRdWVyeVJlcXVlc3QSFgoFcXVlcnkYAiABKAlCB7pIBHICEAESMQoFc3RhcnQYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQga6SAPIAQESLwoDZW5kGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIGukgDyAEBEi8KBHN0ZXAYBSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CBrpIA8gBASJGCh1NZXRyaWNSYW5nZVF1ZXJ5UHJveHlSZXNwb25zZRIlCgRkYXRhGAEgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCI1ChdHZXRSZXNvdXJjZVF1b3RhUmVxdWVzdBIaCgluYW1lc3BhY2UYASABKAlCB7pIBHICEAEilQEKHEdldFJlc291cmNlUXVvdGFQcm94eVJlcXVlc3QSPgoKY2x1c3Rlcl9pZBgBIAEoCzIiLmNsb3VkaWRsLmNvbW1vbi5DbHVzdGVySWRlbnRpZmllckIGukgDyAEBEjUKCW5hbWVzcGFjZRgCIAEoCzIaLmNsb3VkaWRsLmNvbW1vbi5OYW1lc3BhY2VCBrpIA8gBASItCh1HZXRSZXNvdXJjZVF1b3RhUHJveHlSZXNwb25zZRIMCgRkYXRhGAEgASgMIs0CChtDcmVhdGVEb3dubG9hZExpbmtWMlJlcXVlc3QSRgoNYXJ0aWZhY3RfdHlwZRgBIAEoDjIlLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkFydGlmYWN0VHlwZUIIukgFggECIAASLQoKZXhwaXJlc19pbhgCIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhJGChFhY3Rpb25fYXR0ZW1wdF9pZBgDIAEoCzIpLmZseXRlaWRsMi5jb21tb24uQWN0aW9uQXR0ZW1wdElkZW50aWZpZXJIABIrCgZhcHBfaWQYBCABKAsyGS5mbHl0ZWlkbDIuYXBwLklkZW50aWZpZXJIABIxCgd0YXNrX2lkGAUgASgLMh4uZmx5dGVpZGwyLnRhc2suVGFza0lkZW50aWZpZXJIAEIPCgZzb3VyY2USBbpIAggBIl8KHENyZWF0ZURvd25sb2FkTGlua1YyUmVzcG9uc2USPwoPcHJlX3NpZ25lZF91cmxzGAEgASgLMiYuY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuUHJlU2lnbmVkVVJMcyJTCg1QcmVTaWduZWRVUkxzEhIKCnNpZ25lZF91cmwYASADKAkSLgoKZXhwaXJlc19hdBgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAqZgoMQXJ0aWZhY3RUeXBlEh0KGUFSVElGQUNUX1RZUEVfVU5TUEVDSUZJRUQQABIYChRBUlRJRkFDVF9UWVBFX1JFUE9SVBABEh0KGUFSVElGQUNUX1RZUEVfQ09ERV9CVU5ETEUQAkLdAQobY29tLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5QgxQYXlsb2FkUHJvdG9IAlABWjFnaXRodWIuY29tL3VuaW9uYWkvY2xvdWQvZ2VuL3BiLWdvL2Nsb3VkZGF0YXByb3h5ogIDQ0NYqgIXQ2xvdWRpZGwuQ2xvdWRkYXRhcHJveHnKAhdDbG91ZGlkbFxDbG91ZGRhdGFwcm94eeICI0Nsb3VkaWRsXENsb3VkZGF0YXByb3h5XEdQQk1ldGFkYXRh6gIYQ2xvdWRpZGw6OkNsb3VkZGF0YXByb3h5YgZwcm90bzM", [file_buf_validate_validate, file_common_identifier, file_common_quota, file_flyteidl_core_identifier, file_flyteidl2_app_app_definition, file_flyteidl2_common_identifier, file_flyteidl2_task_task_definition, file_google_protobuf_duration, file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("ChxjbG91ZGRhdGFwcm94eS9wYXlsb2FkLnByb3RvEhdjbG91ZGlkbC5jbG91ZGRhdGFwcm94eSL0AgocTWV0cmljUmFuZ2VRdWVyeVByb3h5UmVxdWVzdBI+CgpjbHVzdGVyX2lkGAEgASgLMiIuY2xvdWRpZGwuY29tbW9uLkNsdXN0ZXJJZGVudGlmaWVyQga6SAPIAQESTQoTcmFuZ2VfcXVlcnlfcmVxdWVzdBgCIAEoCzIwLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5Lk1ldHJpY1JhbmdlUXVlcnlSZXF1ZXN0EkMKEXRhc2tfZXhlY3V0aW9uX2lkGAMgASgLMiYuZmx5dGVpZGwuY29yZS5UYXNrRXhlY3V0aW9uSWRlbnRpZmllckgAEkYKEWFjdGlvbl9hdHRlbXB0X2lkGAQgASgLMikuZmx5dGVpZGwyLmNvbW1vbi5BY3Rpb25BdHRlbXB0SWRlbnRpZmllckgAEisKBmFwcF9pZBgFIAEoCzIZLmZseXRlaWRsMi5hcHAuSWRlbnRpZmllckgAQgsKCXJlZmVyZW5jZSLGAQoXTWV0cmljUmFuZ2VRdWVyeVJlcXVlc3QSFgoFcXVlcnkYAiABKAlCB7pIBHICEAESMQoFc3RhcnQYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQga6SAPIAQESLwoDZW5kGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIGukgDyAEBEi8KBHN0ZXAYBSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CBrpIA8gBASJGCh1NZXRyaWNSYW5nZVF1ZXJ5UHJveHlSZXNwb25zZRIlCgRkYXRhGAEgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCI1ChdHZXRSZXNvdXJjZVF1b3RhUmVxdWVzdBIaCgluYW1lc3BhY2UYASABKAlCB7pIBHICEAEilQEKHEdldFJlc291cmNlUXVvdGFQcm94eVJlcXVlc3QSPgoKY2x1c3Rlcl9pZBgBIAEoCzIiLmNsb3VkaWRsLmNvbW1vbi5DbHVzdGVySWRlbnRpZmllckIGukgDyAEBEjUKCW5hbWVzcGFjZRgCIAEoCzIaLmNsb3VkaWRsLmNvbW1vbi5OYW1lc3BhY2VCBrpIA8gBASItCh1HZXRSZXNvdXJjZVF1b3RhUHJveHlSZXNwb25zZRIMCgRkYXRhGAEgASgMIs0CChtDcmVhdGVEb3dubG9hZExpbmtWMlJlcXVlc3QSRgoNYXJ0aWZhY3RfdHlwZRgBIAEoDjIlLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkFydGlmYWN0VHlwZUIIukgFggECIAASLQoKZXhwaXJlc19pbhgCIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhJGChFhY3Rpb25fYXR0ZW1wdF9pZBgDIAEoCzIpLmZseXRlaWRsMi5jb21tb24uQWN0aW9uQXR0ZW1wdElkZW50aWZpZXJIABIrCgZhcHBfaWQYBCABKAsyGS5mbHl0ZWlkbDIuYXBwLklkZW50aWZpZXJIABIxCgd0YXNrX2lkGAUgASgLMh4uZmx5dGVpZGwyLnRhc2suVGFza0lkZW50aWZpZXJIAEIPCgZzb3VyY2USBbpIAggBIl8KHENyZWF0ZURvd25sb2FkTGlua1YyUmVzcG9uc2USPwoPcHJlX3NpZ25lZF91cmxzGAEgASgLMiYuY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuUHJlU2lnbmVkVVJMcyJTCg1QcmVTaWduZWRVUkxzEhIKCnNpZ25lZF91cmwYASADKAkSLgoKZXhwaXJlc19hdBgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAipAEKHkdldEFjdGlvbkF0dGVtcHRNZXRyaWNzUmVxdWVzdBI9CgJpZBgBIAEoCzIpLmZseXRlaWRsMi5jb21tb24uQWN0aW9uQXR0ZW1wdElkZW50aWZpZXJCBrpIA8gBARJDCgdtZXRyaWNzGAIgAygOMiguY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuRXhlY3V0aW9uTWV0cmljQgi6SAWSAQIYASJiCh9HZXRBY3Rpb25BdHRlbXB0TWV0cmljc1Jlc3BvbnNlEj8KB3Jlc3VsdHMYASADKAsyLi5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5FeGVjdXRpb25NZXRyaWNSZXN1bHQieAoVRXhlY3V0aW9uTWV0cmljUmVzdWx0EjgKBm1ldHJpYxgBIAEoDjIoLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkV4ZWN1dGlvbk1ldHJpYxIlCgRkYXRhGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCLyAQoUR2V0QXBwTWV0cmljc1JlcXVlc3QSLQoCaWQYASABKAsyGS5mbHl0ZWlkbDIuYXBwLklkZW50aWZpZXJCBrpIA8gBARJDCgdtZXRyaWNzGAIgAygOMiguY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuRXhlY3V0aW9uTWV0cmljQgi6SAWSAQIYARI4CgpzdGFydF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIIukgFsgECOAESLAoIZW5kX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIlgKFUdldEFwcE1ldHJpY3NSZXNwb25zZRI/CgdyZXN1bHRzGAEgAygLMi4uY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuRXhlY3V0aW9uTWV0cmljUmVzdWx0KmYKDEFydGlmYWN0VHlwZRIdChlBUlRJRkFDVF9UWVBFX1VOU1BFQ0lGSUVEEAASGAoUQVJUSUZBQ1RfVFlQRV9SRVBPUlQQARIdChlBUlRJRkFDVF9UWVBFX0NPREVfQlVORExFEAIq4AYKD0V4ZWN1dGlvbk1ldHJpYxIgChxFWEVDVVRJT05fTUVUUklDX1VOU1BFQ0lGSUVEEAASKgomRVhFQ1VUSU9OX01FVFJJQ19VU0VEX01FTU9SWV9CWVRFU19BVkcQChIvCitFWEVDVVRJT05fTUVUUklDX0FMTE9DQVRFRF9NRU1PUllfQllURVNfQVZHEAsSKQolRVhFQ1VUSU9OX01FVFJJQ19SRVFVRVNUX01FTU9SWV9CWVRFUxAMEicKI0VYRUNVVElPTl9NRVRSSUNfTElNSVRfTUVNT1JZX0JZVEVTEA0SJwojRVhFQ1VUSU9OX01FVFJJQ19NRU1PUllfVVRJTElaQVRJT04QDhIhCh1FWEVDVVRJT05fTUVUUklDX1VTRURfQ1BVX0FWRxAUEiYKIkVYRUNVVElPTl9NRVRSSUNfQUxMT0NBVEVEX0NQVV9BVkcQFRIgChxFWEVDVVRJT05fTUVUUklDX1JFUVVFU1RfQ1BVEBYSHgoaRVhFQ1VUSU9OX01FVFJJQ19MSU1JVF9DUFUQFxIkCiBFWEVDVVRJT05fTUVUUklDX0NQVV9VVElMSVpBVElPThAYEisKJ0VYRUNVVElPTl9NRVRSSUNfR1BVX01FTU9SWV9VVElMSVpBVElPThAZEiQKIEVYRUNVVElPTl9NRVRSSUNfR1BVX1VUSUxJWkFUSU9OEBoSMQotRVhFQ1VUSU9OX01FVFJJQ19HUFVfRlJBTUVfQlVGRkVSX1VUSUxJWkFUSU9OEBsSIgoeRVhFQ1VUSU9OX01FVFJJQ19HUFVfU01fQUNUSVZFEBwSJQohRVhFQ1VUSU9OX01FVFJJQ19HUFVfU01fT0NDVVBBTkNZEB0SIQodRVhFQ1VUSU9OX01FVFJJQ19BUFBfUkVRVUVTVFMQHhIqCiZFWEVDVVRJT05fTUVUUklDX0FQUF9SRVNQT05TRV9USU1FX1A1MBAfEioKJkVYRUNVVElPTl9NRVRSSUNfQVBQX1JFU1BPTlNFX1RJTUVfUDkwECASKgomRVhFQ1VUSU9OX01FVFJJQ19BUFBfUkVTUE9OU0VfVElNRV9QOTUQIRImCiJFWEVDVVRJT05fTUVUUklDX0FQUF9SRVBMSUNBX0NPVU5UECJC3QEKG2NvbS5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eUIMUGF5bG9hZFByb3RvSAJQAVoxZ2l0aHViLmNvbS91bmlvbmFpL2Nsb3VkL2dlbi9wYi1nby9jbG91ZGRhdGFwcm94eaICA0NDWKoCF0Nsb3VkaWRsLkNsb3VkZGF0YXByb3h5ygIXQ2xvdWRpZGxcQ2xvdWRkYXRhcHJveHniAiNDbG91ZGlkbFxDbG91ZGRhdGFwcm94eVxHUEJNZXRhZGF0YeoCGENsb3VkaWRsOjpDbG91ZGRhdGFwcm94eWIGcHJvdG8z", [file_buf_validate_validate, file_common_identifier, file_common_quota, file_flyteidl_core_identifier, file_flyteidl2_app_app_definition, file_flyteidl2_common_identifier, file_flyteidl2_task_task_definition, file_google_protobuf_duration, file_google_protobuf_struct, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message cloudidl.clouddataproxy.MetricRangeQueryProxyRequest
@@ -298,6 +298,158 @@ export const PreSignedURLsSchema: GenMessage<PreSignedURLs> = /*@__PURE__*/
   messageDesc(file_clouddataproxy_payload, 8);
 
 /**
+ * GetActionAttemptMetricsRequest queries metrics for a single action attempt.
+ * NOTE: mirror of the message in cloudidl/usage/payload.proto, which is deprecated.
+ * New callers should use CloudDataProxyService.GetActionAttemptMetrics instead of
+ * UsageService.GetActionAttemptMetrics.
+ *
+ * @generated from message cloudidl.clouddataproxy.GetActionAttemptMetricsRequest
+ */
+export type GetActionAttemptMetricsRequest = Message<"cloudidl.clouddataproxy.GetActionAttemptMetricsRequest"> & {
+  /**
+   * The action attempt to query
+   *
+   * @generated from field: flyteidl2.common.ActionAttemptIdentifier id = 1;
+   */
+  id?: ActionAttemptIdentifier;
+
+  /**
+   * The metrics to query. If empty, will return a default set of metrics
+   *
+   * @generated from field: repeated cloudidl.clouddataproxy.ExecutionMetric metrics = 2;
+   */
+  metrics: ExecutionMetric[];
+};
+
+/**
+ * Describes the message cloudidl.clouddataproxy.GetActionAttemptMetricsRequest.
+ * Use `create(GetActionAttemptMetricsRequestSchema)` to create a new message.
+ */
+export const GetActionAttemptMetricsRequestSchema: GenMessage<GetActionAttemptMetricsRequest> = /*@__PURE__*/
+  messageDesc(file_clouddataproxy_payload, 9);
+
+/**
+ * GetActionAttemptMetricsResponse returns metric results for an action attempt.
+ * NOTE: mirror of the message in cloudidl/usage/payload.proto, which is deprecated.
+ *
+ * @generated from message cloudidl.clouddataproxy.GetActionAttemptMetricsResponse
+ */
+export type GetActionAttemptMetricsResponse = Message<"cloudidl.clouddataproxy.GetActionAttemptMetricsResponse"> & {
+  /**
+   * The metric results
+   *
+   * @generated from field: repeated cloudidl.clouddataproxy.ExecutionMetricResult results = 1;
+   */
+  results: ExecutionMetricResult[];
+};
+
+/**
+ * Describes the message cloudidl.clouddataproxy.GetActionAttemptMetricsResponse.
+ * Use `create(GetActionAttemptMetricsResponseSchema)` to create a new message.
+ */
+export const GetActionAttemptMetricsResponseSchema: GenMessage<GetActionAttemptMetricsResponse> = /*@__PURE__*/
+  messageDesc(file_clouddataproxy_payload, 10);
+
+/**
+ * ExecutionMetricResult is the result of a single metric query.
+ * NOTE: mirror of the message in cloudidl/usage/payload.proto, which is deprecated.
+ *
+ * @generated from message cloudidl.clouddataproxy.ExecutionMetricResult
+ */
+export type ExecutionMetricResult = Message<"cloudidl.clouddataproxy.ExecutionMetricResult"> & {
+  /**
+   * The metric this data represents
+   *
+   * @generated from field: cloudidl.clouddataproxy.ExecutionMetric metric = 1;
+   */
+  metric: ExecutionMetric;
+
+  /**
+   * The result data in prometheus range query result format
+   * https://prometheus.io/docs/prometheus/latest/querying/api/#expression-query-result-formats.
+   * This may include multiple time series, differentiated by their metric labels.
+   * Start time is greater of (execution attempt start, 48h ago)
+   * End time is lesser of (execution attempt end, now)
+   *
+   * @generated from field: google.protobuf.Struct data = 2;
+   */
+  data?: JsonObject;
+};
+
+/**
+ * Describes the message cloudidl.clouddataproxy.ExecutionMetricResult.
+ * Use `create(ExecutionMetricResultSchema)` to create a new message.
+ */
+export const ExecutionMetricResultSchema: GenMessage<ExecutionMetricResult> = /*@__PURE__*/
+  messageDesc(file_clouddataproxy_payload, 11);
+
+/**
+ * GetAppMetricsRequest queries metrics for a single app over a time window.
+ * NOTE: mirror of the message in cloudidl/usage/payload.proto, which is deprecated.
+ * New callers should use CloudDataProxyService.GetAppMetrics.
+ *
+ * @generated from message cloudidl.clouddataproxy.GetAppMetricsRequest
+ */
+export type GetAppMetricsRequest = Message<"cloudidl.clouddataproxy.GetAppMetricsRequest"> & {
+  /**
+   * The id of the app to query
+   *
+   * @generated from field: flyteidl2.app.Identifier id = 1;
+   */
+  id?: Identifier;
+
+  /**
+   * The metrics to query. If empty, will return a default set of metrics
+   *
+   * @generated from field: repeated cloudidl.clouddataproxy.ExecutionMetric metrics = 2;
+   */
+  metrics: ExecutionMetric[];
+
+  /**
+   * Start of the time window. Defaults to now - 24 hours.
+   * The earliest possible time is now - 1 year.
+   *
+   * @generated from field: google.protobuf.Timestamp start_time = 3;
+   */
+  startTime?: Timestamp;
+
+  /**
+   * End of the time window. Defaults to now.
+   * If specified, must be AFTER start_time.
+   *
+   * @generated from field: google.protobuf.Timestamp end_time = 4;
+   */
+  endTime?: Timestamp;
+};
+
+/**
+ * Describes the message cloudidl.clouddataproxy.GetAppMetricsRequest.
+ * Use `create(GetAppMetricsRequestSchema)` to create a new message.
+ */
+export const GetAppMetricsRequestSchema: GenMessage<GetAppMetricsRequest> = /*@__PURE__*/
+  messageDesc(file_clouddataproxy_payload, 12);
+
+/**
+ * GetAppMetricsResponse returns metric results for an app.
+ * NOTE: mirror of the message in cloudidl/usage/payload.proto, which is deprecated.
+ *
+ * @generated from message cloudidl.clouddataproxy.GetAppMetricsResponse
+ */
+export type GetAppMetricsResponse = Message<"cloudidl.clouddataproxy.GetAppMetricsResponse"> & {
+  /**
+   * @generated from field: repeated cloudidl.clouddataproxy.ExecutionMetricResult results = 1;
+   */
+  results: ExecutionMetricResult[];
+};
+
+/**
+ * Describes the message cloudidl.clouddataproxy.GetAppMetricsResponse.
+ * Use `create(GetAppMetricsResponseSchema)` to create a new message.
+ */
+export const GetAppMetricsResponseSchema: GenMessage<GetAppMetricsResponse> = /*@__PURE__*/
+  messageDesc(file_clouddataproxy_payload, 13);
+
+/**
  * ArtifactType
  *
  * @generated from enum cloudidl.clouddataproxy.ArtifactType
@@ -330,4 +482,160 @@ export enum ArtifactType {
  */
 export const ArtifactTypeSchema: GenEnum<ArtifactType> = /*@__PURE__*/
   enumDesc(file_clouddataproxy_payload, 0);
+
+/**
+ * ExecutionMetric enumerates metrics that can be queried for an execution (action attempt, etc.).
+ * NOTE: mirror of the enum in cloudidl/usage/payload.proto, which is deprecated. Values must stay
+ * in sync so conversions between the two packages are safe.
+ *
+ * @generated from enum cloudidl.clouddataproxy.ExecutionMetric
+ */
+export enum ExecutionMetric {
+  /**
+   * @generated from enum value: EXECUTION_METRIC_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * Average memory usage, measured in bytes
+   *
+   * @generated from enum value: EXECUTION_METRIC_USED_MEMORY_BYTES_AVG = 10;
+   */
+  USED_MEMORY_BYTES_AVG = 10,
+
+  /**
+   * Average memory allocation, measured in bytes
+   *
+   * @generated from enum value: EXECUTION_METRIC_ALLOCATED_MEMORY_BYTES_AVG = 11;
+   */
+  ALLOCATED_MEMORY_BYTES_AVG = 11,
+
+  /**
+   * Memory request, measured in bytes
+   *
+   * @generated from enum value: EXECUTION_METRIC_REQUEST_MEMORY_BYTES = 12;
+   */
+  REQUEST_MEMORY_BYTES = 12,
+
+  /**
+   * Memory limit, measured in bytes
+   *
+   * @generated from enum value: EXECUTION_METRIC_LIMIT_MEMORY_BYTES = 13;
+   */
+  LIMIT_MEMORY_BYTES = 13,
+
+  /**
+   * Memory utilization, measured as used / allocated
+   *
+   * @generated from enum value: EXECUTION_METRIC_MEMORY_UTILIZATION = 14;
+   */
+  MEMORY_UTILIZATION = 14,
+
+  /**
+   * Average CPU usage, measured in CPU cores
+   *
+   * @generated from enum value: EXECUTION_METRIC_USED_CPU_AVG = 20;
+   */
+  USED_CPU_AVG = 20,
+
+  /**
+   * Average CPU allocation, measured in CPU cores
+   *
+   * @generated from enum value: EXECUTION_METRIC_ALLOCATED_CPU_AVG = 21;
+   */
+  ALLOCATED_CPU_AVG = 21,
+
+  /**
+   * CPU request, measured in CPU cores
+   *
+   * @generated from enum value: EXECUTION_METRIC_REQUEST_CPU = 22;
+   */
+  REQUEST_CPU = 22,
+
+  /**
+   * CPU limit, measured in CPU cores
+   *
+   * @generated from enum value: EXECUTION_METRIC_LIMIT_CPU = 23;
+   */
+  LIMIT_CPU = 23,
+
+  /**
+   * CPU utilization, measured as used / allocated
+   *
+   * @generated from enum value: EXECUTION_METRIC_CPU_UTILIZATION = 24;
+   */
+  CPU_UTILIZATION = 24,
+
+  /**
+   * GPU memory utilization, measured directly from underlying
+   * DCGM_FI_DEV_MEM_COPY_UTIL metric emitted in case of nvidia gpu
+   *
+   * @generated from enum value: EXECUTION_METRIC_GPU_MEMORY_UTILIZATION = 25;
+   */
+  GPU_MEMORY_UTILIZATION = 25,
+
+  /**
+   * GPU utilization, measured directly from underlying
+   * DCGM_FI_DEV_GPU_UTIL metric emitted in case of nvidia gpu
+   *
+   * @generated from enum value: EXECUTION_METRIC_GPU_UTILIZATION = 26;
+   */
+  GPU_UTILIZATION = 26,
+
+  /**
+   * GPU frame buffer utilization, computed from underlying
+   * DCGM metrics emitted in case of nvidia gpu. Defined as
+   * DCGM_FI_DEV_FB_USED / (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE)
+   *
+   * @generated from enum value: EXECUTION_METRIC_GPU_FRAME_BUFFER_UTILIZATION = 27;
+   */
+  GPU_FRAME_BUFFER_UTILIZATION = 27,
+
+  /**
+   * GPU SM active, measured directly from underlying
+   * DCGM_FI_PROF_SM_ACTIVE metric emitted in case of nvidia gpu
+   *
+   * @generated from enum value: EXECUTION_METRIC_GPU_SM_ACTIVE = 28;
+   */
+  GPU_SM_ACTIVE = 28,
+
+  /**
+   * GPU SM occupancy, measured directly from underlying
+   * DCGM_FI_PROF_SM_OCCUPANCY metric emitted in case of nvidia gpu
+   *
+   * @generated from enum value: EXECUTION_METRIC_GPU_SM_OCCUPANCY = 29;
+   */
+  GPU_SM_OCCUPANCY = 29,
+
+  /**
+   * @generated from enum value: EXECUTION_METRIC_APP_REQUESTS = 30;
+   */
+  APP_REQUESTS = 30,
+
+  /**
+   * @generated from enum value: EXECUTION_METRIC_APP_RESPONSE_TIME_P50 = 31;
+   */
+  APP_RESPONSE_TIME_P50 = 31,
+
+  /**
+   * @generated from enum value: EXECUTION_METRIC_APP_RESPONSE_TIME_P90 = 32;
+   */
+  APP_RESPONSE_TIME_P90 = 32,
+
+  /**
+   * @generated from enum value: EXECUTION_METRIC_APP_RESPONSE_TIME_P95 = 33;
+   */
+  APP_RESPONSE_TIME_P95 = 33,
+
+  /**
+   * @generated from enum value: EXECUTION_METRIC_APP_REPLICA_COUNT = 34;
+   */
+  APP_REPLICA_COUNT = 34,
+}
+
+/**
+ * Describes the enum cloudidl.clouddataproxy.ExecutionMetric.
+ */
+export const ExecutionMetricSchema: GenEnum<ExecutionMetric> = /*@__PURE__*/
+  enumDesc(file_clouddataproxy_payload, 1);
 

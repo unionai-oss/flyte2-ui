@@ -2,12 +2,12 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { ArtifactType } from '@/gen/clouddataproxy/payload_pb'
+
 import { ActionIdentifier } from '@/gen/flyteidl2/common/identifier_pb'
-import { CloudDataProxyService } from '@/gen/clouddataproxy/clouddataproxy_pb'
 import { Code, ConnectError } from '@connectrpc/connect'
 import { useQuery } from '@tanstack/react-query'
 import { useConnectRpcClient } from './useConnectRpc'
+import { ArtifactType, DataProxyService } from '@/gen/flyteidl2/dataproxy/dataproxy_service_pb'
 
 type UseRunReportsProps = {
   artifactType: ArtifactType
@@ -24,12 +24,12 @@ export function useRunReports({
   enabled,
   isActionTerminal,
 }: UseRunReportsProps) {
-  const client = useConnectRpcClient(CloudDataProxyService)
+  const client = useConnectRpcClient(DataProxyService)
 
   const query = useQuery({
     queryKey: ['useRunReports', artifactType, attempt, actionId],
     queryFn: async () => {
-      const response = await client.createDownloadLinkV2({
+      const response = await client.createDownloadLink({
         artifactType,
         source: {
           case: 'actionAttemptId',

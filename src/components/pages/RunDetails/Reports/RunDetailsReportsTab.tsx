@@ -5,7 +5,7 @@
 import { Button } from '@/components/Button'
 import { ChartIcon } from '@/components/icons/ChartIcon'
 import { useSelectedActionId } from '@/components/pages/RunDetails/hooks/useSelectedItem'
-import { ArtifactType } from '@/gen/clouddataproxy/payload_pb'
+import { ArtifactType } from '@/gen/flyteidl2/dataproxy/dataproxy_service_pb'
 import { useRunReports } from '@/hooks/useRunReports'
 import { useWatchActionDetails } from '@/hooks/useWatchActionDetails'
 import { isTaskSpec } from '@/lib/actionSpecUtils'

@@ -17,7 +17,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/org_payload.proto.
  */
 export const file_org_org_payload: GenFile = /*@__PURE__*/
-  fileDesc("ChVvcmcvb3JnX3BheWxvYWQucHJvdG8SDGNsb3VkaWRsLm9yZyI3Cg1DcmVhdGVSZXF1ZXN0EiYKA29yZxgBIAEoCzIRLmNsb3VkaWRsLm9yZy5PcmdCBrpIA8gBASIQCg5DcmVhdGVSZXNwb25zZSJACgpHZXRSZXF1ZXN0EjIKAmlkGAEgASgLMh4uY2xvdWRpZGwuY29tbW9uLk9yZ0lkZW50aWZpZXJCBrpIA8gBASItCgtHZXRSZXNwb25zZRIeCgNvcmcYASABKAsyES5jbG91ZGlkbC5vcmcuT3JnIkMKDURlbGV0ZVJlcXVlc3QSMgoCaWQYASABKAsyHi5jbG91ZGlkbC5jb21tb24uT3JnSWRlbnRpZmllckIGukgDyAEBIhAKDkRlbGV0ZVJlc3BvbnNlIjwKC0xpc3RSZXF1ZXN0Ei0KB3JlcXVlc3QYASABKAsyHC5jbG91ZGlkbC5jb21tb24uTGlzdFJlcXVlc3QiPgoMTGlzdFJlc3BvbnNlEh8KBG9yZ3MYASADKAsyES5jbG91ZGlkbC5vcmcuT3JnEg0KBXRva2VuGAIgASgJIjcKDVVwZGF0ZVJlcXVlc3QSJgoDb3JnGAEgASgLMhEuY2xvdWRpZGwub3JnLk9yZ0IGukgDyAEBIhAKDlVwZGF0ZVJlc3BvbnNlIjUKEkJhdGNoVXBkYXRlUmVxdWVzdBIfCgRvcmdzGAEgAygLMhEuY2xvdWRpZGwub3JnLk9yZyIVChNCYXRjaFVwZGF0ZVJlc3BvbnNlIkwKFkVuc3VyZVR1bm5lbEROU1JlcXVlc3QSMgoCaWQYASABKAsyHi5jbG91ZGlkbC5jb21tb24uT3JnSWRlbnRpZmllckIGukgDyAEBIkoKF0Vuc3VyZVR1bm5lbEROU1Jlc3BvbnNlEhUKDXJlY29yZHNfYWRkZWQYASABKAUSGAoQcmVjb3Jkc19tb2RpZmllZBgCIAEoBSJsCgtVcGRhdGVFcnJvchIyCgJpZBgBIAEoCzIeLmNsb3VkaWRsLmNvbW1vbi5PcmdJZGVudGlmaWVyQga6SAPIAQESFQoNZXJyb3JfbWVzc2FnZRgCIAEoCRISCgplcnJvcl9jb2RlGAMgASgFIj4KEUJhdGNoVXBkYXRlRXJyb3JzEikKBmVycm9ycxgBIAMoCzIZLmNsb3VkaWRsLm9yZy5VcGRhdGVFcnJvckKeAQoQY29tLmNsb3VkaWRsLm9yZ0IPT3JnUGF5bG9hZFByb3RvSAJQAVomZ2l0aHViLmNvbS91bmlvbmFpL2Nsb3VkL2dlbi9wYi1nby9vcmeiAgNDT1iqAgxDbG91ZGlkbC5PcmfKAgxDbG91ZGlkbFxPcmfiAhhDbG91ZGlkbFxPcmdcR1BCTWV0YWRhdGHqAg1DbG91ZGlkbDo6T3JnYgZwcm90bzM", [file_buf_validate_validate, file_common_identifier, file_common_list, file_org_org_definition]);
+  fileDesc("ChVvcmcvb3JnX3BheWxvYWQucHJvdG8SDGNsb3VkaWRsLm9yZyI3Cg1DcmVhdGVSZXF1ZXN0EiYKA29yZxgBIAEoCzIRLmNsb3VkaWRsLm9yZy5PcmdCBrpIA8gBASIQCg5DcmVhdGVSZXNwb25zZSJACgpHZXRSZXF1ZXN0EjIKAmlkGAEgASgLMh4uY2xvdWRpZGwuY29tbW9uLk9yZ0lkZW50aWZpZXJCBrpIA8gBASItCgtHZXRSZXNwb25zZRIeCgNvcmcYASABKAsyES5jbG91ZGlkbC5vcmcuT3JnIkMKDURlbGV0ZVJlcXVlc3QSMgoCaWQYASABKAsyHi5jbG91ZGlkbC5jb21tb24uT3JnSWRlbnRpZmllckIGukgDyAEBIhAKDkRlbGV0ZVJlc3BvbnNlIjwKC0xpc3RSZXF1ZXN0Ei0KB3JlcXVlc3QYASABKAsyHC5jbG91ZGlkbC5jb21tb24uTGlzdFJlcXVlc3QiPgoMTGlzdFJlc3BvbnNlEh8KBG9yZ3MYASADKAsyES5jbG91ZGlkbC5vcmcuT3JnEg0KBXRva2VuGAIgASgJIjcKDVVwZGF0ZVJlcXVlc3QSJgoDb3JnGAEgASgLMhEuY2xvdWRpZGwub3JnLk9yZ0IGukgDyAEBIhAKDlVwZGF0ZVJlc3BvbnNlIjUKEkJhdGNoVXBkYXRlUmVxdWVzdBIfCgRvcmdzGAEgAygLMhEuY2xvdWRpZGwub3JnLk9yZyIVChNCYXRjaFVwZGF0ZVJlc3BvbnNlIkwKFkVuc3VyZVR1bm5lbEROU1JlcXVlc3QSMgoCaWQYASABKAsyHi5jbG91ZGlkbC5jb21tb24uT3JnSWRlbnRpZmllckIGukgDyAEBIkoKF0Vuc3VyZVR1bm5lbEROU1Jlc3BvbnNlEhUKDXJlY29yZHNfYWRkZWQYASABKAUSGAoQcmVjb3Jkc19tb2RpZmllZBgCIAEoBSJQChpFbnN1cmVBV1NFeHRlcm5hbElEUmVxdWVzdBIyCgJpZBgBIAEoCzIeLmNsb3VkaWRsLmNvbW1vbi5PcmdJZGVudGlmaWVyQga6SAPIAQEiHQobRW5zdXJlQVdTRXh0ZXJuYWxJRFJlc3BvbnNlImwKC1VwZGF0ZUVycm9yEjIKAmlkGAEgASgLMh4uY2xvdWRpZGwuY29tbW9uLk9yZ0lkZW50aWZpZXJCBrpIA8gBARIVCg1lcnJvcl9tZXNzYWdlGAIgASgJEhIKCmVycm9yX2NvZGUYAyABKAUiPgoRQmF0Y2hVcGRhdGVFcnJvcnMSKQoGZXJyb3JzGAEgAygLMhkuY2xvdWRpZGwub3JnLlVwZGF0ZUVycm9yQp4BChBjb20uY2xvdWRpZGwub3JnQg9PcmdQYXlsb2FkUHJvdG9IAlABWiZnaXRodWIuY29tL3VuaW9uYWkvY2xvdWQvZ2VuL3BiLWdvL29yZ6ICA0NPWKoCDENsb3VkaWRsLk9yZ8oCDENsb3VkaWRsXE9yZ+ICGENsb3VkaWRsXE9yZ1xHUEJNZXRhZGF0YeoCDUNsb3VkaWRsOjpPcmdiBnByb3RvMw", [file_buf_validate_validate, file_common_identifier, file_common_list, file_org_org_definition]);
 
 /**
  * @generated from message cloudidl.org.CreateRequest
@@ -262,6 +262,39 @@ export const EnsureTunnelDNSResponseSchema: GenMessage<EnsureTunnelDNSResponse> 
   messageDesc(file_org_org_payload, 13);
 
 /**
+ * @generated from message cloudidl.org.EnsureAWSExternalIDRequest
+ */
+export type EnsureAWSExternalIDRequest = Message<"cloudidl.org.EnsureAWSExternalIDRequest"> & {
+  /**
+   * Organization whose control-plane AWS external ID secret should exist.
+   * This must match the caller organization in identity context.
+   *
+   * @generated from field: cloudidl.common.OrgIdentifier id = 1;
+   */
+  id?: OrgIdentifier;
+};
+
+/**
+ * Describes the message cloudidl.org.EnsureAWSExternalIDRequest.
+ * Use `create(EnsureAWSExternalIDRequestSchema)` to create a new message.
+ */
+export const EnsureAWSExternalIDRequestSchema: GenMessage<EnsureAWSExternalIDRequest> = /*@__PURE__*/
+  messageDesc(file_org_org_payload, 14);
+
+/**
+ * @generated from message cloudidl.org.EnsureAWSExternalIDResponse
+ */
+export type EnsureAWSExternalIDResponse = Message<"cloudidl.org.EnsureAWSExternalIDResponse"> & {
+};
+
+/**
+ * Describes the message cloudidl.org.EnsureAWSExternalIDResponse.
+ * Use `create(EnsureAWSExternalIDResponseSchema)` to create a new message.
+ */
+export const EnsureAWSExternalIDResponseSchema: GenMessage<EnsureAWSExternalIDResponse> = /*@__PURE__*/
+  messageDesc(file_org_org_payload, 15);
+
+/**
  * @generated from message cloudidl.org.UpdateError
  */
 export type UpdateError = Message<"cloudidl.org.UpdateError"> & {
@@ -286,7 +319,7 @@ export type UpdateError = Message<"cloudidl.org.UpdateError"> & {
  * Use `create(UpdateErrorSchema)` to create a new message.
  */
 export const UpdateErrorSchema: GenMessage<UpdateError> = /*@__PURE__*/
-  messageDesc(file_org_org_payload, 14);
+  messageDesc(file_org_org_payload, 16);
 
 /**
  * @generated from message cloudidl.org.BatchUpdateErrors
@@ -303,5 +336,5 @@ export type BatchUpdateErrors = Message<"cloudidl.org.BatchUpdateErrors"> & {
  * Use `create(BatchUpdateErrorsSchema)` to create a new message.
  */
 export const BatchUpdateErrorsSchema: GenMessage<BatchUpdateErrors> = /*@__PURE__*/
-  messageDesc(file_org_org_payload, 15);
+  messageDesc(file_org_org_payload, 17);
 

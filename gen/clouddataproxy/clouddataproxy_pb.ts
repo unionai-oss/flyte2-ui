@@ -4,14 +4,14 @@
 
 import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
-import type { CreateDownloadLinkV2RequestSchema, CreateDownloadLinkV2ResponseSchema, GetResourceQuotaProxyRequestSchema, GetResourceQuotaProxyResponseSchema, MetricRangeQueryProxyRequestSchema, MetricRangeQueryProxyResponseSchema } from "./payload_pb.ts";
+import type { CreateDownloadLinkV2RequestSchema, CreateDownloadLinkV2ResponseSchema, GetActionAttemptMetricsRequestSchema, GetActionAttemptMetricsResponseSchema, GetAppMetricsRequestSchema, GetAppMetricsResponseSchema, GetResourceQuotaProxyRequestSchema, GetResourceQuotaProxyResponseSchema, MetricRangeQueryProxyRequestSchema, MetricRangeQueryProxyResponseSchema } from "./payload_pb.ts";
 import { file_clouddataproxy_payload } from "./payload_pb.ts";
 
 /**
  * Describes the file clouddataproxy/clouddataproxy.proto.
  */
 export const file_clouddataproxy_clouddataproxy: GenFile = /*@__PURE__*/
-  fileDesc("CiNjbG91ZGRhdGFwcm94eS9jbG91ZGRhdGFwcm94eS5wcm90bxIXY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkyrwMKFUNsb3VkRGF0YVByb3h5U2VydmljZRKEAQoRUXVlcnlSYW5nZU1ldHJpY3MSNS5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5NZXRyaWNSYW5nZVF1ZXJ5UHJveHlSZXF1ZXN0GjYuY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuTWV0cmljUmFuZ2VRdWVyeVByb3h5UmVzcG9uc2UiABKDAQoQR2V0UmVzb3VyY2VRdW90YRI1LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkdldFJlc291cmNlUXVvdGFQcm94eVJlcXVlc3QaNi5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5HZXRSZXNvdXJjZVF1b3RhUHJveHlSZXNwb25zZSIAEogBChRDcmVhdGVEb3dubG9hZExpbmtWMhI0LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkNyZWF0ZURvd25sb2FkTGlua1YyUmVxdWVzdBo1LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkNyZWF0ZURvd25sb2FkTGlua1YyUmVzcG9uc2UiA5ACAULkAQobY29tLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5QhNDbG91ZGRhdGFwcm94eVByb3RvSAJQAVoxZ2l0aHViLmNvbS91bmlvbmFpL2Nsb3VkL2dlbi9wYi1nby9jbG91ZGRhdGFwcm94eaICA0NDWKoCF0Nsb3VkaWRsLkNsb3VkZGF0YXByb3h5ygIXQ2xvdWRpZGxcQ2xvdWRkYXRhcHJveHniAiNDbG91ZGlkbFxDbG91ZGRhdGFwcm94eVxHUEJNZXRhZGF0YeoCGENsb3VkaWRsOjpDbG91ZGRhdGFwcm94eWIGcHJvdG8z", [file_clouddataproxy_payload]);
+  fileDesc("CiNjbG91ZGRhdGFwcm94eS9jbG91ZGRhdGFwcm94eS5wcm90bxIXY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkysgUKFUNsb3VkRGF0YVByb3h5U2VydmljZRKEAQoRUXVlcnlSYW5nZU1ldHJpY3MSNS5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5NZXRyaWNSYW5nZVF1ZXJ5UHJveHlSZXF1ZXN0GjYuY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuTWV0cmljUmFuZ2VRdWVyeVByb3h5UmVzcG9uc2UiABKDAQoQR2V0UmVzb3VyY2VRdW90YRI1LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkdldFJlc291cmNlUXVvdGFQcm94eVJlcXVlc3QaNi5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5HZXRSZXNvdXJjZVF1b3RhUHJveHlSZXNwb25zZSIAEogBChRDcmVhdGVEb3dubG9hZExpbmtWMhI0LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkNyZWF0ZURvd25sb2FkTGlua1YyUmVxdWVzdBo1LmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkNyZWF0ZURvd25sb2FkTGlua1YyUmVzcG9uc2UiA5ACARKOAQoXR2V0QWN0aW9uQXR0ZW1wdE1ldHJpY3MSNy5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5HZXRBY3Rpb25BdHRlbXB0TWV0cmljc1JlcXVlc3QaOC5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eS5HZXRBY3Rpb25BdHRlbXB0TWV0cmljc1Jlc3BvbnNlIgAScAoNR2V0QXBwTWV0cmljcxItLmNsb3VkaWRsLmNsb3VkZGF0YXByb3h5LkdldEFwcE1ldHJpY3NSZXF1ZXN0Gi4uY2xvdWRpZGwuY2xvdWRkYXRhcHJveHkuR2V0QXBwTWV0cmljc1Jlc3BvbnNlIgBC5AEKG2NvbS5jbG91ZGlkbC5jbG91ZGRhdGFwcm94eUITQ2xvdWRkYXRhcHJveHlQcm90b0gCUAFaMWdpdGh1Yi5jb20vdW5pb25haS9jbG91ZC9nZW4vcGItZ28vY2xvdWRkYXRhcHJveHmiAgNDQ1iqAhdDbG91ZGlkbC5DbG91ZGRhdGFwcm94ecoCF0Nsb3VkaWRsXENsb3VkZGF0YXByb3h54gIjQ2xvdWRpZGxcQ2xvdWRkYXRhcHJveHlcR1BCTWV0YWRhdGHqAhhDbG91ZGlkbDo6Q2xvdWRkYXRhcHJveHliBnByb3RvMw", [file_clouddataproxy_payload]);
 
 /**
  * @generated from service cloudidl.clouddataproxy.CloudDataProxyService
@@ -42,6 +42,34 @@ export const CloudDataProxyService: GenService<{
     methodKind: "unary";
     input: typeof CreateDownloadLinkV2RequestSchema;
     output: typeof CreateDownloadLinkV2ResponseSchema;
+  },
+  /**
+   * GetActionAttemptMetrics returns one or more action attempt metrics, if available.
+   *
+   * Errors include
+   *  * OutOfRange if metrics are not available for the specified task time range
+   *  * various other errors
+   *
+   * @generated from rpc cloudidl.clouddataproxy.CloudDataProxyService.GetActionAttemptMetrics
+   */
+  getActionAttemptMetrics: {
+    methodKind: "unary";
+    input: typeof GetActionAttemptMetricsRequestSchema;
+    output: typeof GetActionAttemptMetricsResponseSchema;
+  },
+  /**
+   * GetAppMetrics returns one or more app metrics, if available.
+   *
+   * Errors include
+   *  * OutOfRange if metrics are not available for the specified time window
+   *  * various other errors
+   *
+   * @generated from rpc cloudidl.clouddataproxy.CloudDataProxyService.GetAppMetrics
+   */
+  getAppMetrics: {
+    methodKind: "unary";
+    input: typeof GetAppMetricsRequestSchema;
+    output: typeof GetAppMetricsResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_clouddataproxy_clouddataproxy, 0);
