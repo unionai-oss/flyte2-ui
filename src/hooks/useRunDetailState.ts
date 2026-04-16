@@ -106,6 +106,9 @@ export const useRunDetailState = ({
             lastEvent = Date.now()
             buffer.push(...event.enrichedActions)
           }
+          // Stream closed by server — flush any remaining buffered messages
+          // so the final update (e.g. ABORTED phase) is not lost.
+          flushBuffer()
         } catch (e) {
           if (!controller.signal.aborted) {
             console.error('error watching actions', e)
