@@ -44,5 +44,5 @@ jobs:
           tags: |
             ghcr.io/unionai-oss/flyteconsole-v2:latest
             ghcr.io/unionai-oss/flyteconsole-v2:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/unionai-oss/flyteconsole-v2:buildcache
-          cache-to: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'type=registry,ref=ghcr.io/unionai-oss/flyteconsole-v2:buildcache,mode=max' || '' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
