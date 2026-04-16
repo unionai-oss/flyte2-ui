@@ -42,7 +42,7 @@ jobs:
           build-args: |
             BUILDKITE_COMMIT=${{ github.sha }}
           tags: |
-            ghcr.io/flyteorg/flyte-client-v2:latest
-            ghcr.io/flyteorg/flyte-client-v2:${{ github.sha }}
+            ghcr.io/unionai-oss/flyteconsole-v2:latest
+            ghcr.io/unionai-oss/flyteconsole-v2:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
