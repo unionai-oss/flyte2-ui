@@ -13,6 +13,7 @@ export const ListRunsSearch = () => {
       placeholder="Search runs"
       value={searchTermInput ?? undefined}
       onChange={(e) => setSearchTerm(e.target.value)}
+      onClear={() => setSearchTerm('')}
     />
   )
 }

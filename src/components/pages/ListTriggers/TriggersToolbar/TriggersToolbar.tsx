@@ -26,6 +26,7 @@ export const TriggersToolbar = ({ triggersQuery }: TriggersToolbarProps) => {
           placeholder="Search triggers"
           value={searchTermInput ?? undefined}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onClear={() => setSearchTerm('')}
         />
       </div>
     </>

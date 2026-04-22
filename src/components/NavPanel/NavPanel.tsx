@@ -2,21 +2,21 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
+import { useDomainStore } from '@/lib/DomainStore'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'motion/react'
-import { Dispatch, SetStateAction, useMemo } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { HamburgerIcon } from '../icons/HamburgerIcon'
-import { type NavItemType, NavPanelWidth } from './types'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 import { NavItems } from '.'
 import { Button } from '../Button'
+import { DomainPicker } from '../DomainPicker'
+import { HamburgerIcon } from '../icons/HamburgerIcon'
 import { Logo } from '../Logo'
 import { RunDetailsPageParams } from '../pages/RunDetails/types'
-import { getNavItem } from './NavItems'
-import { DomainPicker } from '../DomainPicker'
-import { useDomainStore } from '@/lib/DomainStore'
 import { ProjectsPicker } from '../ProjectsPicker'
+import { getNavItem } from './NavItems'
+import { type NavItemType, NavPanelWidth } from './types'
 
 type NavPanelProps = {
   navItems?: NavItemType[] // custom main nav items
@@ -111,7 +111,7 @@ export const NavPanel = ({
         className={`flex shrink-0 flex-col ${isThin ? 'justify-center' : ''} gap-y-0.5 px-2.5`}
       >
         <motion.div
-          className="flex w-full flex-col gap-1 pb-5"
+          className="flex w-full flex-col gap-1 pb-3"
           initial="hidden"
           animate="visible"
         >

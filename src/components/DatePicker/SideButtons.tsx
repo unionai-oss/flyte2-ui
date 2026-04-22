@@ -2,13 +2,12 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import React from 'react'
 import clsx from 'clsx'
 import { DateRange } from 'react-day-picker'
-import { Button } from '../Button'
+import { BaseButton } from '../Buttons/BaseButton'
 
 interface QuickRangeSidebarProps {
-  lastClickedQuickKey: string | undefined
+  activeQuickKey: string | undefined
   sideButtons: SideButtonItem[]
   onSideButtonClick: (dateRange: DateRange, quickLabel: string) => void
 }
@@ -30,17 +29,17 @@ type SideButtonType = {
 }
 
 export const QuickRangeSidebar: React.FC<QuickRangeSidebarProps> = ({
-  lastClickedQuickKey,
+  activeQuickKey,
   sideButtons,
   onSideButtonClick,
 }) => {
   return (
-    <div className="flex h-full w-32 flex-col border-r-1 border-(--system-gray-3) px-3 py-2">
+    <div className="flex h-full w-32 flex-col gap-1.5 border-r-1 border-(--system-gray-3) px-3 py-2">
       {sideButtons.map((props: SideButtonItem) => {
         return isSideButton(props) ? (
           <SideButton
             key={props.displayText}
-            isActive={lastClickedQuickKey === props.displayText}
+            isActive={activeQuickKey === props.displayText}
             onClick={() => {
               const dateRange = props.onClick()
               onSideButtonClick(dateRange, props.displayText)
@@ -58,27 +57,20 @@ export const QuickRangeSidebar: React.FC<QuickRangeSidebarProps> = ({
 
 const SideButton = ({
   children,
-  className,
   isActive,
   onClick,
 }: {
   children: React.ReactNode
-  className?: string
   isActive: boolean
   onClick: () => void
 }) => {
   return (
-    <Button
-      className={clsx(
-        `font-xs justify-start border-none !p-1 !font-medium ${className}`,
-        isActive && 'dark:bg-(--system-gray-4)',
-      )}
-      color={isActive ? 'white' : 'zinc'}
+    <BaseButton
+      className={clsx(isActive && 'text-(--system-white)')}
       onClick={onClick}
-      plain
-      size="xs"
+      size="sm"
     >
       {children}
-    </Button>
+    </BaseButton>
   )
 }

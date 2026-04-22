@@ -10,6 +10,7 @@ import { ShareIcon } from '@heroicons/react/24/outline'
 import { AppsIcon } from '../icons/AppsIcon'
 import { RunsIcon } from '../icons/RunsIcon'
 import { TriggersIcon } from '../icons/TriggersIcon'
+import { EnterpriseCTA } from './EnterpriseCTA'
 import { NavPanelWidth, NavWidget, type NavLink as NavLinkType } from './types'
 
 export const ProjectsLink: NavLinkType = {
@@ -85,4 +86,10 @@ export const DocumentationLink: NavLinkType = {
   target: '_blank',
 }
 
-export const useDefaultOrgItems = () => [DocumentationLink]
+export const EnterpriseCTAWidget: NavWidget = {
+  displayText: 'enterpriseCTA',
+  type: 'widget',
+  widget: (size) => <EnterpriseCTA size={size} />,
+}
+
+export const useDefaultOrgItems = () => [DocumentationLink, EnterpriseCTAWidget]

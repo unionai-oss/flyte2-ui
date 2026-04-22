@@ -2,16 +2,16 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { Meta, StoryObj } from '@storybook/nextjs'
-import { LogViewer } from '@/components/LogViewer'
+import { LogViewer } from '@/components/LogViewer/LogViewer'
+import { RunLogType } from '@/components/pages/RunDetails/types'
 import {
   LogLine,
+  LogLineOriginator,
   LogLineSchema,
 } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
-import { LogLineOriginator } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
-import { RunLogType } from '@/components/pages/RunDetails/types'
-import { timestampFromDate } from '@bufbuild/protobuf/wkt'
 import { create } from '@bufbuild/protobuf'
+import { timestampFromDate } from '@bufbuild/protobuf/wkt'
+import { Meta, StoryObj } from '@storybook/nextjs'
 
 const meta: Meta<typeof LogViewer> = {
   title: 'components/LogViewer',

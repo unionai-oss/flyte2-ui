@@ -2,13 +2,13 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { LicensedEditionPlaceholder } from '@/components/LicensedEditionPlaceholder'
-import { LogViewer } from '@/components/LogViewer'
+import { LogViewer } from '@/components/LogViewer/LogViewer'
 import { App, Condition } from '@/gen/flyteidl2/app/app_definition_pb'
 import {
   LogLine,
   LogLineOriginator,
 } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
+import { useAppLogs } from '@/hooks/useApps'
 import { useEffect, useState } from 'react'
 import { AppLogType, LogSwitch } from './LogSwitch'
 
@@ -22,33 +22,40 @@ const mapAppConditionToLogline = (condition: Condition): LogLine =>
 export const AppLogsTab = ({ app }: { app: App | undefined }) => {
   const [logsType, setLogsType] = useState<AppLogType>(AppLogType.APP)
   const [scalingLogs, setScalingLogs] = useState(
-    app?.status?.conditions?.map(mapAppConditionToLogline) ?? [],
+    app?.status?.conditions.map(mapAppConditionToLogline),
   )
 
+  const logsQuery = useAppLogs({
+    appId: app?.metadata?.id?.name,
+    domain: app?.metadata?.id?.domain,
+    enabled: !!app,
+    projectId: app?.metadata?.id?.project,
+    org: app?.metadata?.id?.org,
+  })
+
   useEffect(() => {
-    setScalingLogs(app?.status?.conditions?.map(mapAppConditionToLogline) ?? [])
+    const newConditions = app?.status?.conditions.map(mapAppConditionToLogline)
+    setScalingLogs(newConditions)
   }, [app?.status?.conditions])
 
   const isAppLogs = logsType === AppLogType.APP
+  const currentLogs = isAppLogs ? logsQuery.logs || [] : scalingLogs
 
   return (
     <>
       <LogSwitch currentValue={logsType} onChange={setLogsType} />
       <div className="flex h-full w-full flex-col gap-3 overflow-hidden rounded-2xl border border-(--system-gray-3) bg-(--system-black) px-5 py-3">
-        {isAppLogs ? (
-          <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
-            <LicensedEditionPlaceholder title="Logs" fullWidth hideBorder />
-          </div>
-        ) : (
-          <LogViewer
-            done={true}
-            enableSourceFilter={false}
-            logType={logsType}
-            logs={scalingLogs}
-            shouldSkipIcon={true}
-            waiting={false}
-          />
-        )}
+        <LogViewer
+          done={isAppLogs ? !logsQuery.isPending : true}
+          enableSourceFilter={isAppLogs}
+          error={isAppLogs ? logsQuery.error : null}
+          logType={logsType}
+          logs={currentLogs}
+          shouldSkipIcon={!isAppLogs}
+          waiting={
+            isAppLogs && logsQuery.isPending && logsQuery.logs.length === 0
+          }
+        />
       </div>
     </>
   )

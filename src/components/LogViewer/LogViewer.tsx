@@ -2,29 +2,94 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { CopyButton } from '@/components/CopyButton'
+import { Switch } from '@/components/Switch'
 import { RunLogType } from '@/components/pages/RunDetails/types'
 import {
   LogLine,
   LogLineOriginator,
 } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
 import { getLogDateString } from '@/lib/dateUtils'
-import { handleDownload } from '@/lib/download'
-import { logsToString } from '@/lib/logUtils'
 import { stringToColor } from '@/lib/stringToColor'
-import { ArrowDownTrayIcon } from '@heroicons/react/16/solid'
+
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Button } from './Button'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type WheelEventHandler,
+} from 'react'
+import type { ScrollerProps } from 'react-virtuoso'
+import { Virtuoso } from 'react-virtuoso'
+import { PopoverMenu, type MenuItem } from '../Popovers'
+import { SearchBar } from '../SearchBar'
+import { AppLogType } from '../pages/AppDetails/LogSwitch'
 import { LogViewerRow, SourceOption } from './LogViewerRow'
-import { PopoverMenu, type MenuItem } from './Popovers'
-import { SearchBar } from './SearchBar'
-import { Tooltip } from './Tooltip'
-import { AppLogType } from './pages/AppDetails/LogSwitch'
+import { useLogViewerTimestamps } from './useLogViewerTimestamps'
+import LogViewerIcons from './LogViewerIcons'
 
 /** Minimum width (px) for the log viewer container and content to avoid layout thrashing / resize loops. */
 export const LOG_VIEWER_MIN_WIDTH_PX = 700
+
+/**
+ * Pixels from the bottom Virtuoso still treats as "at bottom". Streaming +
+ * variable row heights can briefly report "not at bottom" with a tight
+ * threshold, which disables followOutput until the user scrolls.
+ */
+const LOG_VIEWER_AT_BOTTOM_THRESHOLD_PX = 80
+
+/** Ignore brief atBottomStateChange(false) blips during layout (ms). */
+const LOG_VIEWER_TAIL_RELEASE_DEBOUNCE_MS = 220
+
+/** Wheel deltaY below this (content moving up) counts as leaving the tail. */
+const LOG_VIEWER_WHEEL_UP_RELEASE_DELTA = 10
+
+/** In-list spacer so the absolute streaming bar does not cover the last log line (Virtuoso scroll height is item-based). */
+const LogViewerStreamingTailSpacer = () => (
+  <div className="h-9 w-full shrink-0" aria-hidden />
+)
+
+const LogViewerVirtuosoFooterEmpty = () => null
+
+type LogViewerVirtuosoContext = {
+  onUserScrollContentUp?: () => void
+}
+
+const LogViewerScroller = forwardRef<
+  HTMLDivElement,
+  ScrollerProps & { context?: LogViewerVirtuosoContext }
+>(function LogViewerScroller(props, ref) {
+  const { context, ...rest } = props
+  const { onWheel: virtuosoOnWheel, ...restDom } = rest as ScrollerProps & {
+    onWheel?: WheelEventHandler<HTMLDivElement>
+  }
+
+  const onWheel: WheelEventHandler<HTMLDivElement> = (e) => {
+    if (e.deltaY < -LOG_VIEWER_WHEEL_UP_RELEASE_DELTA) {
+      context?.onUserScrollContentUp?.()
+    }
+    virtuosoOnWheel?.(e)
+  }
+
+  return (
+    <div
+      ref={ref}
+      {...(restDom as ScrollerProps)}
+      data-testid="logviewer-scroll"
+      onWheel={onWheel}
+      className={`min-h-0 min-w-0 flex-1 overflow-auto pb-4 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-(--system-gray-4) [&::-webkit-scrollbar-thumb:hover]:bg-(--system-gray-5) [&::-webkit-scrollbar-track]:bg-transparent ${(props as { className?: string }).className ?? ''}`}
+      style={{
+        ...(restDom.style as CSSProperties | undefined),
+        overflowAnchor: 'none',
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'var(--system-gray-4) transparent',
+      }}
+    />
+  )
+})
 
 interface LogViewerProps {
   enableSourceFilter?: boolean
@@ -60,10 +125,10 @@ const EmptyStateMessage: React.FC<{
   logType?: RunLogType | AppLogType
 }> = ({ logType }) => (
   <div className="flex flex-col items-center">
-    <h2 className="mb-2 text-xl font-semibold text-zinc-500 dark:text-zinc-400">
+    <h2 className="mb-2 text-xl font-semibold text-(--system-gray-5)">
       No {getDisplayNameByType(logType)}
     </h2>
-    <p className="text-base text-zinc-500 dark:text-zinc-400">
+    <p className="text-base text-(--system-gray-5)">
       We didn&apos;t find any {getLongNameByType(logType)} for the specified
       source
     </p>
@@ -74,115 +139,103 @@ const LogViewerRenderer = ({
   logs = [],
   searchQuery,
   logType,
+  unfilteredLogCount,
   showEmpty,
   showStreaming,
   shouldSkipIcon,
+  showTimestamps,
 }: LogViewerProps & {
   selectedSource: string
   searchQuery: string
+  /** Length of the upstream log list before search/source filtering; used to reset tail-follow only when the stream clears. */
+  unfilteredLogCount: number
   showEmpty?: boolean
   showStreaming?: boolean
   shouldSkipIcon?: boolean
+  showTimestamps?: boolean
 }) => {
-  const logsContainerRef = useRef<HTMLDivElement>(null)
-  const virtualizerContainerRef = useRef<HTMLDivElement>(null)
-  const scrollRafRef = useRef<number | null>(null)
-  const shouldAutoScrollRef = useRef<boolean>(true)
-  const isProgrammaticScrollRef = useRef<boolean>(false)
+  /** While true, keep following the streaming tail despite flaky isAtBottom during remeasure. */
+  const stickToStreamingTailRef = useRef(true)
+  const tailReleaseTimeoutRef = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined)
+  const [showTopShadow, setShowTopShadow] = useState<boolean>(false)
+  const [showBottomShadow, setShowBottomShadow] = useState<boolean>(false)
 
-  // Stable measureElement callback
-  const measureElement = useCallback(
-    (el: Element | null) => el?.getBoundingClientRect().height ?? 24,
+  useEffect(() => {
+    return () => {
+      if (tailReleaseTimeoutRef.current !== undefined) {
+        clearTimeout(tailReleaseTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (unfilteredLogCount !== 0) return
+    stickToStreamingTailRef.current = true
+    if (tailReleaseTimeoutRef.current !== undefined) {
+      clearTimeout(tailReleaseTimeoutRef.current)
+      tailReleaseTimeoutRef.current = undefined
+    }
+  }, [unfilteredLogCount])
+
+  const releaseStreamingTailNow = useCallback(() => {
+    if (tailReleaseTimeoutRef.current !== undefined) {
+      clearTimeout(tailReleaseTimeoutRef.current)
+      tailReleaseTimeoutRef.current = undefined
+    }
+    stickToStreamingTailRef.current = false
+  }, [])
+
+  const onAtBottomChange = useCallback((atBottom: boolean) => {
+    setShowBottomShadow(!atBottom)
+    if (atBottom) {
+      if (tailReleaseTimeoutRef.current !== undefined) {
+        clearTimeout(tailReleaseTimeoutRef.current)
+        tailReleaseTimeoutRef.current = undefined
+      }
+      stickToStreamingTailRef.current = true
+      return
+    }
+    if (tailReleaseTimeoutRef.current !== undefined) {
+      clearTimeout(tailReleaseTimeoutRef.current)
+    }
+    tailReleaseTimeoutRef.current = setTimeout(() => {
+      tailReleaseTimeoutRef.current = undefined
+      stickToStreamingTailRef.current = false
+    }, LOG_VIEWER_TAIL_RELEASE_DEBOUNCE_MS)
+  }, [])
+
+  const onAtTopChange = useCallback(
+    (atTop: boolean) => setShowTopShadow(!atTop),
     [],
   )
 
-  // Virtualizer for rendering only visible log rows
-  const rowVirtualizer = useVirtualizer({
-    count: logs.length,
-    getScrollElement: () => logsContainerRef.current,
-    estimateSize: () => 24, // Minimum row height based on min-h-[24px] in LogViewerRow
-    // Measure actual height of each row for variable height support
-    measureElement,
-    overscan: 10, // Render 10 extra items outside viewport
-  })
-
-  // Check if user is at the bottom (within 10px threshold for more leniency)
-  const isAtBottom = useCallback(() => {
-    const container = logsContainerRef.current
-    if (!container) return false
-
-    const { scrollTop, scrollHeight, clientHeight } = container
-    return scrollHeight - scrollTop - clientHeight < 10
+  const followStreamingOutput = useCallback((_isAtBottom: boolean) => {
+    if (stickToStreamingTailRef.current) return 'auto'
+    return _isAtBottom ? 'auto' : false
   }, [])
 
-  // Scroll to bottom - called when content size changes
-  const scrollToBottom = useCallback(() => {
-    const container = logsContainerRef.current
-    if (!container || !shouldAutoScrollRef.current) return
+  const virtuosoContext = useMemo(
+    () => ({ onUserScrollContentUp: releaseStreamingTailNow }),
+    [releaseStreamingTailNow],
+  )
 
-    const totalSize = rowVirtualizer.getTotalSize()
-    const containerHeight = container.clientHeight
-    const targetScrollTop = Math.max(0, totalSize - containerHeight)
+  const virtuosoComponents = useMemo(
+    () => ({
+      Scroller: LogViewerScroller,
+      Footer: showStreaming
+        ? LogViewerStreamingTailSpacer
+        : LogViewerVirtuosoFooterEmpty,
+    }),
+    [showStreaming],
+  )
 
-    // Mark as programmatic scroll
-    isProgrammaticScrollRef.current = true
-    container.scrollTop = targetScrollTop
-
-    // Reset flag after scroll completes
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        isProgrammaticScrollRef.current = false
-      })
-    })
-  }, [rowVirtualizer])
-
-  // Track user scroll to determine if we should auto-scroll
-  useEffect(() => {
-    const container = logsContainerRef.current
-    if (!container) return
-
-    const handleScroll = () => {
-      // Ignore scroll events from programmatic scrolling
-      if (isProgrammaticScrollRef.current) return
-
-      // Only update shouldAutoScroll based on user-initiated scrolls
-      shouldAutoScrollRef.current = isAtBottom()
-    }
-
-    container.addEventListener('scroll', handleScroll, { passive: true })
-    return () => container.removeEventListener('scroll', handleScroll)
-  }, [isAtBottom])
-
-  // Use ResizeObserver to detect when virtualizer container size changes
-  // This fires when new items are measured and automatically scrolls to bottom
-  useEffect(() => {
-    const container = virtualizerContainerRef.current
-    if (!container) return
-
-    const resizeObserver = new ResizeObserver(() => {
-      // Only scroll if user is at the bottom
-      if (!shouldAutoScrollRef.current) return
-
-      // Cancel any pending scroll
-      if (scrollRafRef.current) {
-        cancelAnimationFrame(scrollRafRef.current)
-      }
-
-      // Scroll after DOM updates
-      scrollRafRef.current = requestAnimationFrame(() => {
-        scrollToBottom()
-        scrollRafRef.current = null
-      })
-    })
-
-    resizeObserver.observe(container)
-    return () => {
-      resizeObserver.disconnect()
-      if (scrollRafRef.current) {
-        cancelAnimationFrame(scrollRafRef.current)
-      }
-    }
-  }, [scrollToBottom])
+  const computeItemKey = useMemo(
+    () => (index: number, log: LogLine) =>
+      `${index}-${log.timestamp?.seconds ?? ''}-${log.timestamp?.nanos ?? ''}-${log.message?.slice(0, 48) ?? ''}`,
+    [],
+  )
 
   // Show empty state when there are no logs and showEmpty is true
   if (showEmpty && logs.length === 0) {
@@ -202,56 +255,54 @@ const LogViewerRenderer = ({
 
   return (
     <div className="relative h-full min-h-0" data-testid="logviewer">
+      {showStreaming === false && showEmpty === false && (
+        <>
+          {showTopShadow && (
+            <div className="absolute z-1 top-0 right-2.5 h-8 w-full bg-linear-to-b from-white to-black/0 dark:from-black dark:to-white/0" />
+          )}
+          {showBottomShadow && (
+            <div className="absolute z-1 -bottom-4 right-2.5 h-8 w-full bg-linear-to-t from-white to-black/0 dark:from-black dark:to-white/0" />
+          )}
+        </>
+      )}
       <div
         className={`flex h-full flex-col overflow-hidden bg-(--system-black)`}
       >
         <div className="w-1 rounded-tl-lg"></div>
-        <div
-          ref={logsContainerRef}
-          className="min-h-0 flex-1 overflow-auto pb-4 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-400 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 dark:[&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 [&::-webkit-scrollbar-track]:bg-transparent"
-          style={{
-            overflowAnchor: 'none',
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgb(161 161 170) transparent', // zinc-400 - works reasonably in both modes
-          }}
-        >
-          <div
-            ref={virtualizerContainerRef}
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              minWidth: LOG_VIEWER_MIN_WIDTH_PX,
-              position: 'relative',
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const log = logs[virtualRow.index]
-              if (!log) return null
-              return (
-                <div
-                  key={virtualRow.key}
-                  ref={rowVirtualizer.measureElement}
-                  data-index={virtualRow.index}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                >
-                  <LogViewerRow
-                    log={log}
-                    searchQuery={searchQuery}
-                    skipOriginatorIcon={shouldSkipIcon}
-                  />
-                </div>
-              )
-            })}
-          </div>
+        <div className="relative min-h-0 min-w-0 flex-1">
+          {/*
+            react-virtuoso: vertical margins on item roots or protruding past the
+            row container are not included in height measurement — total scroll
+            can end short. LogViewerRow uses padding, not margin, between lines.
+          */}
+          <Virtuoso<LogLine, LogViewerVirtuosoContext>
+            style={{ height: '100%', minWidth: LOG_VIEWER_MIN_WIDTH_PX }}
+            className="min-h-0 min-w-0"
+            data={logs}
+            context={virtuosoContext}
+            components={virtuosoComponents}
+            computeItemKey={computeItemKey}
+            defaultItemHeight={24}
+            atBottomThreshold={LOG_VIEWER_AT_BOTTOM_THRESHOLD_PX}
+            atBottomStateChange={onAtBottomChange}
+            atTopStateChange={onAtTopChange}
+            followOutput={followStreamingOutput}
+            increaseViewportBy={{ top: 240, bottom: 240 }}
+            initialTopMostItemIndex={
+              logs.length > 0 ? { align: 'end', index: 'LAST' } : 0
+            }
+            itemContent={(index, log) => (
+              <LogViewerRow
+                log={log}
+                searchQuery={searchQuery}
+                skipOriginatorIcon={shouldSkipIcon}
+                showTimestamp={showTimestamps}
+              />
+            )}
+          />
 
           {showStreaming ? (
-            <div className="absolute bottom-0 left-0 w-full">
+            <div className="pointer-events-none absolute bottom-0 left-0 w-full">
               <div className="mx-auto mt-2 flex w-4/5 items-center">
                 <div className="flex-grow border-t border-dotted border-[#FCB51D]"></div>
                 <span className="mx-4 flex items-center text-sm whitespace-nowrap text-[#FCB51D]">
@@ -311,6 +362,7 @@ const LogsSearch: React.FC<{
       }
     }}
     className="!w-[258px]"
+    onClear={() => setSearchQuery('')}
   />
 )
 
@@ -330,6 +382,7 @@ export const LogViewer = ({
   const [showEmpty, setShowEmpty] = useState(false)
   const [showStreaming, setShowStreaming] = useState(false)
   const [showWaiting, setShowWaiting] = useState(false)
+  const [showTimestamps, setShowTimestamps] = useLogViewerTimestamps()
 
   // Dynamically get unique sources from logs
   // Memoize to prevent recalculation when logs array reference changes but content is the same
@@ -344,7 +397,6 @@ export const LogViewer = ({
     () => ['All sources', ...uniqueSources],
     [uniqueSources],
   )
-  const logsToCopy = useMemo(() => logsToString(logs), [logs])
 
   // no source filtering for K8s logs
   const rendererLogSource = useMemo(
@@ -455,10 +507,10 @@ export const LogViewer = ({
     return (
       <div className="flex flex-1 items-center justify-center rounded-lg">
         <div className="flex flex-col items-center">
-          <h2 className="mb-2 text-xl font-semibold text-zinc-500 dark:text-zinc-400">
+          <h2 className="mb-2 text-xl font-semibold text-(--system-gray-5)">
             Waiting
           </h2>
-          <p className="text-base text-zinc-500 dark:text-zinc-400">
+          <p className="text-base text-(--system-gray-5)">
             Logs are not available yet
           </p>
         </div>
@@ -471,10 +523,10 @@ export const LogViewer = ({
     return (
       <div className="flex flex-1 items-center justify-center rounded-lg">
         <div className="flex flex-col items-center">
-          <h2 className="mb-2 text-xl font-bold text-zinc-500 dark:text-zinc-400">
+          <h2 className="mb-2 text-xl font-bold text-(--system-gray-5)">
             Error
           </h2>
-          <p className="text-base text-zinc-500 dark:text-zinc-400">
+          <p className="text-base text-(--system-gray-5)">
             We&apos;re having trouble loading the logs
           </p>
         </div>
@@ -494,7 +546,7 @@ export const LogViewer = ({
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
       {shouldDisplayControls && (
-        <div className="flex min-h-0 shrink-0 items-center justify-between gap-4">
+        <div className="space-between flex min-h-0 shrink-0 items-center justify-between">
           {enableSourceFilter && (
             <SourcesDropdown
               selectedSource={selectedSource}
@@ -503,26 +555,26 @@ export const LogViewer = ({
             />
           )}
 
-          <div className="gap flex flex-row items-center gap-1.25">
-            {
-              <LogsSearch
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-            }
+          <div className="gap flex flex-row items-center">
+            <LogsSearch
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          </div>
 
-            <CopyButton value={logsToCopy} />
-            <Tooltip content="Download logs" placement="bottom">
-              <Button
-                size="md"
-                plain
-                disabled={logsToCopy.length === 0}
-                className="!bg-transparent enabled:hover:dark:[&_[data-slot=icon]]:!text-white"
-                onClick={() => handleDownload(logsToCopy, 'logs.log')}
-              >
-                <ArrowDownTrayIcon data-slot="icon" />
-              </Button>
-            </Tooltip>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-(--system-gray-5)">
+                Timestamps
+              </span>
+              <Switch
+                checked={showTimestamps}
+                onChange={setShowTimestamps}
+                color="green"
+                size="sm"
+              />
+            </div>
+            <LogViewerIcons logs={logs} />
           </div>
         </div>
       )}
@@ -530,7 +582,9 @@ export const LogViewer = ({
       <LogViewerRenderer
         searchQuery={searchQuery}
         selectedSource={rendererLogSource}
+        unfilteredLogCount={logs.length}
         shouldSkipIcon={shouldSkipIcon}
+        showTimestamps={showTimestamps}
         waiting={waiting}
         error={error}
         done={done}

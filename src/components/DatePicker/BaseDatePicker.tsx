@@ -2,13 +2,18 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, Dispatch, SetStateAction } from 'react'
 import { format, subDays, startOfDay } from 'date-fns'
 import { DateRange, DayPicker } from 'react-day-picker'
-import { Button } from '../Button'
-import { labeledQuickRanges, type QuickRange } from './quickRanges'
+import { BaseButton } from '../Buttons/BaseButton'
+import {
+  labeledQuickRanges,
+  isQuickRangeItem,
+  type QuickRange,
+} from './quickRanges'
 import { type SideButtonItem } from './SideButtons'
 import { useDateRangeParams } from './useDateRangeParams'
+import { getQuickRangeLabelFromRelative } from './relativeTime'
 import { useDateRangeState } from './useDateRangeState'
 import { useDatePickerHandlers } from './useDateHandlers'
 import { DateRangeInputs } from './DateRangeInputs'
@@ -29,8 +34,15 @@ export function BaseDatePicker({
   quickRanges?: QuickRange[]
   /** Optional maximum number of days back that can be selected */
   maxDaysBack?: number
+  setIsOpen: Dispatch<SetStateAction<boolean>>
 }) {
-  const { dateRange: urlDateRange, setDateRange } = useDateRangeParams()
+  const {
+    dateRange: urlDateRange,
+    setDateRange,
+    fromParam,
+    toParam,
+  } = useDateRangeParams()
+  const activeQuickKey = getQuickRangeLabelFromRelative(fromParam, toParam)
 
   const {
     selected,
@@ -66,27 +78,19 @@ export function BaseDatePicker({
     toInput,
     setToInput,
     setLastClickedQuickKey,
+    setDateRange,
+    onApply,
   })
 
-  const sideButtons: SideButtonItem[] = useMemo(() => {
-    const btnConfigs = quickRanges.map(({ label, getRange }) => ({
-      displayText: label,
-      key: label,
-      onClick: getRange,
-    }))
-    // Only apply divider layout for default quick ranges
-    // Custom quick ranges are displayed as-is without dividers
-    if (quickRanges === labeledQuickRanges) {
-      return [
-        ...btnConfigs.slice(0, 2),
-        { key: 'divider-1', type: 'divider' },
-        ...btnConfigs.slice(2, -2),
-        { key: 'divider-2', type: 'divider' },
-        ...btnConfigs.slice(-2),
-      ]
-    }
-    return btnConfigs
-  }, [quickRanges])
+  const sideButtons: SideButtonItem[] = useMemo(
+    () =>
+      quickRanges.map((qr, i) =>
+        isQuickRangeItem(qr)
+          ? { displayText: qr.label, key: qr.label, onClick: qr.getRange }
+          : { key: `divider-${i}`, type: 'divider' as const },
+      ),
+    [quickRanges],
+  )
 
   // Initialize from URL
   useEffect(() => {
@@ -144,15 +148,12 @@ export function BaseDatePicker({
     return null
   }, [maxDaysBack, selected?.from])
 
-  // Hide Clear button when user is prohibited from truly clearing the filter
-  const shouldShowClearButton = !maxDaysBack
-
   return (
     <div className="flex flex-col">
       <div className="flex w-full">
         <div className="flex">
           <QuickRangeSidebar
-            lastClickedQuickKey={lastClickedQuickKey}
+            activeQuickKey={activeQuickKey}
             sideButtons={sideButtons}
             onSideButtonClick={handleSideButtonClick}
           />
@@ -187,7 +188,7 @@ export function BaseDatePicker({
           </div>
         </div>
       </div>
-      <div className="flex min-h-24 items-center justify-between gap-2 border-t-1 border-(--system-gray-3) p-1">
+      <div className="flex min-h-16 items-center justify-between gap-2 border-t-1 border-(--system-gray-3) p-4">
         {validationError ? (
           <span className="pl-2 text-xs text-(--accent-red)">
             {validationError}
@@ -196,22 +197,20 @@ export function BaseDatePicker({
           <span />
         )}
         <div className="flex items-center gap-2">
-          <Button onClick={handleCancel} outline size="xs" color="zinc">
+          <BaseButton onClick={handleClear} border size="lg">
+            Reset
+          </BaseButton>
+          <BaseButton onClick={handleCancel} border size="lg">
             Cancel
-          </Button>
-          {shouldShowClearButton && (
-            <Button onClick={handleClear} outline size="xs" color="zinc">
-              Clear
-            </Button>
-          )}
-          <Button
-            outline
+          </BaseButton>
+          <BaseButton
+            border
             onClick={handleApply}
-            size="xs"
+            size="lg"
             disabled={!!validationError}
           >
             Apply
-          </Button>
+          </BaseButton>
         </div>
       </div>
     </div>

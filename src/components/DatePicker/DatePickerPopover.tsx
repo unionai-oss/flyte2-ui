@@ -56,6 +56,7 @@ export const DatePickerPopover = ({
           onClear={handleClear}
           quickRanges={quickRanges}
           maxDaysBack={maxDaysBack}
+          setIsOpen={setIsOpen}
         />
       ),
     },
@@ -67,8 +68,8 @@ export const DatePickerPopover = ({
       label={label}
       open={isOpen}
       onOpenChange={setIsOpen}
-      size="xs"
-      triggerClassName="!px-0 [&>svg]:dark:text-(--system-gray-4)"
+      size="sm"
+      triggerClassName="!px-0 [&>svg]:dark:text-(--system-gray-4) text-(--system-white)"
       variant="dropdown"
     />
   )
