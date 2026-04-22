@@ -4,9 +4,11 @@
 
 import { EllipsisHorizontalIcon } from '@heroicons/react/16/solid'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import React, { ReactNode, useLayoutEffect, useRef } from 'react'
+import { BaseButton } from '../Buttons/BaseButton'
+import { FilterButton } from '../Buttons/FilterButton'
+import { MenuButton } from '../Buttons/MenuButton'
 import { CheckedBoxIcon, UncheckedBoxIcon } from '../icons/CheckboxIcons'
 import { ChevronDownIcon } from '../icons/ChevronDownIcon'
 import { Popover, PopoverProps } from './Popover'
@@ -35,7 +37,7 @@ export interface PopoverMenuProps extends Omit<
   variant?: 'dropdown' | 'overflow' | 'filter'
   label?: string | ReactNode
   outline?: boolean
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg'
   menuClassName?: string
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -90,12 +92,6 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
 
   const menuRef = useRef<HTMLDivElement>(null)
   const scrollPositionRef = useRef<number>(0)
-  const sizeClasses = {
-    xs: 'px-1 py-1 text-xs',
-    sm: 'px-2 py-1 text-sm',
-    md: 'px-3 py-2 text-sm',
-    lg: 'px-4 py-2 text-md',
-  }
 
   // Reset scroll position when menu closes
   React.useEffect(() => {
@@ -108,7 +104,6 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
   // Preserve scroll position when items change but menu stays open
   useLayoutEffect(() => {
     if (isOpen && menuRef.current) {
-      // Restore scroll position after items update
       menuRef.current.scrollTop = scrollPositionRef.current
     }
   }, [items, isOpen])
@@ -122,17 +117,14 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
 
   const handleItemClick = React.useCallback(
     (item: MenuItem, event: React.MouseEvent<HTMLButtonElement>) => {
-      // Determine if we should close the menu
       const shouldClose =
-        closeOnItemClick === true || // Always close
-        (closeOnItemClick === 'default-only' && !item.component) // Close only for default items
+        closeOnItemClick === true ||
+        (closeOnItemClick === 'default-only' && !item.component)
 
-      // Call the original onClick if it exists
       if (item.onClick) {
         item.onClick(event)
       }
 
-      // Close the menu if configured to do so
       if (shouldClose) {
         setIsOpen(false)
       }
@@ -140,47 +132,33 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
     [closeOnItemClick, setIsOpen],
   )
 
-  // Update the filter variant clear button click handler
   const handleClearClick = React.useCallback(
     (e: React.MouseEvent) => {
       filterProps?.onClearClick?.()
       if (!isOpen) {
-        e.stopPropagation() // to not open dropdown
+        e.stopPropagation()
       }
     },
     [filterProps, isOpen],
   )
 
   const renderTrigger = () => {
-    const baseProps = {
-      disabled,
-      'aria-disabled': disabled,
-      tabIndex: disabled ? -1 : 0,
-      className: clsx(
-        `inline-flex cursor-pointer items-center gap-2 rounded-lg transition-colors`,
-        outline && 'border border-(--system-gray-1) bg-white ',
-        sizeClasses[size],
-        triggerClassName,
-        disabled && 'opacity-50 pointer-events-none select-none',
-      ),
-    }
-
     if (children) {
       return children
     }
 
     if (variant === 'overflow') {
-      const orientation = overflowProps?.orientation || 'vertical'
       const overflowSizeClasses = {
         xs: 'h-4 w-4',
         sm: 'h-4 w-4',
         md: 'h-6 w-6',
         lg: 'h-8 w-8',
       }
+      const orientation = overflowProps?.orientation || 'vertical'
       return (
         <button
           className={clsx(
-            `inline-flex cursor-pointer items-center justify-center rounded-lg`,
+            'inline-flex cursor-pointer items-center justify-center rounded-lg',
             overflowSizeClasses[size],
             triggerClassName,
           )}
@@ -206,63 +184,47 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
         valuesCount,
         maxDisplayedValues = 3,
       } = filterProps
-
-      const otherValuesCount =
-        valuesCount - maxDisplayedValues > 0
-          ? valuesCount - maxDisplayedValues
-          : 0
-
       return (
-        <button
-          className={clsx(
-            `inline-flex h-6 cursor-pointer items-center gap-1 rounded-lg px-2 py-0.5 transition-colors focus:outline-none`,
-            'border-[1.5px] border-(--system-gray-3)',
-            `text-xs font-medium ${valuesCount ? 'text-(--system-white)' : isOpen ? 'dark:text-(--system-gray-7)' : 'text-(--accent-gray) dark:text-(--system-gray-6)'}`,
-            triggerClassName,
-          )}
-        >
-          <span>
-            {label}
-            {valuesCount ? ': ' : ''}
-          </span>
-
-          {valuesCount ? (
-            <>
-              {displayedValues}
-              {valuesCount > maxDisplayedValues ? (
-                <span>
-                  and {otherValuesCount} other{otherValuesCount > 1 ? 's' : ''}
-                </span>
-              ) : null}
-              <span
-                onClick={handleClearClick}
-                className="cursor-pointer text-(--system-gray-5)"
-                aria-label="Clear"
-              >
-                <XMarkIcon data-slot="icon" width={16} aria-hidden="true" />
-              </span>
-            </>
-          ) : (
-            showChevron && (
-              <ChevronDownIcon
-                className={`text-(--system-gray-5) transition-transform ${isOpen ? 'rotate-180' : ''}`}
-              />
-            )
-          )}
-        </button>
+        <FilterButton
+          label={label}
+          isOpen={isOpen}
+          valuesCount={valuesCount}
+          displayedValues={displayedValues}
+          maxDisplayedValues={maxDisplayedValues}
+          onClearClick={handleClearClick}
+          showChevron={showChevron}
+          disabled={disabled}
+          className={triggerClassName}
+        />
       )
     }
 
-    // variant === "dropdown"
+    // variant === 'dropdown'
     return (
-      <button {...baseProps}>
-        <span>{label}</span>
-        {showChevron && (
-          <ChevronDownIcon
-            className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          />
+      <BaseButton
+        size={size}
+        color="med-gray"
+        border={outline}
+        disabled={disabled}
+        trailingIcon={
+          showChevron ? (
+            <ChevronDownIcon
+              width={8}
+              height={4.75}
+              className={clsx(
+                'text-xs text-(--system-gray-5) transition-transform',
+                isOpen && 'rotate-180',
+              )}
+            />
+          ) : undefined
+        }
+        className={clsx(
+          disabled && 'pointer-events-none opacity-50 select-none',
+          triggerClassName,
         )}
-      </button>
+      >
+        {label}
+      </BaseButton>
     )
   }
 
@@ -278,7 +240,7 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
       ref={menuRef}
       onScroll={handleScroll}
       className={clsx(
-        `overflow-hidden rounded-xl border border-(--system-gray-3) bg-white py-1 shadow-lg dark:bg-(--system-gray-2) dark:text-white`,
+        'scrollbar-styled flex flex-col gap-0.5 overflow-hidden rounded-xl border border-(--system-gray-3) bg-(--system-gray-1) p-2 text-white shadow-lg',
         getMenuWidth(),
         menuClassName,
       )}
@@ -288,7 +250,7 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
           return (
             <div
               key={`separator-${index}`}
-              className="pointer-events-none mx-4.5 my-1 border-t border-(--system-gray-1) dark:border-(--system-gray-3)"
+              className="pointer-events-none my-1 border-t border-(--system-gray-3)"
             />
           )
         }
@@ -297,25 +259,25 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
           return (
             <div
               key={item.id}
-              className={`px-1 py-1 dark:text-white ${itemCustomClassName}`}
+              className={`text-(--system-white) ${itemCustomClassName}`}
             >
               {item.component}
             </div>
           )
         }
 
-        // item.type === "item"
+        // item.type === 'item'
         return (
-          <button
+          <MenuButton
             data-testid={`popover-item-${item.id}`}
             data-checked={!!item.selected}
             key={item.id}
             onClick={(e) => handleItemClick(item, e)}
             disabled={item.disabled}
+            selected={item.selected}
             className={clsx(
-              `flex h-full w-full cursor-pointer items-center gap-1 px-4.5 text-left text-sm transition-colors`,
-              item.disabled ? 'cursor-default' : 'hover:bg-(--system-gray-3)',
-              variant === 'filter' ? 'py-0.5 text-(--system-gray-6)' : 'py-2',
+              'gap-1 rounded-md py-1',
+              variant === 'filter' ? 'px-1.5' : 'pr-3 pl-2',
               !showCheckboxes ? 'text-(--system-gray-5)' : '',
               variant === 'filter' && item.selected
                 ? 'bg-(--system-gray-3)'
@@ -338,22 +300,30 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
                 </>
               ) : null}
               {item.icon && (
-                <span className="h-4 w-4 flex-shrink-0">{item.icon}</span>
+                <span
+                  className={clsx(
+                    'h-4 w-4 flex-shrink-0',
+                    item.selected
+                      ? 'text-(--system-white)'
+                      : 'text-(--system-gray-5)',
+                  )}
+                >
+                  {item.icon}
+                </span>
               )}
               <span
                 className={clsx(
                   'flex items-center gap-2',
-                  !showCheckboxes && item.selected
-                    ? 'text-(--system-white)'
-                    : item.selected
+                  variant === 'filter' &&
+                    (item.selected
                       ? 'text-(--system-white)'
-                      : '',
+                      : 'text-(--system-gray-5)'),
                 )}
               >
                 {item.label}
               </span>
             </div>
-          </button>
+          </MenuButton>
         )
       })}
     </div>

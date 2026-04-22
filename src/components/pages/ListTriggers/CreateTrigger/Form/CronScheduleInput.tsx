@@ -2,18 +2,18 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { useFormContext, Controller } from 'react-hook-form'
-import clsx from 'clsx'
-import cronstrue from 'cronstrue'
-import cronParser from 'cron-parser'
-import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
-import { useMemo, useState } from 'react'
 import { Field, Label } from '@/components/Fieldset'
 import { Input } from '@/components/Input'
-import { PopoverMenu, type MenuItem } from '@/components/Popovers'
-import { getBrowserTimezone, getTimeZoneOptions } from './getTimezones'
-import { SearchBar } from '@/components/SearchBar'
 import { Link } from '@/components/Link'
+import { PopoverMenu, type MenuItem } from '@/components/Popovers'
+import { SearchBar } from '@/components/SearchBar'
+import { ArrowUpRightIcon } from '@heroicons/react/20/solid'
+import clsx from 'clsx'
+import cronParser from 'cron-parser'
+import cronstrue from 'cronstrue'
+import { useMemo, useState } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
+import { getBrowserTimezone, getTimeZoneOptions } from './getTimezones'
 
 const parseCron = (expr: string) => {
   let string = ''
@@ -58,6 +58,7 @@ export const CronScheduleInput = () => {
           onChange={(e) => {
             setTimezoneInput(e.target.value)
           }}
+          onClear={() => setTimezoneInput('')}
         />
       ),
     }

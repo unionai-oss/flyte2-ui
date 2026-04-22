@@ -4,33 +4,31 @@
 
 import { format } from 'date-fns'
 import type { DateRange } from 'react-day-picker'
-
-interface LabeledRange {
-  filterLabel: string
-  label: string
-  getRange: () => DateRange
-}
+import { isQuickRangeItem, type QuickRange } from './quickRanges'
 
 export const detectQuickRangeLabel = (
   range: DateRange | undefined,
-  quickRanges: LabeledRange[],
+  quickRanges: QuickRange[],
   fallbackLabel: string,
 ): string => {
   if (!range?.from || !range?.to) return fallbackLabel
 
   const { from, to } = range
 
-  // Infer if this is a time-based range
-  const hasTimeComponent =
-    from.getHours() !== to.getHours() || from.getMinutes() !== to.getMinutes()
+  const isMidnight = (d: Date) => d.getHours() === 0 && d.getMinutes() === 0
+  const fromFmt = isMidnight(from) ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm'
+  const toFmt = isMidnight(to) ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm'
 
-  // Formatter depends on time/no-time
+  // Use a shared fmt for quick range matching (with time if either bound has time)
+  const hasTimeComponent = !isMidnight(from) || !isMidnight(to)
   const fmt = hasTimeComponent ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd'
 
   const fromStr = format(from, fmt)
   const toStr = format(to, fmt)
 
-  for (const { filterLabel, getRange } of quickRanges) {
+  for (const qr of quickRanges) {
+    if (!isQuickRangeItem(qr)) continue
+    const { filterLabel, getRange } = qr
     const preset = getRange()
     if (!preset.from || !preset.to) continue
 
@@ -42,6 +40,5 @@ export const detectQuickRangeLabel = (
     }
   }
 
-  // Default: "MM-dd – MM-dd"
-  return `${format(from, 'MM/dd')} – ${format(to, 'MM/dd')}`
+  return `${format(from, fromFmt)} to ${format(to, toFmt)}`
 }

@@ -1,9 +1,9 @@
 'use client'
 
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
 import { Header } from '@/components/Header'
 import { NavPanelLayout } from '@/components/NavPanel'
 import { SearchBar } from '@/components/SearchBar'
@@ -14,8 +14,8 @@ import {
 } from '@/gen/flyteidl2/common/list_pb'
 import { useTaskAPIFilters } from '@/hooks/filters/useTaskAPIFilters'
 import { useListTasks } from '@/hooks/useListTasks'
-import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { useQueryParamSort } from '@/hooks/useQueryParamSort'
+import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { Suspense } from 'react'
 import { TasksPageContent } from './components/TasksPageContent'
 import { TaskTableRowWithHighlights } from './TasksTable/types'
@@ -28,7 +28,9 @@ const defaultSort: Sort = {
 export function ListTasksPage() {
   const { searchTermInput, searchTerm, setSearchTerm } = useSearchTerm()
   const { querySort, tableSort } =
-    useQueryParamSort<TaskTableRowWithHighlights>({ defaultSort })
+    useQueryParamSort<TaskTableRowWithHighlights>({
+      defaultSort,
+    })
   const { filters, hasActiveFilters, clearAllFilters } = useTaskAPIFilters()
 
   const query = useListTasks({
@@ -52,6 +54,7 @@ export function ListTasksPage() {
                 placeholder="Search tasks"
                 value={searchTermInput ?? undefined}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onClear={() => setSearchTerm('')}
               />
             </div>
 

@@ -20,8 +20,16 @@ export const getLevelColor = (level: LogLevel) => {
   }
 }
 
-export const logsToString = (logs: LogLine[]): string => {
+export const logsToString = (
+  logs: LogLine[],
+  options?: { includeTimestamps?: boolean },
+): string => {
+  const includeTimestamps = options?.includeTimestamps !== false
   return logs
-    .map((line) => `${getLogDateString(line.timestamp)}\t${line.message}`)
+    .map((line) =>
+      includeTimestamps
+        ? `${getLogDateString(line.timestamp)}\t${line.message}`
+        : (line.message ?? ''),
+    )
     .join('\n')
 }

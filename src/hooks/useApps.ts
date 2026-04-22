@@ -2,26 +2,29 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { useMemo } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
 import {
   App,
   Identifier,
   IdentifierSchema,
   Spec_DesiredState,
 } from '@/gen/flyteidl2/app/app_definition_pb'
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import cloneDeep from 'lodash/cloneDeep'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { TailLogsRequestSchema } from '@/gen/flyteidl2/app/app_logs_payload_pb'
+import { AppLogsService } from '@/gen/flyteidl2/app/app_logs_service_pb'
 import {
   GetRequestSchema,
   ListRequestSchema,
   UpdateRequestSchema,
 } from '@/gen/flyteidl2/app/app_payload_pb'
-import { FilterSchema } from '@/gen/flyteidl2/common/list_pb'
-import { ProjectIdentifierSchema } from '@/gen/flyteidl2/common/identifier_pb'
-import { Filter_Function } from '@/gen/flyteidl2/common/list_pb'
 import { AppService } from '@/gen/flyteidl2/app/app_service_pb'
+import { ProjectIdentifierSchema } from '@/gen/flyteidl2/common/identifier_pb'
+import { Filter_Function, FilterSchema } from '@/gen/flyteidl2/common/list_pb'
+import { LogLine } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
 import { create } from '@bufbuild/protobuf'
+import { Code, ConnectError } from '@connectrpc/connect'
 import { useConnectRpcClient } from './useConnectRpc'
 
 type ListAppsProps = {
@@ -141,6 +144,15 @@ export const useAppDetails = ({
     },
     queryKey: [...queryKey, name],
     refetchInterval: 5000,
+    enabled: !!name,
+    retry: (failureCount, error) => {
+      if (error instanceof ConnectError) {
+        if (error.code === Code.NotFound) {
+          return false
+        }
+      }
+      return failureCount < 3
+    },
   })
 }
 
@@ -196,3 +208,126 @@ export const useStopApp = (props: { app: App }) =>
     ...props,
     desiredState: Spec_DesiredState.STOPPED,
   })
+
+const APP_LOGS_BUFFER_FLUSH_INTERVAL_MS = 100
+const APP_LOGS_BUFFER_MAX_SIZE = 1000
+
+export const useAppLogs = ({
+  appId = '',
+  domain = '',
+  enabled,
+  org = '',
+  projectId = '',
+}: {
+  appId: string | undefined
+  domain: string | undefined
+  enabled: boolean
+  org: string | undefined
+  projectId: string | undefined
+}) => {
+  const client = useConnectRpcClient(AppLogsService)
+  const appIdentifier = useMemo(() => {
+    return create(IdentifierSchema, {
+      name: appId,
+      domain,
+      org,
+      project: projectId,
+    })
+  }, [appId, domain, org, projectId])
+
+  const isEnabled = enabled && !!appId && !!org && !!domain && !!projectId
+
+  const [logs, setLogs] = useState<LogLine[]>([])
+  const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  const bufferRef = useRef<LogLine[]>([])
+  const flushTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    setLogs([])
+    bufferRef.current = []
+    clearTimeout(flushTimeoutRef.current)
+    flushTimeoutRef.current = undefined
+  }, [appId, domain, org, projectId])
+
+  useEffect(() => {
+    if (!isEnabled) return
+
+    const tailLogsRequest = create(TailLogsRequestSchema, {
+      target: {
+        case: 'appId',
+        value: appIdentifier,
+      },
+    })
+
+    const abortController = new AbortController()
+    setIsPending(true)
+    setError(null)
+
+    const flushBuffer = () => {
+      if (bufferRef.current.length === 0) return
+      const lines = bufferRef.current
+      bufferRef.current = []
+      setLogs((prev) => [...prev, ...lines])
+    }
+
+    const addToBuffer = (newLines: LogLine[]) => {
+      if (newLines.length === 0) return
+      bufferRef.current.push(...newLines)
+
+      if (bufferRef.current.length >= APP_LOGS_BUFFER_MAX_SIZE) {
+        clearTimeout(flushTimeoutRef.current)
+        flushTimeoutRef.current = undefined
+        flushBuffer()
+        return
+      }
+
+      if (!flushTimeoutRef.current) {
+        flushTimeoutRef.current = setTimeout(() => {
+          flushTimeoutRef.current = undefined
+          flushBuffer()
+        }, APP_LOGS_BUFFER_FLUSH_INTERVAL_MS)
+      }
+    }
+
+    const run = async () => {
+      try {
+        const stream = client.tailLogs(tailLogsRequest, {
+          signal: abortController.signal,
+        })
+        for await (const event of stream) {
+          if (event.resp.case === 'batches') {
+            const newLines = event.resp.value.logs.flatMap(
+              (l) => l.structuredLines,
+            )
+            addToBuffer(newLines)
+          }
+        }
+      } catch (err) {
+        if (!abortController.signal.aborted) {
+          setError(err instanceof Error ? err : new Error(String(err)))
+        }
+      } finally {
+        setIsPending(false)
+      }
+    }
+
+    run()
+
+    return () => {
+      abortController.abort()
+      clearTimeout(flushTimeoutRef.current)
+      flushTimeoutRef.current = undefined
+      flushBuffer()
+    }
+  }, [isEnabled, appIdentifier, client])
+
+  return {
+    logs,
+    isPending,
+    error,
+  }
+}

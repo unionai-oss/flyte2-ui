@@ -9,6 +9,8 @@ import fs from 'fs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+const hosts = ['localhost']
+
 function openBrowser(url) {
   const cmd =
     process.platform === 'darwin'
@@ -47,8 +49,6 @@ function spawnAndOpenWhenReady(command, args, env, url) {
 
   return subprocess
 }
-
-const hosts = ['localhost']
 
 const argv = yargs(hideBin(process.argv))
   .option('host', {

@@ -1,6 +1,5 @@
 'use client'
 
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
@@ -168,6 +167,7 @@ export function ProjectsPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           // to prevent the browser from autofilling the input
           autoComplete="off"
+          onClear={() => setSearchQuery('')}
         />
       </div>
 

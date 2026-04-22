@@ -22,6 +22,8 @@ interface UseDatePickerHandlersProps {
   toInput: string
   setToInput: (input: string) => void
   setLastClickedQuickKey: (quickKeyLabel?: string | undefined) => void
+  setDateRange: (range: DateRange | undefined, quickKey?: string) => void
+  onApply: (range: DateRange | undefined) => void
 }
 
 export const useDatePickerHandlers = ({
@@ -35,6 +37,8 @@ export const useDatePickerHandlers = ({
   setFromInput,
   setToInput,
   setLastClickedQuickKey,
+  setDateRange,
+  onApply,
 }: UseDatePickerHandlersProps) => {
   const handleCalendarSelect = useCallback(
     (dateRange: DateRange | undefined) => {
@@ -58,6 +62,8 @@ export const useDatePickerHandlers = ({
       setHasTimeComponent(isTimeBased)
       updateInputsFromRange(dateRange, isTimeBased)
       setLastClickedQuickKey(quickKeyLabel)
+      setDateRange(dateRange, quickKeyLabel)
+      onApply(dateRange)
     },
     [
       setSelected,
@@ -65,6 +71,8 @@ export const useDatePickerHandlers = ({
       setLastClickedQuickKey,
       hasTimeInRange,
       updateInputsFromRange,
+      setDateRange,
+      onApply,
     ],
   )
 

@@ -21,6 +21,7 @@ export const SearchControl = () => {
           value={searchTermInput ?? undefined}
           onChange={(e) => setSearchTerm(e.target.value ?? '')}
           className="w-full"
+          onClear={() => setSearchTerm('')}
         />
       </form>
     </div>

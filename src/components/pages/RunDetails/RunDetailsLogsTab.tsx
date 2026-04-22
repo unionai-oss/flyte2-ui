@@ -2,7 +2,6 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { LogViewer, LOG_VIEWER_MIN_WIDTH_PX } from '@/components/LogViewer'
 import { useSelectedActionId } from '@/components/pages/RunDetails/hooks/useSelectedItem'
 import LogsExtLinksBar from '@/components/pages/RunDetails/LogsExtLinksBar'
 import { RunK8sSwitch } from '@/components/pages/RunDetails/LogsK8sSwitch'
@@ -13,6 +12,7 @@ import { useWatchLogs } from '@/hooks/useWatchLogs'
 import { isAttemptTerminal } from '@/lib/attemptUtils'
 import React, { useMemo, useState } from 'react'
 import { useSelectedAttemptStore } from './state/AttemptStore'
+import { LOG_VIEWER_MIN_WIDTH_PX, LogViewer } from '@/components/LogViewer/LogViewer'
 
 export const RunDetailsLogsTab: React.FC<unknown> = () => {
   const selectedActionId = useSelectedActionId()

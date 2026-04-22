@@ -2,11 +2,11 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { useState } from 'react'
 import { SearchBar } from '@/components/SearchBar'
+import { useState } from 'react'
+import { useDebounce } from 'react-use'
 import { TasksTable } from './SelectTaskTable'
 import { TaskDetails } from './types'
-import { useDebounce } from 'react-use'
 
 export const SelectTask = ({
   onSelectTask,
@@ -35,6 +35,7 @@ export const SelectTask = ({
             onChange={(e) => setSearchTermInput(e.target.value)}
             placeholder="Search tasks & Environment"
             value={searchTermInput ?? undefined}
+            onClear={() => setSearchTermInput('')}
           />
         </div>
       </div>

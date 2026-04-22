@@ -14,11 +14,20 @@ import {
 } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 
-export type QuickRange = {
+export type QuickRangeItem = {
   filterLabel: string // display only: to create filter label
   label: string // display in quickRange menu but also used as unique key for linking params to date-ranges
   getRange: () => DateRange
 }
+
+export type QuickRangeDivider = { type: 'divider' }
+
+export type QuickRange = QuickRangeItem | QuickRangeDivider
+
+export const QUICK_RANGE_DIVIDER: QuickRangeDivider = { type: 'divider' }
+
+export const isQuickRangeItem = (qr: QuickRange): qr is QuickRangeItem =>
+  !('type' in qr && qr.type === 'divider')
 
 export const labeledQuickRanges: QuickRange[] = [
   {
@@ -34,6 +43,7 @@ export const labeledQuickRanges: QuickRange[] = [
       return { from: y, to: new Date(y.getTime() + 24 * 60 * 60 * 1000 - 1) }
     },
   },
+  QUICK_RANGE_DIVIDER,
   {
     filterLabel: 'in the last 5 min',
     label: 'Last 5 min',
@@ -90,6 +100,7 @@ export const labeledQuickRanges: QuickRange[] = [
       to: new Date(),
     }),
   },
+  QUICK_RANGE_DIVIDER,
   {
     filterLabel: 'last week',
     label: 'Last week',
@@ -130,6 +141,7 @@ export const quickRanges30Days: QuickRange[] = [
       return { from: y, to: new Date(y.getTime() + 24 * 60 * 60 * 1000 - 1) }
     },
   },
+  QUICK_RANGE_DIVIDER,
   {
     filterLabel: 'in the last 5 min',
     label: 'Last 5 min',
@@ -188,6 +200,7 @@ export const quickRanges7Days: QuickRange[] = [
       return { from: y, to: new Date(y.getTime() + 24 * 60 * 60 * 1000 - 1) }
     },
   },
+  QUICK_RANGE_DIVIDER,
   {
     filterLabel: 'in the last 5 min',
     label: 'Last 5 min',
