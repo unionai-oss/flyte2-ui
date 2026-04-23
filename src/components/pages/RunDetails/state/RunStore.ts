@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { EnrichedAction } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { create } from 'zustand'
 import { flattenTree, GROUP_SEPARATOR } from './flattenTree'

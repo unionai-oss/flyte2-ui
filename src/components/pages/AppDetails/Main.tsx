@@ -1,15 +1,16 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { CopyButtonWithTooltip } from '@/components/CopyButtonWithTooltip'
 import { DetailsLayout } from '@/components/DetailsLayout'
 import { DetailsMetadata } from '@/components/DetailsLayout/DetailsLayout'
 import { Link } from '@/components/Link'
 import { Tabs, TabType } from '@/components/Tabs'
 import { BarChartIcon } from '@/components/icons/BarChartIcon'
+import { CodeIcon } from '@/components/icons/CodeIcon'
 import { LogsIcon } from '@/components/icons/LogsIcon'
 import { TaskIcon } from '@/components/icons/TaskIcon'
 import { useAppDetails } from '@/hooks/useApps'
@@ -21,13 +22,12 @@ import { getLocation } from '@/lib/windowUtils'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 import { AppStatusBadge } from '../ListApps/components/AppStatusBadge'
+import { AppDetailsCodeTab } from './AppDetailsCodeTab'
 import { AppLogsTab } from './AppLogsTab'
 import { AppMetricsTab } from './AppMetricsTab'
 import { AppSpecTab } from './AppSpecTab'
 import { AppStartStopModal } from './AppStartStopModal'
 import { AppDetailsParams } from './types'
-import { AppDetailsCodeTab } from './AppDetailsCodeTab'
-import { CodeIcon } from '@/components/icons/CodeIcon'
 
 export enum AppDetailsTab {
   METRICS = 'metrics',

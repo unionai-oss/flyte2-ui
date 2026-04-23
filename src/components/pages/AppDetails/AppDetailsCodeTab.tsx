@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { CodeTabContent } from '@/components/CodeTab/CodeTabContent'
 import { getAppIdentifier, useAppDetails } from '@/hooks/useApps'
 import { useOrg } from '@/hooks/useOrg'

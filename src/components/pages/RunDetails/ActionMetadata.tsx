@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { CopyButton } from '@/components/CopyButton'
 import { CopyButtonWithTooltip } from '@/components/CopyButtonWithTooltip'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'

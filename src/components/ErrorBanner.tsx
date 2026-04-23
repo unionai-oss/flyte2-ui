@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Badge, colors } from '@/components/Badge'
 import {
   AbortInfo,

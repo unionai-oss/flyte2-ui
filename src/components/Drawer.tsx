@@ -1,10 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import React, { useState } from 'react'
+
+'use client'
+
 import {
   Dialog,
   DialogBackdrop,
@@ -16,6 +15,7 @@ import {
   ArrowsPointingOutIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid'
+import React, { useState } from 'react'
 import { Button } from './Button'
 import { Tooltip } from './Tooltip'
 

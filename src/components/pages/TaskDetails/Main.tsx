@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { DetailsLayout } from '@/components/DetailsLayout'
 import { DetailsMetadata } from '@/components/DetailsLayout/DetailsLayout'
 import { CodeIcon } from '@/components/icons/CodeIcon'

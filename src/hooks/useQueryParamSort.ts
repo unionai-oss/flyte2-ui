@@ -1,14 +1,14 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import { SortDirection, SortingState } from '@tanstack/react-table'
+
+'use client'
+
 import { Sort, Sort_Direction } from '@/gen/flyteidl2/common/list_pb'
+import { getLocation, getWindow } from '@/lib/windowUtils'
+import { SortDirection, SortingState } from '@tanstack/react-table'
 import { camelCase, snakeCase } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getLocation, getWindow } from '@/lib/windowUtils'
 
 export const getSortParamForQueryKey = (sortParam: Sort) =>
   `sort:${sortParam.key}=${sortParam.direction}`

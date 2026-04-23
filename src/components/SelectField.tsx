@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Input, InputGroup } from '@/components/Input'
 import { MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'

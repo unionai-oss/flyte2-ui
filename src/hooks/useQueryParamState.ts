@@ -1,13 +1,13 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import { useQueryState, parseAsString } from 'nuqs'
+
+'use client'
+
+import { getLocation } from '@/lib/windowUtils'
+import { parseAsString, useQueryState } from 'nuqs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'react-use'
-import { getLocation } from '@/lib/windowUtils'
 
 type ValueOf<T> = T[keyof T]
 

@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Tab, TabGroup, TabList } from '@headlessui/react'
 import clsx from 'clsx'
 import { AnimatePresence } from 'motion/react'

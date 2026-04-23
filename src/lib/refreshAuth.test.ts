@@ -2,11 +2,12 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Code, ConnectError } from '@connectrpc/connect'
-import { refreshAuth } from './refreshAuth'
+import type { QueryClient } from '@tanstack/react-query'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getLoginUrl } from './apiUtils'
 import { notifyAuthExpired } from './authExpiredNotifier'
+import { refreshAuth } from './refreshAuth'
 
 vi.mock('./apiUtils', () => ({
   getLoginUrl: vi.fn(() => 'https://example.com/login'),
@@ -56,11 +57,10 @@ describe('refreshAuth', () => {
     vi.mocked(fetch).mockResolvedValueOnce(new Response('ok'))
 
     const refetchQueries = vi.fn().mockResolvedValueOnce(undefined)
-    // eslint-disable-next-line
     const queryClient = {
       refetchQueries,
       getQueryCache: () => ({ getAll: () => [] }),
-    } as any
+    } as unknown as QueryClient
 
     await refreshAuth({ rawMessage: 'HTTP 401' }, { queryClient })
 
@@ -71,7 +71,6 @@ describe('refreshAuth', () => {
   it('notifies auth expired when refetch leaves an auth error in the cache', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(new Response('ok'))
     const authErr = { rawMessage: 'HTTP 401' }
-    // eslint-disable-next-line
     const queryClient = {
       refetchQueries: vi.fn().mockResolvedValueOnce(undefined),
       getQueryCache: () => ({
@@ -82,7 +81,7 @@ describe('refreshAuth', () => {
           },
         ],
       }),
-    } as any
+    } as unknown as QueryClient
 
     await refreshAuth(authErr, { queryClient })
 

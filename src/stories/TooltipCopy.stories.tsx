@@ -1,12 +1,12 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
+import { CopyButtonWithTooltip } from '@/components/CopyButtonWithTooltip'
 import { Tooltip } from '@/components/Tooltip'
 import type { Meta, StoryObj } from '@storybook/nextjs'
-import { CopyButtonWithTooltip } from '@/components/CopyButtonWithTooltip'
 
 type Story = StoryObj<typeof Tooltip>
 
@@ -41,7 +41,7 @@ The \`CopyButtonWithTooltip\` component serves as simple button with Tooltip to 
 ## Usage
 
 \`\`\`tsx
-<CopyButtonWithTooltip 
+<CopyButtonWithTooltip
   value="12345"
   textInitial="Copy run ID"
   textCopied="Run ID copied to clipboard"

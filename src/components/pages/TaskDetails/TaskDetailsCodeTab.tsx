@@ -1,15 +1,15 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { CodeTabContent } from '@/components/CodeTab/CodeTabContent'
-import { TaskDetailsPageParams } from './types'
-import { useParams } from 'next/navigation'
 import { useOrg } from '@/hooks/useOrg'
-import { useTaskDetails, getTaskIdentifier } from '@/hooks/useTaskDetails'
+import { getTaskIdentifier, useTaskDetails } from '@/hooks/useTaskDetails'
+import { useParams } from 'next/navigation'
 import React, { useMemo } from 'react'
+import { TaskDetailsPageParams } from './types'
 
 export const TaskDetailsCodeTab: React.FC<{
   latestVersion?: string

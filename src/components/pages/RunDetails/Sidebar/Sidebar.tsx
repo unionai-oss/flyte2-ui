@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { useMeasure } from 'react-use'
 import { useLayoutStore } from '../state/LayoutStore'
 import { useRunStore } from '../state/RunStore'

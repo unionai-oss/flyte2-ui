@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Button } from '@/components/Button'
 import { SparklesIcon } from '@heroicons/react/24/outline'
 import { DisabledButtonWithTooltip } from './DisabledButtonWithTooltip'

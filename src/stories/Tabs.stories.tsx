@@ -1,11 +1,11 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import type { Meta, StoryObj } from '@storybook/nextjs'
+
+'use client'
+
 import { Tabs } from '@/components/Tabs'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { ComponentType, useState } from 'react'
 
 const meta = {

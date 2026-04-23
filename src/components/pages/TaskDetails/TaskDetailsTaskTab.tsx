@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { DescriptionListWrapper } from '@/components/DescriptionListWrapper'
 import { DetailsDescription } from '@/components/DetailsDescription'
 import { TabSection } from '@/components/TabSection'

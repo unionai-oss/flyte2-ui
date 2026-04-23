@@ -1,16 +1,12 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-// import { useRouter } from 'next/navigation'
-// import { useCallback, useMemo } from 'react'
+
+'use client'
+
 import { toDateFormat } from '@/lib/dateUtils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { type TableTask } from './types'
-// import { PopoverMenu } from '@/components/Popovers'
-// import { Task } from '@/gen/flyteidl2/task/task_definition_pb'
 
 const helper = createColumnHelper<TableTask>()
 

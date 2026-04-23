@@ -1,15 +1,15 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Button } from '@/components/Button'
 import { LaunchFormDrawer } from '@/components/LaunchForm'
+import { useTriggerRun } from '@/components/RunButton/useTriggerRun'
 import { TriggerName } from '@/gen/flyteidl2/common/identifier_pb'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { useEffect, useRef } from 'react'
-import { useTriggerRun } from '@/components/RunButton/useTriggerRun'
 
 type TriggerRunButtonProps = {
   triggerName: TriggerName | undefined

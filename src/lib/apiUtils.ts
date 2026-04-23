@@ -1,14 +1,14 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 // assumes localDev is using devbox server
 export const BASE_ADMIN_API = process.env.NEXT_PUBLIC_ADMIN_API_URL || '/'
+import { isAuthError } from '@/lib/errorUtils'
 import { createConnectTransport } from '@connectrpc/connect-web'
 import { QueryClient } from '@tanstack/react-query'
-import { isAuthError } from '@/lib/errorUtils'
 
 export const isLocalDev = process.env.NODE_ENV !== 'production'
 const isDevBox = BASE_ADMIN_API?.includes('localhost')

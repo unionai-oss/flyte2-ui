@@ -1,15 +1,15 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
+import { CodeTabContent } from '@/components/CodeTab/CodeTabContent'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { useSelectedActionId } from '@/components/pages/RunDetails/hooks/useSelectedItem'
 import { ActionAttemptIdentifierSchema } from '@/gen/flyteidl2/common/identifier_pb'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { useWatchActionDetails } from '@/hooks/useWatchActionDetails'
-import { CodeTabContent } from '@/components/CodeTab/CodeTabContent'
 import { create } from '@bufbuild/protobuf'
 import React, { useMemo } from 'react'
 

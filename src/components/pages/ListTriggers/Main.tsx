@@ -1,24 +1,24 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Header } from '@/components/Header'
 import { NavPanelLayout } from '@/components/NavPanel'
+import { Sort, Sort_Direction } from '@/gen/flyteidl2/common/list_pb'
 import { useTriggerAPIFilters } from '@/hooks/filters/useTriggerAPIFilters'
 import { useOrg } from '@/hooks/useOrg'
-import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { useQueryParamSort } from '@/hooks/useQueryParamSort'
+import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { useListTriggers } from '@/hooks/useTriggers'
-import { Sort, Sort_Direction } from '@/gen/flyteidl2/common/list_pb'
 import { type ProjectDomainPageParams } from '@/types/pageParams'
 import { useParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
 import { CreateTriggerDrawer } from './CreateTrigger/Main'
 import { ListTriggersPageContent } from './ListTriggersPageContent/ListTriggersPageContent'
-import { TriggersToolbar } from './TriggersToolbar/TriggersToolbar'
 import { TriggerTableRowWithHighlights } from './TriggersTable/types'
+import { TriggersToolbar } from './TriggersToolbar/TriggersToolbar'
 
 const defaultSort: Sort = {
   key: 'active',
