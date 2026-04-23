@@ -1,9 +1,12 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+'use client'
 
+import { subscribeAuthExpired } from '@/lib/authExpiredNotifier'
+import { isAuthError } from '@/lib/errorUtils'
+import { refreshAuth } from '@/lib/refreshAuth'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
@@ -14,10 +17,6 @@ import {
   type MutableRefObject,
   type ReactNode,
 } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { subscribeAuthExpired } from '@/lib/authExpiredNotifier'
-import { isAuthError } from '@/lib/errorUtils'
-import { refreshAuth } from '@/lib/refreshAuth'
 
 export type LoginStatus = {
   expired: boolean | undefined
@@ -138,16 +137,15 @@ export function AuthStatusProvider({ children }: { children: ReactNode }) {
     const queryCache = queryClient.getQueryCache()
     const refs: AuthRefs = { refreshInProgressRef, hasAttemptedRefreshRef }
 
-    const onCacheEvent = async (event: { type: string; query?: QueryShape }) => {
+    const onCacheEvent = async (event: {
+      type: string
+      query?: QueryShape
+    }) => {
       const q = event.query
       if (!q) return
 
       const { type } = event
-      if (
-        type !== 'updated' &&
-        type !== 'added' &&
-        type !== 'observerAdded'
-      ) {
+      if (type !== 'updated' && type !== 'added' && type !== 'observerAdded') {
         return
       }
       if (type === 'observerAdded') {
@@ -158,7 +156,13 @@ export function AuthStatusProvider({ children }: { children: ReactNode }) {
         if (!needsAuthHandling) return
       }
 
-      await handleQueryAuthState(q, setExpired, queryClient, refs, authExpiredRef)
+      await handleQueryAuthState(
+        q,
+        setExpired,
+        queryClient,
+        refs,
+        authExpiredRef,
+      )
     }
 
     const unsubCache = queryCache.subscribe(onCacheEvent)

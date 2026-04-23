@@ -1,27 +1,27 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import { memo, useMemo } from 'react'
+
+'use client'
+
+import { CircleQuestionSolidIcon } from '@/components/icons/CircleQuestionSolidIcon'
+import { CircularProgressIcon } from '@/components/icons/CircularProgressIcon'
+import { MultiEllipsisIcon } from '@/components/icons/MultiEllipsisIcon'
+import { ReadFromCacheIcon } from '@/components/icons/ReadFromCacheIcon'
+import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
+import { useAccent } from '@/hooks/usePalette'
+import { getColorsByPhase } from '@/lib/getColorByPhase'
+import { mapPhaseToDisplayString } from '@/lib/mapPhaseToDisplayString'
 import {
   CheckCircleIcon,
-  XCircleIcon,
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
+  XCircleIcon,
 } from '@heroicons/react/20/solid'
-import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
-import { CircularProgressIcon } from '@/components/icons/CircularProgressIcon'
-import { CircleQuestionSolidIcon } from '@/components/icons/CircleQuestionSolidIcon'
-import { Tooltip } from '../Tooltip'
-import { MultiEllipsisIcon } from '@/components/icons/MultiEllipsisIcon'
-import { IconSize, iconSizeMap } from './iconSize'
-import { mapPhaseToDisplayString } from '@/lib/mapPhaseToDisplayString'
-import { getColorsByPhase } from '@/lib/getColorByPhase'
-import { useAccent } from '@/hooks/usePalette'
+import { memo, useMemo } from 'react'
 import { Dot } from '../Dot'
-import { ReadFromCacheIcon } from '@/components/icons/ReadFromCacheIcon'
+import { Tooltip } from '../Tooltip'
+import { IconSize, iconSizeMap } from './iconSize'
 
 interface StatusIconProps {
   className?: string

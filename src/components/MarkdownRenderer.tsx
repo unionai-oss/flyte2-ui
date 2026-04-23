@@ -1,12 +1,12 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import clsx from 'clsx'
-import dynamic from 'next/dynamic'
 import { useTheme } from 'next-themes'
+import dynamic from 'next/dynamic'
 import { memo } from 'react'
 
 const MarkdownRendererInner = dynamic(

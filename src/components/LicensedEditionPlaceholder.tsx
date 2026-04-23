@@ -1,12 +1,12 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import Link from 'next/link'
+
+'use client'
+
 import { ChartIcon } from '@/components/icons/ChartIcon'
 import { FLYTE_LICENSED_EDITION_INFO_URL } from '@/lib/constants'
+import Link from 'next/link'
 
 interface LicensedEditionPlaceholderProps {
   /** Section title, e.g. "Users", "OAuth Apps", "Policies", "Roles" */
@@ -21,7 +21,11 @@ interface LicensedEditionPlaceholderProps {
  * Placeholder for user management features (licensed edition).
  * Light mode: white card, gray icon/text, "Upgrade" link.
  */
-export function LicensedEditionPlaceholder({ title, fullWidth, hideBorder }: LicensedEditionPlaceholderProps) {
+export function LicensedEditionPlaceholder({
+  title,
+  fullWidth,
+  hideBorder,
+}: LicensedEditionPlaceholderProps) {
   return (
     <div
       className={`flex flex-col items-center justify-center rounded-xl bg-white px-10 py-12 text-center ${

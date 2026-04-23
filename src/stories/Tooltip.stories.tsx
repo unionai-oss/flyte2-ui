@@ -1,13 +1,13 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Tooltip } from '@/components/Tooltip'
-import type { Meta, StoryObj } from '@storybook/nextjs'
-import { ChatBubbleLeftIcon } from '@heroicons/react/24/solid'
 import { Placement } from '@floating-ui/react'
+import { ChatBubbleLeftIcon } from '@heroicons/react/24/solid'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 type Story = StoryObj<typeof Tooltip>
 

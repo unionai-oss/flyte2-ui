@@ -1,8 +1,7 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+'use client'
 
 import { Header } from '@/components/Header'
 import { NavPanelLayout } from '@/components/NavPanel'

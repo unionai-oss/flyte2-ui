@@ -1,20 +1,19 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+'use client'
 
+import { Button } from '@/components/Button'
 import {
   Dialog,
-  DialogTitle,
   DialogActions,
   DialogBody,
+  DialogTitle,
 } from '@/components/Dialog'
-import { Button } from '@/components/Button'
 import { Logo } from '@/components/Logo'
-import { useAuthStatus } from '@/providers/authStatus'
 import { getLoginUrl } from '@/lib/apiUtils'
 import { getWindow } from '@/lib/windowUtils'
+import { useAuthStatus } from '@/providers/authStatus'
 
 export function LoginPanel() {
   const { expired } = useAuthStatus()

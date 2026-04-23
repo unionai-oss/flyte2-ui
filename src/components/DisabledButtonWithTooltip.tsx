@@ -1,12 +1,12 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import Link from 'next/link'
+
+'use client'
+
 import { Tooltip } from '@/components/Tooltip'
 import { FLYTE_LICENSED_EDITION_INFO_URL } from '@/lib/constants'
+import Link from 'next/link'
 
 const LICENSED_EDITION_TOOLTIP_CONTENT = (
   <>
@@ -34,7 +34,9 @@ interface DisabledButtonWithTooltipProps {
  * Wraps a disabled button so it still shows a hover tooltip
  * (disabled elements may not receive pointer events).
  */
-export function DisabledButtonWithTooltip({ children }: DisabledButtonWithTooltipProps) {
+export function DisabledButtonWithTooltip({
+  children,
+}: DisabledButtonWithTooltipProps) {
   return (
     <Tooltip
       content={LICENSED_EDITION_TOOLTIP_CONTENT}

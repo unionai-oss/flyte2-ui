@@ -1,19 +1,19 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Header } from '@/components/Header'
 import { NavPanelLayout } from '@/components/NavPanel/NavPanelLayout'
+import { useListApps } from '@/hooks/useApps'
 import { useOrg } from '@/hooks/useOrg'
+import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { useParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { ProjectDomainParams } from '../RunDetails/types'
-import { useListApps } from '@/hooks/useApps'
 import { ListAppsContent } from './ListAppsContent'
 import { ListAppsSearch } from './components'
-import { useSearchTerm } from '@/hooks/useQueryParamState'
 
 export function ListAppsPage() {
   const params = useParams<ProjectDomainParams>()

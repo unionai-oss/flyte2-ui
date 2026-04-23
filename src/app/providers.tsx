@@ -1,9 +1,9 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { LoginPanel } from '@/components/LoginPanel'
 import { finalTransport, isLocalDev, queryClient } from '@/lib/apiUtils'
 import { AuthStatusProvider } from '@/providers/authStatus'
@@ -16,31 +16,31 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-      <ThemeProvider
-        attribute="class"
-        disableTransitionOnChange
-        themes={['flyte']}
-        defaultTheme="flyte"
-        forcedTheme="flyte"
-      >
-        <TransportProvider transport={finalTransport}>
-          <QueryClientProvider client={queryClient}>
-            <AuthStatusProvider>
-              <NuqsAdapter>
-                <NotificationsProvider>
-                  {children}
-                  {isLocalDev && (
-                    <ReactQueryDevtools
-                      initialIsOpen={false}
-                      buttonPosition="bottom-right"
-                    />
-                  )}
-                  <LoginPanel />
-                </NotificationsProvider>
-              </NuqsAdapter>
-            </AuthStatusProvider>
-          </QueryClientProvider>
-        </TransportProvider>
-      </ThemeProvider>
+    <ThemeProvider
+      attribute="class"
+      disableTransitionOnChange
+      themes={['flyte']}
+      defaultTheme="flyte"
+      forcedTheme="flyte"
+    >
+      <TransportProvider transport={finalTransport}>
+        <QueryClientProvider client={queryClient}>
+          <AuthStatusProvider>
+            <NuqsAdapter>
+              <NotificationsProvider>
+                {children}
+                {isLocalDev && (
+                  <ReactQueryDevtools
+                    initialIsOpen={false}
+                    buttonPosition="bottom-right"
+                  />
+                )}
+                <LoginPanel />
+              </NotificationsProvider>
+            </NuqsAdapter>
+          </AuthStatusProvider>
+        </QueryClientProvider>
+      </TransportProvider>
+    </ThemeProvider>
   )
 }

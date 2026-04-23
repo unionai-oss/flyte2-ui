@@ -1,14 +1,17 @@
-'use client'
-
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+
+'use client'
+
 import { Header } from '@/components/Header'
 import { NavItems, NavPanelLayout } from '@/components/NavPanel'
 import { type NavLink as NavLinkType } from '@/components/NavPanel/types'
 import { ProjectsPage } from '@/components/pages/Projects'
-import { Project, ProjectState } from '@/gen/flyteidl2/project/project_service_pb'
+import {
+  Project,
+  ProjectState,
+} from '@/gen/flyteidl2/project/project_service_pb'
 import { useLatestProjectDomainPairs } from '@/hooks/useLatestProjects'
 import { useDomainStore } from '@/lib/DomainStore'
 import { FolderIcon } from '@heroicons/react/20/solid'

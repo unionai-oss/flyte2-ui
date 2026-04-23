@@ -1,8 +1,8 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+'use client'
+
 import { CreateProjectWorkflow } from '@/components/pages/Projects/components/CreateProjectWorkflow.tsx'
 import { ProjectArchiveRestoreDialog } from '@/components/pages/Projects/components/ProjectArchiveRestoreDialog'
 import { ProjectsHeaderDropdown } from '@/components/pages/Projects/components/ProjectsHeaderDropdown'

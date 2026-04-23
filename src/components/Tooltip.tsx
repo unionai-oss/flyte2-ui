@@ -1,27 +1,26 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
+'use client'
+
 import { usePopoverStore } from '@/components/Popovers'
-import { useEffect } from 'react'
 import {
-  useFloating,
-  offset,
-  shift,
   flip,
-  useHover,
-  useFocus,
-  useRole,
-  useDismiss,
-  useInteractions,
   FloatingPortal,
-  Placement,
-  useClientPoint,
+  offset,
   OffsetOptions,
+  Placement,
+  shift,
+  useClientPoint,
+  useDismiss,
+  useFloating,
+  useFocus,
+  useHover,
+  useInteractions,
+  useRole,
 } from '@floating-ui/react'
-import { useState, cloneElement, isValidElement } from 'react'
 import clsx from 'clsx'
+import { cloneElement, isValidElement, useEffect, useState } from 'react'
 
 export type TooltipProps = {
   content: string | React.ReactNode

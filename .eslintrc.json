@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "next/typescript"
-  ],
+  "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -10,7 +7,8 @@
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "no-restricted-globals": [
-      "error", {
+      "error",
+      {
         "name": "window",
         "message": "Don't use `window` directly (SSR). Use getWindow() in windowUtils"
       }

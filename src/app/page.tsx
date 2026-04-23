@@ -1,10 +1,10 @@
-'use client'
-
 /**
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
-import { useEffect } from 'react'
+'use client'
+
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export const dynamic = 'force-dynamic'
 
