@@ -137,6 +137,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,md,html}": [
+      "node scripts/add-copyright-header.js",
       "eslint --fix",
       "prettier --write"
     ]

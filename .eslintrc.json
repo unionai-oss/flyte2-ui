@@ -1,6 +1,5 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
-  "plugins": ["header"],
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -13,11 +12,6 @@
         "name": "window",
         "message": "Don't use `window` directly (SSR). Use getWindow() in windowUtils"
       }
-    ],
-    "header/header": [
-      "error",
-      "block",
-      ["*", " * © Copyright Union Systems Inc 2026. All rights reserved.", " "]
     ]
   }
 }
