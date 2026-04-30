@@ -313,7 +313,7 @@ export const PopoverMenu: React.FC<PopoverMenuProps> = ({
               )}
               <span
                 className={clsx(
-                  'flex items-center gap-2',
+                  'flex items-center gap-2 text-(--system-gray-5)',
                   variant === 'filter' &&
                     (item.selected
                       ? 'text-(--system-white)'
