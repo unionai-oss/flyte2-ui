@@ -17,9 +17,9 @@ export function ReportDialog({
 }: PropsWithChildren<ReportDialogProps>) {
   return (
     <Dialog open={isOpen} onClose={closeDialog} className="relative z-10">
-      <DialogBackdrop className="fixed inset-0 bg-(--system-black)" />
+      <DialogBackdrop className="fixed inset-0 bg-black/60" />
       <div className="fixed inset-0 flex h-screen w-screen items-center justify-center p-3">
-        <DialogPanel className="h-full w-full rounded-2xl bg-(--system-white)">
+        <DialogPanel className="h-full w-full rounded-2xl bg-(--system-black)">
           {children}
         </DialogPanel>
       </div>
