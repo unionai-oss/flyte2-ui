@@ -23,7 +23,7 @@ RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 WORKDIR /app
 
 # Copy only files needed to install dependencies first (better cache)
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies (cached if lockfile unchanged)
 RUN \
