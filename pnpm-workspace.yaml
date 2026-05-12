@@ -1,0 +1,5 @@
+# pnpm settings — see https://pnpm.io/settings
+# Delay installing newly published versions by 7200 minutes (5 days) to
+# mitigate supply-chain attacks where malicious releases are typically
+# detected and unpublished within a day.
+minimumReleaseAge: 7200
