@@ -59,7 +59,7 @@ const SidebarItem = ({
   endTime,
   failedCount,
   isSelected,
-  isTask,
+  showDuration,
   displayText,
   phase,
   startTime,
@@ -72,7 +72,7 @@ const SidebarItem = ({
   endTime: Timestamp | undefined
   failedCount: number
   isSelected: boolean
-  isTask: boolean
+  showDuration: boolean
   phase: ActionPhase | undefined
   displayText: string | undefined
   startTime: Timestamp | undefined
@@ -83,7 +83,7 @@ const SidebarItem = ({
   const attemptsIcon = makeAttemptsIcon(attempts)
   // Don't show cache status if it's disabled to avoid clutter
   const showCacheStaus = cacheStatus !== CatalogCacheStatus.CACHE_DISABLED
-  const showTimestamp = startTime && isTask
+  const showTimestamp = startTime && showDuration
   const liveTimestamp = (
     <LiveTimestamp
       decimalPlaces={1}
@@ -273,7 +273,9 @@ export function RunNode({
                 displayText={taskName}
                 endTime={timestamps.endTime}
                 failedCount={failedCount}
-                isTask={node.action?.metadata?.spec.case === 'task'}
+                showDuration={['task', 'trace'].includes(
+                  node.action?.metadata?.spec.case ?? '',
+                )}
                 isSelected={isThisNodeSelected}
                 phase={node?.action?.status?.phase}
                 startTime={timestamps.startTime}
