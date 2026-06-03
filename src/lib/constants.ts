@@ -9,8 +9,8 @@ const UNION_AI_FLYTE_USER_GUIDE_BASE =
 /** Primary docs entry (same destination as the legacy BYOC user guide URL). */
 export const FLYTE_DOCS_HOME_URL = UNION_AI_FLYTE_USER_GUIDE_BASE
 
-/** Flyte 2 section in the docs (linked from in-app documentation nav). */
-export const FLYTE_DOCS_FLYTE2_URL = `${UNION_AI_FLYTE_USER_GUIDE_BASE}/flyte-2/`
+/** In-app documentation nav (user guide landing page). */
+export const FLYTE_DOCS_FLYTE2_URL = UNION_AI_FLYTE_USER_GUIDE_BASE
 
 /** Task reports / live output in the UI. */
 export const FLYTE_DOCS_REPORTS_URL = `${UNION_AI_FLYTE_USER_GUIDE_BASE}/task-programming/reports/`
@@ -20,7 +20,7 @@ export const FLYTE_DOCS_APPS_URL = `${UNION_AI_FLYTE_USER_GUIDE_BASE}/core-conce
 
 /** `flyte deploy` and Flyte CLI reference. */
 export const FLYTE_DOCS_FLYTE_CLI_DEPLOY_URL =
-  'https://www.union.ai/docs/v2/byoc/api-reference/flyte-cli/#flyte-deploy'
+  'https://www.union.ai/docs/v2/flyte/api-reference/flyte-cli/#flyte-deploy'
 
 /** Licensed edition / upgrade CTA. */
 export const FLYTE_LICENSED_EDITION_INFO_URL = 'https://www.union.ai/pricing'
