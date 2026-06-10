@@ -13,9 +13,17 @@ import { isActionInitializing, isActionTerminal } from '@/lib/actionUtils'
 import { ArrowUpRightIcon } from '@heroicons/react/24/solid'
 import { isNumber } from 'lodash'
 import React, { useState } from 'react'
+import useLocalStorage from 'use-local-storage'
 import { useSelectedAttemptStore } from '../state/AttemptStore'
 import { ReportDialog } from './ReportDialog'
 import { ReportIframe } from './ReportIframe'
+import {
+  getReportRefreshIntervalMs,
+  parseStoredReportRefreshInterval,
+  REPORT_IFRAME_REFRESH_STORAGE_KEY,
+  type ReportRefreshInterval,
+} from './reportRefreshIntervalStorage'
+import { useReportAutoRefetch } from './useReportAutoRefetch'
 import { FLYTE_DOCS_REPORTS_URL } from '@/lib/constants'
 
 const texts = {
@@ -31,6 +39,16 @@ export const RunDetailsReportsTab: React.FC = ({}) => {
   const { selectedAttempt } = useSelectedAttemptStore()
 
   const [isOpen, setIsOpen] = useState(false)
+  const [refreshMenuValue, setRefreshMenuValue] =
+    useLocalStorage<ReportRefreshInterval>(
+      REPORT_IFRAME_REFRESH_STORAGE_KEY,
+      'off',
+      { parser: parseStoredReportRefreshInterval },
+    )
+
+  const refreshIntervalMs = getReportRefreshIntervalMs(
+    refreshMenuValue ?? 'off',
+  )
 
   const isTerminal = isActionTerminal(selectedActionDetails.data)
   const isInitializing = isActionInitializing(selectedActionDetails.data)
@@ -39,16 +57,24 @@ export const RunDetailsReportsTab: React.FC = ({}) => {
         ?.generatesDeck
     : false
 
+  const reportsQueryEnabled =
+    !isInitializing &&
+    !!selectedActionDetails.data &&
+    generatesDeck &&
+    isNumber(selectedAttempt?.attempt)
+
   const reports = useRunReports({
     artifactType: ArtifactType.REPORT,
     attempt: selectedAttempt?.attempt,
     actionId: selectedActionDetails.data?.id,
-    enabled:
-      !isInitializing &&
-      !!selectedActionDetails.data &&
-      generatesDeck &&
-      isNumber(selectedAttempt?.attempt),
+    enabled: reportsQueryEnabled,
+  })
+
+  useReportAutoRefetch({
+    intervalMs: refreshIntervalMs,
     isActionTerminal: isTerminal,
+    isQueryEnabled: reportsQueryEnabled,
+    refetch: reports.refetch,
   })
 
   if (!reports.data) {
@@ -83,11 +109,7 @@ export const RunDetailsReportsTab: React.FC = ({}) => {
                 The reports feature allows you to display and update custom
                 output in the UI during task execution.
               </span>
-              <Button
-                outline
-                href={FLYTE_DOCS_REPORTS_URL}
-                target="_blank"
-              >
+              <Button outline href={FLYTE_DOCS_REPORTS_URL} target="_blank">
                 <span className="text-2xs">How to create report</span>
                 <ArrowUpRightIcon
                   data-slot="icon"
@@ -109,6 +131,8 @@ export const RunDetailsReportsTab: React.FC = ({}) => {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           handleRefetch={() => reports.refetch()}
+          refreshInterval={refreshMenuValue ?? 'off'}
+          onRefreshIntervalChange={setRefreshMenuValue}
         />
       </div>
       <ReportDialog isOpen={isOpen} closeDialog={() => setIsOpen(false)}>
@@ -118,6 +142,8 @@ export const RunDetailsReportsTab: React.FC = ({}) => {
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             handleRefetch={() => reports.refetch()}
+            refreshInterval={refreshMenuValue ?? 'off'}
+            onRefreshIntervalChange={setRefreshMenuValue}
           />
         </div>
       </ReportDialog>

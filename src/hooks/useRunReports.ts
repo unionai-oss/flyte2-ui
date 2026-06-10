@@ -2,19 +2,20 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-
 import { ActionIdentifier } from '@/gen/flyteidl2/common/identifier_pb'
 import { Code, ConnectError } from '@connectrpc/connect'
 import { useQuery } from '@tanstack/react-query'
 import { useConnectRpcClient } from './useConnectRpc'
-import { ArtifactType, DataProxyService } from '@/gen/flyteidl2/dataproxy/dataproxy_service_pb'
+import {
+  ArtifactType,
+  DataProxyService,
+} from '@/gen/flyteidl2/dataproxy/dataproxy_service_pb'
 
 type UseRunReportsProps = {
   artifactType: ArtifactType
   attempt?: number
   actionId?: ActionIdentifier
   enabled: boolean
-  isActionTerminal?: boolean
 }
 
 export function useRunReports({
@@ -22,7 +23,6 @@ export function useRunReports({
   attempt,
   actionId,
   enabled,
-  isActionTerminal,
 }: UseRunReportsProps) {
   const client = useConnectRpcClient(DataProxyService)
 
@@ -66,8 +66,8 @@ export function useRunReports({
       return failureCount < 3
     },
     enabled: Boolean(actionId) && enabled,
-    // Poll every second while action is not terminal
-    refetchInterval: isActionTerminal === false ? 1000 : false,
+    // Auto-refresh is driven by the user-selected interval in the reports tab
+    refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
   })
