@@ -2,6 +2,7 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
+import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 import { KeyValuePair } from '@/gen/flyteidl2/core/literals_pb'
 
 // Run name limits must match API (RunIdentifier.name in idl/common/identifier.proto).
@@ -28,6 +29,36 @@ export const isRunNameValid = (name: string): boolean => {
 
 export type KVPair = { key: string; value: string }
 
+/** Form-side representation of an `InlineRule`. */
+export type NotificationDeliveryKind = 'webhook' | 'email'
+
+export type WebhookDeliveryFormValue = {
+  url: string
+  headers?: KVPair[]
+  bodyTemplate?: string
+}
+
+export type EmailDeliveryFormValue = {
+  to: string
+  cc?: string
+  bcc?: string
+  subject: string
+  textTemplate?: string
+  htmlTemplate?: string
+}
+
+export type NotificationRuleFormValue = {
+  /**
+   * Stable id used as the React key when rules are reordered/removed.
+   * Generated client-side; not sent in the submit payload.
+   */
+  id: string
+  phases: ActionPhase[]
+  deliveryKind: NotificationDeliveryKind
+  webhook?: WebhookDeliveryFormValue
+  email?: EmailDeliveryFormValue
+}
+
 export type LaunchFormState = {
   envs?: KVPair[]
   labels?: KVPair[]
@@ -47,6 +78,18 @@ export type LaunchFormTab =
   | 'env-vars'
   | 'labels'
   | 'debug'
+
+/**
+ * Phases that the user can select notifications for. The proto allows any
+ * `ActionPhase`, but only terminal phases (success/failure variants) make
+ * sense in the run-completed notification context, matching the design.
+ */
+export const NOTIFICATION_PHASE_OPTIONS: ActionPhase[] = [
+  ActionPhase.TIMED_OUT,
+  ActionPhase.ABORTED,
+  ActionPhase.FAILED,
+  ActionPhase.SUCCEEDED,
+]
 
 export type ErrorWithRawMessage = {
   rawMessage?: string

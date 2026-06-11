@@ -22,6 +22,7 @@ import { UseQueryResult } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { TriggerBadge } from '../TriggerBadge'
 import { useRunStore } from '../state/RunStore'
+import { RunInfoNotifications } from './RunInfoNotifications'
 
 const getCacheLookupScopeString: Record<CacheLookupScope, string> = {
   [CacheLookupScope.GLOBAL]: 'GLOBAL',
@@ -276,6 +277,7 @@ export const RunInfoContent = ({
           },
         ]}
       />
+      <RunInfoNotifications runSpec={runSpec} />
     </div>
   )
 }
