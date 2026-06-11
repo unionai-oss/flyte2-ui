@@ -3,13 +3,17 @@
  */
 
 import { Button } from '@/components/Button'
-import { RefreshIcon } from '@/components/icons/RefreshIcon'
 import { Tooltip } from '@/components/Tooltip'
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/solid'
 import React from 'react'
+
+import {
+  type ReportRefreshInterval,
+  ReportRefreshSplitButton,
+} from './ReportRefreshSplitButton'
 
 // Taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox
 const sandboxRules = [
@@ -31,6 +35,8 @@ type ReportIframeProps = {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   handleRefetch: () => void
+  refreshInterval: ReportRefreshInterval
+  onRefreshIntervalChange: (value: ReportRefreshInterval) => void
 }
 
 export function ReportIframe({
@@ -38,6 +44,8 @@ export function ReportIframe({
   isOpen,
   setIsOpen,
   handleRefetch,
+  refreshInterval,
+  onRefreshIntervalChange,
 }: ReportIframeProps) {
   return (
     <>
@@ -45,17 +53,13 @@ export function ReportIframe({
         <div
           className={`${isOpen ? '' : 'p-10'} absolute top-3 right-3 flex items-center gap-5`}
         >
-          <Tooltip content="Refresh" placement="bottom">
-            <Button
-              title="Refresh"
-              plain
-              color="zinc"
-              onClick={() => handleRefetch()}
-              className="!size-6 hover:!bg-zinc-100"
-            >
-              <RefreshIcon data-slot="icon" className="!text-zinc-400" />
-            </Button>
-          </Tooltip>
+          <ReportRefreshSplitButton
+            onRefresh={() => {
+              void handleRefetch()
+            }}
+            refreshInterval={refreshInterval}
+            onRefreshIntervalChange={onRefreshIntervalChange}
+          />
 
           {isOpen ? (
             <Button
@@ -89,7 +93,7 @@ export function ReportIframe({
         title="Report"
         width="100%"
         height="100%"
-        className="h-full rounded-2xl"
+        className="h-full rounded-2xl bg-(--system-black)"
         sandbox={sandboxRules}
       />
     </>
