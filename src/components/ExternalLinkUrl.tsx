@@ -33,9 +33,15 @@ export const ExternalLinkUrl: React.FC<ExternalLinkUrlProps> = ({
 
   const content = (
     <>
-      {Icon && <Icon className="h-4 w-4 text-(--system-gray-6)" />}
+      {Icon && (
+        <span aria-hidden="true">
+          <Icon className="h-4 w-4 text-(--system-gray-6)" />
+        </span>
+      )}
       <span>{name}</span>
       <ArrowTopRightIcon
+        aria-hidden="true"
+        focusable="false"
         className={clsx('h-2.5 w-2.5 text-(--system-gray-5)', iconClassname)}
       />
     </>
