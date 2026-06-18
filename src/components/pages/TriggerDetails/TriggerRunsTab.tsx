@@ -43,7 +43,7 @@ export const TriggerRunsTab: React.FC = () => {
     return list
   }, [params.version, decodedName, params.taskName])
 
-  const { plainRunId, runTime, startTime, endTime } = listRunsColumns
+  const { plainRunId, runTime, startTime, endTime, owner } = listRunsColumns
 
   return (
     <>
@@ -51,7 +51,7 @@ export const TriggerRunsTab: React.FC = () => {
         <ListRunsContent
           additionalFilters={filters}
           datePickerPopover={<DatePickerPopover labelPrefix="Runs" />}
-          listTableColumns={[plainRunId, runTime, startTime, endTime]}
+          listTableColumns={[plainRunId, runTime, startTime, endTime, owner]}
           className="overflow-hidden rounded-lg border border-(--system-gray-3) bg-(--system-black) [&>*:first-child]:px-6 [&>*:first-child]:py-2.5"
           noRowsMessage="This trigger has not created any runs"
           hideLastRowBorder

@@ -44,7 +44,11 @@ const isNetworkError = (error: unknown) => {
   return false
 }
 
-export function useWatchActionDetails(actionId?: string | null) {
+export function useWatchActionDetails(
+  actionId?: string | null,
+  options?: { enabled?: boolean },
+) {
+  const isEnabled = options?.enabled ?? true
   const client = useConnectRpcClient(RunService)
   const queryClient = useQueryClient()
   const streamRef = useRef<AsyncIterable<WatchActionDetailsResponse>>(undefined)
@@ -111,7 +115,7 @@ export function useWatchActionDetails(actionId?: string | null) {
   }, [actionId, cleanup, queryClient])
 
   const startStream = useCallback(async () => {
-    if (!actionIdentifier) {
+    if (!actionIdentifier || !isEnabled) {
       cleanup()
       return null
     }
@@ -221,6 +225,7 @@ export function useWatchActionDetails(actionId?: string | null) {
     cleanup,
     actionId,
     checkAndReconnectIfNeeded,
+    isEnabled,
   ])
 
   const query = useQuery({
@@ -228,7 +233,7 @@ export function useWatchActionDetails(actionId?: string | null) {
     queryFn: startStream,
     refetchInterval: false,
     refetchOnWindowFocus: false,
-    enabled: !!actionIdentifier,
+    enabled: isEnabled && !!actionIdentifier,
     experimental_prefetchInRender: true,
     retry: (failureCount, error) => {
       // Don't retry if the query was cancelled

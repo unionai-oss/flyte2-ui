@@ -12,8 +12,15 @@ import { NavPanelLayout } from '@/components/NavPanel/NavPanelLayout'
 import { Suspense } from 'react'
 
 export function ListRunsPage() {
-  const { environment, complexRunId, trigger, runTime, startTime, endTime } =
-    listRunsColumns
+  const {
+    environment,
+    complexRunId,
+    trigger,
+    runTime,
+    startTime,
+    endTime,
+    owner,
+  } = listRunsColumns
   return (
     <Suspense>
       <main className="bg-primary flex h-full min-h-0 w-full">
@@ -41,6 +48,7 @@ export function ListRunsPage() {
                 runTime,
                 startTime,
                 endTime,
+                owner,
               ]}
               className="bg-primary min-w-0 flex-1 gap-2 [&:first-child]:px-10 [&:first-child]:pb-6"
             />
