@@ -19,6 +19,7 @@ import { DebugRerunControls } from '@/components/pages/RunDetails/DebugRerunCont
 import { PhaseBadge } from '@/components/PhaseBadge'
 import { RunButton } from '@/components/RunButton'
 import { Tabs, TabType, TabWidget } from '@/components/Tabs'
+import { UserIdentityInfo } from '@/components/UserIdentityInfo'
 import { useLatestRuns } from '@/hooks/useLatestResources'
 import { LaunchFormStateProvider } from '@/hooks/useLaunchFormState'
 import { useOrg } from '@/hooks/useOrg'
@@ -108,6 +109,16 @@ export const RunDetailsPage = () => {
   const selectedActionDetails = useWatchActionDetails(selectedActionId)
 
   const run = useRunStore((s) => s.run?.action)
+  // The runs-list stream (watchActions) returns lightweight metadata without
+  // `executedBy`, so source the run owner from the root action's details.
+  const rootActionId = run?.id?.name ?? null
+  const isRootSelected = !!rootActionId && selectedActionId === rootActionId
+  const rootActionDetails = useWatchActionDetails(rootActionId, {
+    enabled: !!rootActionId && !isRootSelected,
+  })
+  const ownerIdentity =
+    (isRootSelected ? selectedActionDetails : rootActionDetails)?.data?.metadata
+      ?.executedBy ?? run?.metadata?.executedBy
   const selectedAction = useRunStore((s) => s.getAction(selectedActionId || ''))
   const taskType = getTaskType(selectedAction?.action?.metadata)
   const totalActionAttempts = selectedAction?.action?.status?.attempts || 0
@@ -293,11 +304,18 @@ export const RunDetailsPage = () => {
           label: 'Trigger',
           value: <TriggerBadge action={run} />,
         },
+        {
+          label: 'Owned By',
+          value: (
+            <UserIdentityInfo executedBy={ownerIdentity} showUserName={true} />
+          ),
+        },
       ],
     } as DetailsMetadata
   }, [
     endTime,
     headerTaskExists,
+    ownerIdentity,
     phase,
     run,
     searchParams,
