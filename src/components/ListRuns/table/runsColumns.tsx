@@ -5,6 +5,8 @@
 import { useCopyToClipboard } from '@/components/CopyButton'
 import { PopoverMenu } from '@/components/Popovers'
 import { StatusIcon } from '@/components/StatusIcons/StatusIcon'
+import { UserIdentityInfo } from '@/components/UserIdentityInfo'
+import { getUserIdentityString } from '@/lib/userIdentityUtils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { useRouter } from 'next/navigation'
 import { type RunsTableRow } from './types'
@@ -106,6 +108,24 @@ const endTime = helper.accessor('endTime', {
   ),
   minSize: 180,
   size: 180,
+})
+
+const owner = helper.accessor('user', {
+  header: () => <div className="flex justify-center">Owner</div>,
+  cell: (info) => {
+    const value = info.getValue()
+    return (
+      <div className="flex w-full justify-center">
+        <UserIdentityInfo
+          executedBy={value}
+          showUserName={false}
+          hoverContent={getUserIdentityString(value)}
+        />
+      </div>
+    )
+  },
+  minSize: 80,
+  size: 80,
 })
 
 type SetLaunchFormOpen = () => void
@@ -220,5 +240,6 @@ export const listRunsColumns = {
   runTime,
   startTime,
   endTime,
+  owner,
   getActions,
 }

@@ -36,8 +36,15 @@ export const TaskDetailsRunsTab: React.FC<{ version: string }> = ({
     return list
   }, [params.version, params.name])
 
-  const { plainRunId, runTime, startTime, endTime, getActions, trigger } =
-    listRunsColumns
+  const {
+    plainRunId,
+    runTime,
+    startTime,
+    endTime,
+    owner,
+    getActions,
+    trigger,
+  } = listRunsColumns
 
   const { setIsOpen } = useLaunchFormState()
 
@@ -56,6 +63,7 @@ export const TaskDetailsRunsTab: React.FC<{ version: string }> = ({
           runTime,
           startTime,
           endTime,
+          owner,
           getActions(() => setIsOpen(true)),
         ]}
         className="overflow-hidden rounded-lg border border-(--system-gray-3) bg-(--system-black) [&>*:first-child]:px-6 [&>*:first-child]:py-2.5"
