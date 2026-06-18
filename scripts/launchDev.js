@@ -9,7 +9,7 @@ import fs from 'fs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-const hosts = ['localhost', 'dogfood.cloud-staging.union.ai']
+const hosts = ['localhost']
 
 function openBrowser(url) {
   const cmd =
