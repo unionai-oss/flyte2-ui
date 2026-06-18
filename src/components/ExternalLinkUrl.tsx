@@ -19,7 +19,7 @@ type ExternalLinkUrlProps = {
 }
 
 const baseClass =
-  'inline-flex flex-row items-center gap-1.5 rounded-lg border border-(--system-gray-3) bg-(--system-gray-1) px-3 py-1.5 text-2xs/4 font-medium text-(--system-gray-7) transition-colors'
+  'inline-flex flex-row items-center gap-1.5 rounded-2xl border border-(--system-gray-3) bg-(--system-gray-1) px-3 py-1.5 text-2xs/4 font-medium text-(--system-gray-7) transition-colors'
 
 export const ExternalLinkUrl: React.FC<ExternalLinkUrlProps> = ({
   className,
