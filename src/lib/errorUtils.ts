@@ -368,3 +368,10 @@ export function getErrorInfo(error: unknown): {
     type: typeof error,
   }
 }
+
+export function getRetryQueryOnNon404(
+  maxFailures: number = 3,
+): (failureCount: number, error: Error) => boolean {
+  return (failureCount, error) =>
+    failureCount < maxFailures && !isNonRetryableError(error)
+}

@@ -12,7 +12,10 @@ import { useWatchLogs } from '@/hooks/useWatchLogs'
 import { isAttemptTerminal } from '@/lib/attemptUtils'
 import React, { useMemo, useState } from 'react'
 import { useSelectedAttemptStore } from './state/AttemptStore'
-import { LOG_VIEWER_MIN_WIDTH_PX, LogViewer } from '@/components/LogViewer/LogViewer'
+import {
+  LOG_VIEWER_MIN_WIDTH_PX,
+  LogViewer,
+} from '@/components/LogViewer/LogViewer'
 
 export const RunDetailsLogsTab: React.FC<unknown> = () => {
   const selectedActionId = useSelectedActionId()
@@ -35,19 +38,25 @@ export const RunDetailsLogsTab: React.FC<unknown> = () => {
     enabled: !!selectedActionDetails.data,
   })
 
-  const source = logsType === RunLogType.K8S ? clusterEvents : logs
+  const isRunLogs = logsType === RunLogType.RUN
+  const source = isRunLogs ? logs : clusterEvents
 
   const isTerminal = isAttemptTerminal(attempt)
   const noLogsAvailable =
-    logsType === RunLogType.RUN && isTerminal && attempt?.logsAvailable !== true
+    isRunLogs && isTerminal && attempt?.logsAvailable !== true
+
+  const hasLogsClusterError = isRunLogs && logs.isClusterConnectionError
+  const viewerError = hasLogsClusterError ? logs.clusterError : source.error
+  const viewerDone = noLogsAvailable || source.isFetched || hasLogsClusterError
 
   const isWaiting = useMemo(() => {
+    if (hasLogsClusterError) return false
     if (logsType === RunLogType.K8S) {
       return !isTerminal && !attempt?.clusterEvents?.length
     }
     if (noLogsAvailable) return false
     return !isTerminal && !attempt?.logsAvailable
-  }, [attempt, logsType, isTerminal, noLogsAvailable])
+  }, [attempt, logsType, isTerminal, noLogsAvailable, hasLogsClusterError])
 
   return (
     <div
@@ -62,8 +71,8 @@ export const RunDetailsLogsTab: React.FC<unknown> = () => {
         <LogViewer
           enableSourceFilter={logsType !== RunLogType.K8S}
           logs={noLogsAvailable ? [] : source.data?.lines}
-          done={noLogsAvailable || source.isFetched}
-          error={source.error}
+          done={viewerDone}
+          error={viewerError}
           waiting={isWaiting}
           logType={logsType}
           shouldSkipIcon={logsType === RunLogType.K8S}
