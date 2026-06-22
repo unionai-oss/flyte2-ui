@@ -36,6 +36,27 @@ export function createTransport(_useBinaryFormat: boolean) {
   })
 }
 
+/**
+ * Connect transport for a cluster base URL returned by SelectCluster. Matches
+ * {@link createTransport} credentials behavior for non-localhost endpoints and
+ * uses the JSON wire format like the rest of the app.
+ */
+export function createClusterConnectTransport(clusterBaseUrl: string) {
+  const baseUrl = clusterBaseUrl.replace(/\/$/, '') || '/'
+  const clusterIsLocalhost = baseUrl.includes('localhost')
+  return createConnectTransport({
+    baseUrl,
+    ...(!clusterIsLocalhost && {
+      fetch: (input, init) => {
+        return fetch(input, {
+          ...init,
+          credentials: 'include',
+        })
+      },
+    }),
+  })
+}
+
 /** Default transport (binary format). Used for all Connect RPC requests. */
 export const finalTransport = createTransport(true)
 
