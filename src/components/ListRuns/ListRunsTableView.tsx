@@ -20,8 +20,6 @@ interface ListRunsTableViewProps {
   columns: ColumnDef<RunsTableRow, any>[]
   noRowsMessage?: string
   enabled?: boolean
-  /** When true, enables the watch stream for live updates even when filters are present */
-  enableLiveUpdates?: boolean
   hideLastRowBorder?: boolean
 }
 
@@ -31,7 +29,6 @@ export const ListRunsTableView = ({
   columns,
   noRowsMessage = 'Get started by triggering a run with flyte from the CLI',
   enabled = true,
-  enableLiveUpdates = false,
   hideLastRowBorder = false,
 }: ListRunsTableViewProps) => {
   // Encapsulate the query inside the component
@@ -40,7 +37,6 @@ export const ListRunsTableView = ({
     projectId,
     filters,
     enabled,
-    enableLiveUpdates,
   })
 
   // Flatten all pages into a single array of runs
