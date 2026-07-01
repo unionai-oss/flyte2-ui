@@ -162,11 +162,8 @@ export function RunNode({
 
   const copyLinkCallback = useCallback(() => {
     const domain = node.action?.id?.run?.domain
-    const host = getLocation().hostname.replace('localhost.', '')
     const project = node.action?.id?.run?.project
-    const link = `https://${encodeURI(
-      `${host}/v2/domain/${domain}/project/${project}/runs/${node.action?.id?.run?.name}?i=${id}`,
-    )}`
+    const link = `${getLocation().origin}/v2/domain/${domain}/project/${project}/runs/${node.action?.id?.run?.name}?i=${id}`
     navigator.clipboard.writeText(link)
   }, [id, node])
 
