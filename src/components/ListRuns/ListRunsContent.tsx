@@ -239,7 +239,6 @@ export const ListRunsContent = ({
           columns={listTableColumns}
           noRowsMessage={noRowsMessage}
           enabled={true}
-          enableLiveUpdates={toParam === 'now' || !dateRange}
           hideLastRowBorder={hideLastRowBorder}
         />
       </div>
