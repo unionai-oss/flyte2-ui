@@ -5,7 +5,9 @@
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 import { AccentColor } from '@/types/colors'
 
-export const getColorsByPhase = (phase: ActionPhase | undefined): AccentColor => {
+export const getColorsByPhase = (
+  phase: ActionPhase | undefined,
+): AccentColor => {
   switch (phase) {
     case ActionPhase.FAILED: {
       return 'red'
@@ -24,6 +26,7 @@ export const getColorsByPhase = (phase: ActionPhase | undefined): AccentColor =>
     case ActionPhase.ABORTED: {
       return 'orange'
     }
+    case ActionPhase.PAUSED:
     case ActionPhase.TIMED_OUT: {
       return 'yellow'
     }

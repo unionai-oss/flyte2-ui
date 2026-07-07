@@ -28,4 +28,9 @@ export type TimelineObject = {
   leftAnnotation: string | React.ReactNode
   rightAnnotation: string | React.ReactNode
   tooltipSections: TooltipSection[]
+  /**
+   * When set, the bar renders as a progress track (gray) with an accent-colored
+   * fill at this percent — used for a paused condition counting toward its timeout.
+   */
+  progressPercent?: number
 }

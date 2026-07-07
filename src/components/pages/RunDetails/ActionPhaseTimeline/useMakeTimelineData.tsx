@@ -3,17 +3,19 @@
  */
 
 import { useRef } from 'react'
-import { useAccent, usePalette } from '@/hooks/usePalette'
-import { PhaseTransition } from '@/gen/flyteidl2/workflow/run_definition_pb'
+
+import { LiveTimestamp } from '@/components/LiveTimestamp'
+import { StatusIcon } from '@/components/StatusIcons'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
+import { PhaseTransition } from '@/gen/flyteidl2/workflow/run_definition_pb'
+import { useAccent, usePalette } from '@/hooks/usePalette'
 import { getColorsByPhase } from '@/lib/getColorByPhase'
 import { mapPhaseToDisplayString } from '@/lib/mapPhaseToDisplayString'
-import { LiveTimestamp } from '@/components/LiveTimestamp'
+
 import { useGlobalNow } from '../state/GlobalTimestamp'
-import { StatusIcon } from '@/components/StatusIcons'
-import { type TimelineObject } from './types'
-import { getIsRunning, getEarliestLatest, durationBetween } from './helpers'
 import { makeTooltipSection } from './ActionPhaseTooltip'
+import { durationBetween, getEarliestLatest, getIsRunning } from './helpers'
+import { type TimelineObject } from './types'
 
 const SetupAnnotation = ({
   color,
@@ -28,14 +30,38 @@ const SetupAnnotation = ({
   </div>
 )
 
+const formatRemaining = (ms: number): string => {
+  // Round up so the displayed value means "up to N seconds left": the countdown
+  // holds the full timeout for the first second and only reaches "0s" exactly at
+  // the timeout, staying in step with the count-up timer. Flooring would drop a
+  // second almost immediately (start times carry sub-second precision) and hit
+  // "0s remaining" a full second early.
+  const totalSeconds = Math.max(Math.ceil(ms / 1000), 0)
+  const d = Math.floor(totalSeconds / 86400)
+  const h = Math.floor((totalSeconds % 86400) / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = totalSeconds % 60
+  if (d > 0) return `${d}d ${h}h`
+  if (h > 0) return `${h}h ${m}m`
+  if (m > 0) return `${m}m ${s}s`
+  return `${s}s`
+}
+
 export const useMakeTimelineData = ({
   phaseTransitions,
+  conditionTimeoutSeconds,
 }: {
   phaseTransitions: PhaseTransition[]
+  conditionTimeoutSeconds?: number
 }): TimelineObject[] => {
   const palette = usePalette()
   const isRunning = getIsRunning(phaseTransitions)
-  const globalNow = useGlobalNow((s) => (isRunning ? s.now : null))
+  const isPausedWaiting =
+    phaseTransitions.length === 1 &&
+    phaseTransitions[0].phase === ActionPhase.PAUSED
+  const globalNow = useGlobalNow((s) =>
+    isRunning || isPausedWaiting ? s.now : null,
+  )
   const nowRef = useRef(Date.now())
 
   // If not running, keep last known time frozen
@@ -47,7 +73,9 @@ export const useMakeTimelineData = ({
   const endTime = isRunning ? nowRef.current : totalBounds.endTime
   const totalDuration = durationBetween(totalBounds.startTime, endTime)
 
-  const preRunPhases = phaseTransitions.filter((p) => p.phase < ActionPhase.RUNNING)
+  const preRunPhases = phaseTransitions.filter(
+    (p) => p.phase < ActionPhase.RUNNING,
+  )
   const preRunBounds = getEarliestLatest(preRunPhases)
   const preRunDuration = durationBetween(
     preRunBounds.startTime,
@@ -64,11 +92,73 @@ export const useMakeTimelineData = ({
     preRunPercentage = Math.max(computed, 15)
   }
 
-  const runningPhase = phaseTransitions.find((p) => p.phase === ActionPhase.RUNNING)
+  const runningPhase = phaseTransitions.find(
+    (p) => p.phase === ActionPhase.RUNNING,
+  )
 
-  const terminalPhase = phaseTransitions.find((p) => p.phase > ActionPhase.RUNNING)
+  const terminalPhase = phaseTransitions.find(
+    (p) => p.phase > ActionPhase.RUNNING,
+  )
   const terminalColor = getColorsByPhase(terminalPhase?.phase)
   const terminalAccentColor = useAccent(terminalColor)
+
+  // 0. Paused (condition waiting for an external signal). Single phase that
+  // keeps ticking while it waits, mirroring an action's running bar. With a
+  // timeout, show remaining time and render the bar as progress toward it.
+  if (isPausedWaiting) {
+    const pausedPhase = phaseTransitions[0]
+    const accent = palette.accent[getColorsByPhase(ActionPhase.PAUSED)]
+    const startMs = totalBounds.startTime
+    const timeoutMs = conditionTimeoutSeconds
+      ? conditionTimeoutSeconds * 1000
+      : undefined
+    const hasTimeout = !!timeoutMs && !!startMs
+    const elapsedMs = startMs ? Math.max(nowRef.current - startMs, 0) : 0
+    const remainingMs = hasTimeout ? Math.max(timeoutMs - elapsedMs, 0) : 0
+    const progressPercent = hasTimeout
+      ? Math.min(100, (elapsedMs / timeoutMs) * 100)
+      : undefined
+
+    // Once the timeout is hit the action is effectively timed out, but the
+    // server may take a moment to transition the phase. Freeze the count-up
+    // timer at the timeout instead of letting it tick past (e.g. 10.84s for a
+    // 10s timeout) while we wait for the terminal transition.
+    const cappedEndMs =
+      hasTimeout && elapsedMs >= timeoutMs ? startMs + timeoutMs : undefined
+    const rightEndTimestamp = pausedPhase.endTime ?? cappedEndMs
+
+    return [
+      {
+        leftAnnotation: hasTimeout ? (
+          <>
+            Waiting for signal:{' '}
+            <span className="text-zinc-500">
+              {formatRemaining(remainingMs)} remaining
+            </span>
+          </>
+        ) : (
+          'Waiting for signal'
+        ),
+        rightAnnotation: (
+          <div className="flex items-center gap-x-1">
+            <LiveTimestamp
+              className="!text-right"
+              minWidth={25}
+              timestamp={pausedPhase.startTime}
+              endTimestamp={rightEndTimestamp}
+            />
+            <StatusIcon phase={ActionPhase.PAUSED} />
+          </div>
+        ),
+        accentColor: accent,
+        percentage: '100%',
+        progressPercent,
+        tooltipSections: [
+          { type: 'generic', content: 'Waiting for signal', key: 'generic' },
+        ],
+      },
+    ]
+  }
 
   // 1. Unspecified
   if (
@@ -142,7 +232,7 @@ export const useMakeTimelineData = ({
             className="!text-right"
             minWidth={25}
             timestamp={preRunBounds.startTime}
-            endTimestamp={preRunBounds.endTime}
+            endTimestamp={preRunBounds.endTime ?? runningPhase.startTime}
           />
         ),
         accentColor: palette.accent.purple,
@@ -180,7 +270,7 @@ export const useMakeTimelineData = ({
             className="!text-right"
             minWidth={25}
             timestamp={preRunBounds.startTime}
-            endTimestamp={preRunBounds.endTime}
+            endTimestamp={preRunBounds.endTime ?? runningPhase.startTime}
           />
         ) : (
           ''
@@ -200,7 +290,7 @@ export const useMakeTimelineData = ({
               className="!text-right"
               minWidth={25}
               timestamp={runningPhase.startTime}
-              endTimestamp={runningPhase.endTime}
+              endTimestamp={runningPhase.endTime ?? terminalPhase.startTime}
             />
             <StatusIcon phase={terminalPhase.phase} />
           </div>

@@ -20,6 +20,12 @@ const MarkdownRendererInner = dynamic(
 interface MarkdownContentProps {
   text: string
   className?: string
+  /**
+   * Render raw HTML embedded in the markdown. Off by default. When enabled, the
+   * HTML is parsed (rehype-raw) and sanitized (rehype-sanitize) to strip unsafe
+   * markup, so it is safe for user-authored content (e.g. condition prompts).
+   */
+  allowHtml?: boolean
 }
 
 /**
@@ -30,6 +36,7 @@ interface MarkdownContentProps {
 export const MarkdownContent = memo(function MarkdownContent({
   text,
   className,
+  allowHtml = false,
 }: MarkdownContentProps) {
   const { resolvedTheme } = useTheme()
 
@@ -40,7 +47,11 @@ export const MarkdownContent = memo(function MarkdownContent({
         className,
       )}
     >
-      <MarkdownRendererInner text={text} resolvedTheme={resolvedTheme} />
+      <MarkdownRendererInner
+        text={text}
+        resolvedTheme={resolvedTheme}
+        allowHtml={allowHtml}
+      />
     </div>
   )
 })

@@ -40,6 +40,7 @@ import { ROOT_ACTION_ID } from './constants'
 import { useSyncSelectedAttempt } from './hooks/useSelectedAttempt'
 import { useSelectedItem } from './hooks/useSelectedItem'
 import { RunDetailsGroupTab } from './RunDetailsGroupTab'
+import { RunDetailsConditionTab } from './RunDetailsConditionTab'
 import { RunDetailsSummaryTab } from './RunDetailsSummaryTab'
 import { RunInfoButton, RunInfoDrawer } from './RunInfo'
 import { Sidebar } from './Sidebar'
@@ -142,7 +143,11 @@ export const RunDetailsPage = () => {
   useSyncSelectedAttempt(selectedActionDetails?.data)
 
   const validTabs = useMemo(() => {
-    if (selectedItem?.type === 'group' || taskType === 'trace') {
+    if (
+      selectedItem?.type === 'group' ||
+      taskType === 'trace' ||
+      taskType === 'condition'
+    ) {
       return []
     }
     const tabs: TabType<RunDetailsTab>[] = [
@@ -358,6 +363,12 @@ export const RunDetailsPage = () => {
               {taskType === 'trace' ? (
                 <div className="relative z-0 min-h-0 flex-1 overflow-auto [scrollbar-gutter:stable_both-edges] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-400 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 dark:[&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 [&::-webkit-scrollbar-track]:bg-transparent">
                   <RunDetailsSummaryTab
+                    selectedActionDetailsQuery={selectedActionDetails}
+                  />
+                </div>
+              ) : taskType === 'condition' ? (
+                <div className="relative z-0 min-h-0 flex-1 overflow-auto [scrollbar-gutter:stable_both-edges] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-400 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 dark:[&::-webkit-scrollbar-thumb:hover]:bg-zinc-500 [&::-webkit-scrollbar-track]:bg-transparent">
+                  <RunDetailsConditionTab
                     selectedActionDetailsQuery={selectedActionDetails}
                   />
                 </div>
