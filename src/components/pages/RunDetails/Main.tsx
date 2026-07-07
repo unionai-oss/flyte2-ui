@@ -36,6 +36,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { AttemptPicker } from './AttemptPicker'
+import { ROOT_ACTION_ID } from './constants'
 import { useSyncSelectedAttempt } from './hooks/useSelectedAttempt'
 import { useSelectedItem } from './hooks/useSelectedItem'
 import { RunDetailsGroupTab } from './RunDetailsGroupTab'
@@ -105,20 +106,24 @@ export const RunDetailsPage = () => {
   )
   const { selectedItem } = useSelectedItem()
   const selectedActionId =
-    selectedItem?.type === 'action' ? selectedItem.id : null
-  const selectedActionDetails = useWatchActionDetails(selectedActionId)
+    selectedItem?.type === 'group'
+      ? ROOT_ACTION_ID
+      : selectedItem?.id || ROOT_ACTION_ID
+  const isRootSelection = selectedActionId === ROOT_ACTION_ID
+  const selectedActionDetailsForSelection = useWatchActionDetails(
+    selectedActionId,
+    { enabled: !isRootSelection },
+  )
+  const rootActionDetails = useWatchActionDetails(ROOT_ACTION_ID)
+  const selectedActionDetails = isRootSelection
+    ? rootActionDetails
+    : selectedActionDetailsForSelection
 
   const run = useRunStore((s) => s.run?.action)
   // The runs-list stream (watchActions) returns lightweight metadata without
   // `executedBy`, so source the run owner from the root action's details.
-  const rootActionId = run?.id?.name ?? null
-  const isRootSelected = !!rootActionId && selectedActionId === rootActionId
-  const rootActionDetails = useWatchActionDetails(rootActionId, {
-    enabled: !!rootActionId && !isRootSelected,
-  })
   const ownerIdentity =
-    (isRootSelected ? selectedActionDetails : rootActionDetails)?.data?.metadata
-      ?.executedBy ?? run?.metadata?.executedBy
+    rootActionDetails.data?.metadata?.executedBy ?? run?.metadata?.executedBy
   const selectedAction = useRunStore((s) => s.getAction(selectedActionId || ''))
   const taskType = getTaskType(selectedAction?.action?.metadata)
   const totalActionAttempts = selectedAction?.action?.status?.attempts || 0

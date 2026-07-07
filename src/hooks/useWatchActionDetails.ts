@@ -44,16 +44,20 @@ const isNetworkError = (error: unknown) => {
   return false
 }
 
+type UseWatchActionDetailsOptions = {
+  enabled?: boolean
+}
+
 export function useWatchActionDetails(
   actionId?: string | null,
-  options?: { enabled?: boolean },
+  options: UseWatchActionDetailsOptions = {},
 ) {
-  const isEnabled = options?.enabled ?? true
   const client = useConnectRpcClient(RunService)
   const queryClient = useQueryClient()
   const streamRef = useRef<AsyncIterable<WatchActionDetailsResponse>>(undefined)
   const abortControllerRef = useRef<AbortController>(undefined)
   const isInitializedRef = useRef(false)
+  const isEnabled = options.enabled ?? true
 
   const actionIdentifier = useActionIdentifier(actionId)
 
@@ -98,24 +102,35 @@ export function useWatchActionDetails(
     return () => cleanup()
   }, [cleanup, actionId])
 
+  useEffect(() => {
+    if (!isEnabled) {
+      cleanup()
+    }
+  }, [cleanup, isEnabled])
+
   // Invalidate query when actionIdentifier changes
   useEffect(() => {
-    if (actionIdentifier) {
+    if (isEnabled && actionIdentifier) {
       queryClient.invalidateQueries({
         queryKey: ['actionDetails', actionIdentifier],
       })
     }
-  }, [actionIdentifier, queryClient])
+  }, [actionIdentifier, isEnabled, queryClient])
 
   useEffect(() => {
     if (!actionId) {
       cleanup()
-      queryClient.removeQueries({ queryKey: ['actionDetails'] })
+      if (actionIdentifier) {
+        queryClient.removeQueries({
+          queryKey: ['actionDetails', actionIdentifier],
+          exact: true,
+        })
+      }
     }
-  }, [actionId, cleanup, queryClient])
+  }, [actionId, actionIdentifier, cleanup, queryClient])
 
   const startStream = useCallback(async () => {
-    if (!actionIdentifier || !isEnabled) {
+    if (!isEnabled || !actionIdentifier) {
       cleanup()
       return null
     }
@@ -233,7 +248,7 @@ export function useWatchActionDetails(
     queryFn: startStream,
     refetchInterval: false,
     refetchOnWindowFocus: false,
-    enabled: isEnabled && !!actionIdentifier,
+    enabled: isEnabled && !!actionId && !!actionIdentifier,
     experimental_prefetchInRender: true,
     retry: (failureCount, error) => {
       // Don't retry if the query was cancelled
