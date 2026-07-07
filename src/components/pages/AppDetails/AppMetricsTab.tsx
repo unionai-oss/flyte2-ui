@@ -9,6 +9,7 @@ import {
   useDateRangeParams,
 } from '@/components/DatePicker'
 import { TabSection } from '@/components/TabSection'
+import { APP_METRICS_UPGRADE_SOURCES } from '@/lib/constants'
 import { subDays } from 'date-fns'
 import { useEffect } from 'react'
 
@@ -35,47 +36,69 @@ export const AppMetricsTab = ({}: { appId: string | undefined }) => {
       <div className="flex flex-col gap-5 [&>*:last-child]:mb-5">
         <div className="flex gap-5">
           <TabSection heading="Replica Count">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.replicaCount}
+            />
           </TabSection>
         </div>
         <div className="flex gap-5">
           <TabSection heading="Requests">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.requests}
+            />
           </TabSection>
           <TabSection heading="Responses">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.responses}
+            />
           </TabSection>
         </div>
         <div className="flex gap-5">
           <TabSection heading="Allocated Memory">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.allocatedMemory}
+            />
           </TabSection>
           <TabSection heading="Memory Utilization">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.memoryUtilization}
+            />
           </TabSection>
         </div>
         <div className="flex gap-5">
           <TabSection heading="Allocated CPU">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.allocatedCpu}
+            />
           </TabSection>
           <TabSection heading="CPU Utilization">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.cpuUtilization}
+            />
           </TabSection>
         </div>
         <div className="flex gap-5">
           <TabSection heading="GPU Utilization">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.gpuUtilization}
+            />
           </TabSection>
           <TabSection heading="GPU Memory Allocated">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.gpuMemory}
+            />
           </TabSection>
         </div>
         <div className="flex gap-5">
           <TabSection heading="GPU SM Active Cycles">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.gpuSmActiveCycles}
+            />
           </TabSection>
           <TabSection heading="GPU SM Occupancy">
-            <AdvancedMetricsPlaceholder />
+            <AdvancedMetricsPlaceholder
+              source={APP_METRICS_UPGRADE_SOURCES.gpuSmOccupancy}
+            />
           </TabSection>
         </div>
       </div>

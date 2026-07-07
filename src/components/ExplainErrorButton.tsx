@@ -5,6 +5,7 @@
 'use client'
 
 import { Button } from '@/components/Button'
+import { LICENSED_EDITION_UPGRADE_SOURCES } from '@/lib/constants'
 import { SparklesIcon } from '@heroicons/react/24/outline'
 import { DisabledButtonWithTooltip } from './DisabledButtonWithTooltip'
 
@@ -18,7 +19,9 @@ export interface ExplainErrorButtonProps {
 
 export const ExplainErrorButton = ({}: ExplainErrorButtonProps) => {
   return (
-    <DisabledButtonWithTooltip>
+    <DisabledButtonWithTooltip
+      source={LICENSED_EDITION_UPGRADE_SOURCES.runExplainError}
+    >
       <Button
         disabled
         outline

@@ -5,12 +5,17 @@
 'use client'
 
 import { ChartIcon } from '@/components/icons/ChartIcon'
-import { FLYTE_LICENSED_EDITION_INFO_URL } from '@/lib/constants'
+import {
+  getLicensedEditionInfoUrl,
+  type LicensedEditionUpgradeSource,
+} from '@/lib/constants'
 import Link from 'next/link'
 
 interface LicensedEditionPlaceholderProps {
   /** Section title, e.g. "Users", "OAuth Apps", "Policies", "Roles" */
   title: string
+  /** Tracking source appended as `?source=` on the upgrade link. */
+  source: LicensedEditionUpgradeSource
   /** When true, card fills container width */
   fullWidth?: boolean
   /** When true, no border or shadow (e.g. formatted view inside tab sections). */
@@ -23,6 +28,7 @@ interface LicensedEditionPlaceholderProps {
  */
 export function LicensedEditionPlaceholder({
   title,
+  source,
   fullWidth,
   hideBorder,
 }: LicensedEditionPlaceholderProps) {
@@ -45,7 +51,7 @@ export function LicensedEditionPlaceholder({
         Available in the licensed edition
       </p>
       <Link
-        href={FLYTE_LICENSED_EDITION_INFO_URL}
+        href={getLicensedEditionInfoUrl(source)}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-4 text-sm font-medium text-(--union) underline underline-offset-2 hover:no-underline"
