@@ -69,6 +69,7 @@ export const SidebarControls = () => {
       [ActionPhase.RUNNING]: getPhaseCount(run, ActionPhase.RUNNING),
       [ActionPhase.SUCCEEDED]: getPhaseCount(run, ActionPhase.SUCCEEDED),
       [ActionPhase.TIMED_OUT]: getPhaseCount(run, ActionPhase.TIMED_OUT),
+      [ActionPhase.PAUSED]: getPhaseCount(run, ActionPhase.PAUSED),
       [ActionPhase.WAITING_FOR_RESOURCES]: getPhaseCount(
         run,
         ActionPhase.WAITING_FOR_RESOURCES,

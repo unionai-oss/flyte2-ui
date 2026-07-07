@@ -41,6 +41,11 @@ export const filterConfigs: FilterConfig[] = [
     value: 'RUNNING',
   },
   {
+    label: 'Paused',
+    phase: ActionPhase.PAUSED,
+    value: 'PAUSED',
+  },
+  {
     label: 'Timed out',
     phase: ActionPhase.TIMED_OUT,
     value: 'TIMED_OUT',

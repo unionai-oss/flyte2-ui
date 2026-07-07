@@ -15,6 +15,8 @@ import {
 import parseHtml from 'html-react-parser'
 import React, { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import rehypeSanitize from 'rehype-sanitize'
 import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 import { getSingletonHighlighterCore } from 'shiki/core'
@@ -107,6 +109,8 @@ const CodeBlock = ({ language, code, resolvedTheme }: CodeBlockProps) => {
 export interface MarkdownRendererInnerProps {
   text: string
   resolvedTheme?: string
+  /** Render embedded raw HTML (via rehype-raw), sanitized with rehype-sanitize. */
+  allowHtml?: boolean
 }
 
 /**
@@ -116,10 +120,16 @@ export interface MarkdownRendererInnerProps {
 export function MarkdownRendererInner({
   text,
   resolvedTheme,
+  allowHtml = false,
 }: MarkdownRendererInnerProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkBreaks]}
+      // rehypeRaw parses embedded raw HTML into the hast tree; rehypeSanitize then
+      // strips anything unsafe (scripts, event handlers, javascript: URLs, etc.).
+      // Order matters: raw must run before sanitize. Prompt content can be
+      // user-authored, so sanitizing prevents stored XSS.
+      rehypePlugins={allowHtml ? [rehypeRaw, rehypeSanitize] : []}
       components={{
         code({
           inline,

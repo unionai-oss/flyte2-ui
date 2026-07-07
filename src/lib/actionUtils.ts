@@ -36,7 +36,7 @@ export const isActionTerminal = (action?: Action | ActionDetails) => {
 }
 
 export const isActionRunning = (action?: Action | ActionDetails) => {
-  return [ActionPhase.RUNNING].includes(
+  return [ActionPhase.RUNNING, ActionPhase.PAUSED].includes(
     action?.status?.phase || ActionPhase.UNSPECIFIED,
   )
 }
@@ -45,12 +45,18 @@ export const isActionTrace = (action?: Action | ActionDetails) => {
   return action?.metadata?.spec?.case === 'trace'
 }
 
+export const isActionCondition = (action?: Action | ActionDetails) => {
+  return action?.metadata?.spec?.case === 'condition'
+}
+
 export function getTaskType(metadata?: ActionDetails['metadata']) {
   switch (metadata?.spec?.case) {
     case 'task':
       return metadata?.spec?.value?.taskType || ''
     case 'trace':
       return 'trace'
+    case 'condition':
+      return 'condition'
     default:
       return ''
   }
@@ -86,6 +92,7 @@ export const getActionDisplayString = (
     case 'trace':
       return action?.metadata?.spec?.value?.name || action?.id?.name || ''
     case 'condition':
+      return action?.metadata?.spec?.value?.name || action?.id?.name || ''
     default:
       return action?.id?.name || ''
   }

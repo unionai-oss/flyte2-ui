@@ -7,6 +7,7 @@
 import { CircleQuestionSolidIcon } from '@/components/icons/CircleQuestionSolidIcon'
 import { CircularProgressIcon } from '@/components/icons/CircularProgressIcon'
 import { MultiEllipsisIcon } from '@/components/icons/MultiEllipsisIcon'
+import { PauseCircleIcon } from '@/components/icons/PauseCircleIcon'
 import { ReadFromCacheIcon } from '@/components/icons/ReadFromCacheIcon'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 import { useAccent } from '@/hooks/usePalette'
@@ -122,6 +123,12 @@ export const StatusIconComponent = ({
         return (
           <div className={wrapperClass} style={{ color: accent }}>
             <ExclamationTriangleIcon className={iconClassName} />
+          </div>
+        )
+      case ActionPhase.PAUSED:
+        return (
+          <div className={wrapperClass} style={{ color: accent }}>
+            <PauseCircleIcon className={iconClassName} />
           </div>
         )
       case ActionPhase.UNSPECIFIED:

@@ -14,4 +14,5 @@ export const mapPhaseToDisplayString: Record<ActionPhase, string> = {
   [ActionPhase.TIMED_OUT]: 'Timed out',
   [ActionPhase.UNSPECIFIED]: 'Unspecified',
   [ActionPhase.WAITING_FOR_RESOURCES]: 'Waiting for resources',
+  [ActionPhase.PAUSED]: 'Paused',
 }

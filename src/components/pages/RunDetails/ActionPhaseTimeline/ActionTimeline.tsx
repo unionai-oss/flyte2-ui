@@ -18,12 +18,14 @@ const PhaseSection = ({
   rightAnnotation,
   style,
   tooltipSections,
+  progressPercent,
 }: {
   accentColor: string
   leftAnnotation: React.ReactNode
   rightAnnotation: React.ReactNode
   style: React.CSSProperties
   tooltipSections: TooltipSection[]
+  progressPercent?: number
 }) => {
   return (
     <Tooltip
@@ -44,10 +46,22 @@ const PhaseSection = ({
           <div className="flex-shrink-0 px-1">{rightAnnotation}</div>
         </div>
 
-        <div
-          className="h-2 rounded-full transition-all duration-700 ease-in-out"
-          style={{ background: accentColor, width: '100%' }}
-        />
+        {progressPercent !== undefined ? (
+          <div className="h-2 w-full overflow-hidden rounded-full bg-(--system-gray-3)">
+            <div
+              className="h-full rounded-full transition-all duration-700 ease-in-out"
+              style={{
+                background: accentColor,
+                width: `${Math.max(progressPercent, 1.5)}%`,
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            className="h-2 rounded-full transition-all duration-700 ease-in-out"
+            style={{ background: accentColor, width: '100%' }}
+          />
+        )}
       </div>
     </Tooltip>
   )
@@ -55,10 +69,15 @@ const PhaseSection = ({
 
 const ActionPhasesChart = ({
   phaseTransitions,
+  conditionTimeoutSeconds,
 }: {
   phaseTransitions: PhaseTransition[]
+  conditionTimeoutSeconds?: number
 }) => {
-  const timelineData = useMakeTimelineData({ phaseTransitions })
+  const timelineData = useMakeTimelineData({
+    phaseTransitions,
+    conditionTimeoutSeconds,
+  })
   return (
     <div className="flex w-full gap-1">
       {timelineData.map((phase, i) => (
@@ -69,6 +88,7 @@ const ActionPhasesChart = ({
           rightAnnotation={phase.rightAnnotation}
           style={{ width: phase.percentage }}
           tooltipSections={phase.tooltipSections}
+          progressPercent={phase.progressPercent}
         />
       ))}
     </div>
@@ -77,8 +97,10 @@ const ActionPhasesChart = ({
 
 const Timeline = ({
   phaseTransitions,
+  conditionTimeoutSeconds,
 }: {
   phaseTransitions: PhaseTransition[]
+  conditionTimeoutSeconds?: number
 }) => {
   const bounds = getEarliestLatest(phaseTransitions)
   const duration = getRunningTime({
@@ -89,7 +111,10 @@ const Timeline = ({
 
   return (
     <div className="flex w-full flex-col items-start gap-5 px-6 pt-6 pb-4">
-      <ActionPhasesChart phaseTransitions={phaseTransitions} />
+      <ActionPhasesChart
+        phaseTransitions={phaseTransitions}
+        conditionTimeoutSeconds={conditionTimeoutSeconds}
+      />
       <div className="flex-start flex gap-4 text-[11px] font-medium text-zinc-500">
         <span>Start Time: {toDateFormat({ timestamp: bounds.startTime })}</span>
         <span>End Time: {toDateFormat({ timestamp: bounds.endTime })}</span>
@@ -102,14 +127,19 @@ const Timeline = ({
 export const ActionTimeline = ({
   phaseTransitions,
   taskType,
+  conditionTimeoutSeconds,
 }: {
   phaseTransitions: PhaseTransition[] | undefined
   taskType: string
+  conditionTimeoutSeconds?: number
 }) => {
   return (
     <TabSection heading={taskType === 'trace' ? 'Timeline' : null}>
       {phaseTransitions ? (
-        <Timeline phaseTransitions={phaseTransitions} />
+        <Timeline
+          phaseTransitions={phaseTransitions}
+          conditionTimeoutSeconds={conditionTimeoutSeconds}
+        />
       ) : (
         <div className="flex h-28 items-center justify-center gap-2 text-sm text-(--system-gray-5)">
           <ChartIcon className="size-5" />

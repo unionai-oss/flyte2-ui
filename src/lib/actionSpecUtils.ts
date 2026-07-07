@@ -28,10 +28,16 @@ export const getActionSpecInterface = (actionDetails?: ActionDetails) => {
     outputs: create(VariableMapSchema, { variables: [] }),
   })
 
-  if (isTaskSpec(actionDetails?.spec)) {
-    return actionDetails?.spec?.value?.taskTemplate?.interface || emptyInterface
+  switch (actionDetails?.spec?.case) {
+    case 'task':
+      return actionDetails.spec.value.taskTemplate?.interface || emptyInterface
+    case 'trace':
+      return actionDetails.spec.value.interface || emptyInterface
+    case 'condition':
+      return emptyInterface
+    default:
+      return emptyInterface
   }
-  return actionDetails?.spec?.value?.interface || emptyInterface
 }
 
 export const getActionSpecInterfaceEnvironment = (

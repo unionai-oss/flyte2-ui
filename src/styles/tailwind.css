@@ -172,6 +172,10 @@
     @apply bg-yellow-400/12 text-yellow-400;
   }
 
+  .phase-paused {
+    @apply bg-yellow-400/12 text-yellow-400;
+  }
+
   .bg-page-dark {
     @apply bg-[#1B1B1B];
   }
