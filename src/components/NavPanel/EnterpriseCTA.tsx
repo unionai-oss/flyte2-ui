@@ -2,7 +2,10 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { FLYTE_LICENSED_EDITION_INFO_URL } from '@/lib/constants'
+import {
+  getLicensedEditionInfoUrl,
+  LICENSED_EDITION_UPGRADE_SOURCES,
+} from '@/lib/constants'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import { Tooltip } from '../Tooltip'
@@ -62,7 +65,9 @@ export const EnterpriseCTA = ({ size }: EnterpriseCTAProps) => {
         className={isThin ? 'mt-3 mb-2 px-0' : 'mt-3 mb-2 px-0.5'}
       >
         <Link
-          href={FLYTE_LICENSED_EDITION_INFO_URL}
+          href={getLicensedEditionInfoUrl(
+            LICENSED_EDITION_UPGRADE_SOURCES.sidebarEnterpriseCta,
+          )}
           target="_blank"
           rel="noopener noreferrer"
           className="group block"
