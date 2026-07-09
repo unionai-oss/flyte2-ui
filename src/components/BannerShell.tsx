@@ -12,10 +12,11 @@ export interface BannerShellProps {
   /** Right-aligned actions (buttons). Omit for a content-only banner. */
   actions?: ReactNode
   /**
-   * Variant + spacing classes supplied by the caller (border color, background,
-   * text color, padding, margins, gap). Kept caller-controlled so each banner
-   * keeps its own look — e.g. ErrorBanner's red, PausedRunsBanner's yellow.
-   */
+   /**
+    * Variant + spacing classes supplied by the caller (border color, background,
+    * text color, padding, margins, gap). Kept caller-controlled so each banner
+    * keeps its own look — e.g. ErrorBanner's red, PausedRunsBanner's purple.
+    */
   className?: string
 }
 
