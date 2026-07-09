@@ -20,10 +20,9 @@ import { formatForTable } from './table/util'
 const PAUSED_BANNER_DISMISSED_KEY = 'settings.runs.pausedBannerDismissed'
 
 const BANNER_CLASS_NAME =
-  'mx-10 mb-6 gap-3 p-5 border-(--accent-yellow)/20 bg-(--accent-background-yellow)'
+  'mx-10 mb-6 gap-3 p-5 border-(--union)/20 bg-(--accent-background-purple)'
 
-const BUTTON_CLASS_NAME =
-  '!text-(--accent-yellow) hover:!bg-(--accent-yellow)/10'
+const BUTTON_CLASS_NAME = '!text-(--union) hover:!bg-(--union)/10'
 
 interface PausedRunsBannerProps {
   projectId?: ProjectIdentifier
@@ -36,7 +35,7 @@ interface PausedRunsBannerProps {
 }
 
 /**
- * Amber banner shown above the runs list when one or more runs are waiting for a
+ * Branded banner shown above the runs list when one or more runs are waiting for a
  * human-in-the-loop signal (an action in the PAUSED phase). Backed by its own
  * lightweight `ListRuns` request (`paused_actions_only`), so it surfaces paused
  * runs even when they're outside the current view/filters.
@@ -111,7 +110,7 @@ export const PausedRunsBanner = ({
             <BaseButton
               size="sm"
               border
-              className={`!border-(--accent-yellow)/40 ${BUTTON_CLASS_NAME}`}
+              className={`!border-(--union)/40 ${BUTTON_CLASS_NAME}`}
               onClick={onClear}
             >
               Clear
@@ -120,7 +119,7 @@ export const PausedRunsBanner = ({
             <BaseButton
               size="sm"
               border
-              className={`!border-(--accent-yellow)/40 ${BUTTON_CLASS_NAME}`}
+              className={`!border-(--union)/40 ${BUTTON_CLASS_NAME}`}
               onClick={onApply}
             >
               {isSingle ? 'View run' : 'View runs'}
@@ -136,7 +135,7 @@ export const PausedRunsBanner = ({
         </div>
       }
     >
-      <div className="flex min-w-0 items-center gap-2 text-[13px] leading-normal font-semibold tracking-[0.033px] text-(--accent-yellow)">
+      <div className="flex min-w-0 items-center gap-2 text-[13px] leading-normal font-semibold tracking-[0.033px] text-(--union)">
         <PauseCircleIcon className="size-4 shrink-0" />
         <span className="truncate">{label}</span>
       </div>
