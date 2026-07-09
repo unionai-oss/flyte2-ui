@@ -4,6 +4,7 @@
 
 import { ClearAllFiltersButton } from '@/components/ClearAllFiltersButton'
 import { useDateRangeParams } from '@/components/DatePicker'
+import { PausedOnlyFilter } from '@/components/PausedOnlyFilter'
 import { ProjectIdentifierSchema } from '@/gen/flyteidl2/common/identifier_pb'
 import { Filter, Filter_Function } from '@/gen/flyteidl2/common/list_pb'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
@@ -20,7 +21,9 @@ import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, type ReactNode } from 'react'
 import { StatusFilter } from '../StatusFilter'
 import { ListRunsTableView } from './ListRunsTableView'
+import { PausedRunsBanner } from './PausedRunsBanner'
 import { RunsTableRow } from './table/types'
+import { useListRunsPausedFilter } from './useListRunsPausedFilter'
 
 type ProjectDomainParams = {
   domain?: string
@@ -40,6 +43,13 @@ export interface ListRunsContentProps {
   noRowsMessage?: string
   /** When true, the last table row has no bottom border */
   hideLastRowBorder?: boolean
+  /**
+   * Show the "runs waiting for signal" prompt/confirmation banner above the
+   * list. The "Paused only" filter pill is always available regardless; only
+   * the banner nudge is gated, since it's meant for the top-level runs list
+   * (not the task/trigger details run tabs, which are already scoped).
+   */
+  showPausedBanner?: boolean
   /**
    * Optional element rendered directly above the filter chips. Pass a
    * fully-configured <DatePickerPopover> (or any node) — the caller controls
@@ -62,6 +72,7 @@ export const ListRunsContent = ({
   className,
   noRowsMessage = 'Get started by triggering a run with flyte from the CLI',
   hideLastRowBorder = false,
+  showPausedBanner = false,
   datePickerPopover,
 }: ListRunsContentProps) => {
   // Read route params and build projectId
@@ -75,6 +86,9 @@ export const ListRunsContent = ({
   const { selectedOwners, clearFilter: clearOwnerFilter } =
     useOwnerFilter('owner')
   const { dateRange, setDateRange, toParam } = useDateRangeParams()
+
+  const pausedFilter = useListRunsPausedFilter()
+  const pausedFilterApplied = pausedFilter.isApplied
 
   // Sync the DatePicker to "Last 7 days" when no existing date params provided
   useEffect(() => {
@@ -178,16 +192,23 @@ export const ListRunsContent = ({
     return (
       (statusFilters.status && statusFilters.status.length > 0) ||
       !!searchTerm ||
-      selectedOwners.length > 0
+      selectedOwners.length > 0 ||
+      pausedFilterApplied
     )
-  }, [statusFilters.status, searchTerm, selectedOwners.length])
+  }, [
+    statusFilters.status,
+    searchTerm,
+    selectedOwners.length,
+    pausedFilterApplied,
+  ])
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
     clearStatusFilter()
     setSearchTerm(null)
     clearOwnerFilter()
-  }, [clearStatusFilter, setSearchTerm, clearOwnerFilter])
+    pausedFilter.clear()
+  }, [clearStatusFilter, setSearchTerm, clearOwnerFilter, pausedFilter])
 
   // Merge query param filters with additional filters
   const allFilters = useMemo(
@@ -210,8 +231,8 @@ export const ListRunsContent = ({
         values: f.values,
       })),
     )
-    return `table-${projectKey}-${filtersKey}`
-  }, [projectId, allFilters])
+    return `table-${projectKey}-${filtersKey}-${pausedFilterApplied ? 'paused' : 'all'}`
+  }, [projectId, allFilters, pausedFilterApplied])
 
   return (
     <>
@@ -224,6 +245,11 @@ export const ListRunsContent = ({
             <div className="flex items-center gap-2">
               <StatusFilter />
 
+              <PausedOnlyFilter
+                isActive={pausedFilterApplied}
+                onToggle={pausedFilter.toggle}
+              />
+
               {/* Clear all filters button */}
               {hasActiveFilters && (
                 <ClearAllFiltersButton onClick={clearAllFilters} />
@@ -231,6 +257,15 @@ export const ListRunsContent = ({
             </div>
           </div>
         </div>
+
+        {showPausedBanner && (
+          <PausedRunsBanner
+            projectId={projectId}
+            isApplied={pausedFilterApplied}
+            onApply={pausedFilter.apply}
+            onClear={pausedFilter.clear}
+          />
+        )}
 
         <ListRunsTableView
           key={viewKey}
@@ -240,6 +275,7 @@ export const ListRunsContent = ({
           noRowsMessage={noRowsMessage}
           enabled={true}
           hideLastRowBorder={hideLastRowBorder}
+          pausedActionsOnly={pausedFilterApplied}
         />
       </div>
     </>
