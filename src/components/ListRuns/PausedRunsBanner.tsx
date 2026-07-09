@@ -90,13 +90,13 @@ export const PausedRunsBanner = ({
   const isSingle = count === 1
   const formatted = firstRun ? formatForTable(firstRun) : undefined
   const runId = formatted?.runId.id
-  const runName = formatted?.name.shortName || formatted?.name.fullName || runId
+  const resolvedName = formatted?.name.shortName || formatted?.name.fullName
 
   // Use the single-run label only when we actually resolved a name; otherwise
-  // fall back to the count form so we never render "(undefined)".
+  // fall back to the count form so we never render "(undefined)" or duplicate IDs.
   const promptLabel =
-    isSingle && runName
-      ? `${runName}${runId ? ` (${runId})` : ''} waiting for signal`
+    isSingle && resolvedName
+      ? `${resolvedName}${runId ? ` (${runId})` : ''} waiting for signal`
       : `${hasMore ? `${count}+` : count} runs waiting for signal`
 
   const label = isApplied ? 'Showing runs waiting for signal' : promptLabel
