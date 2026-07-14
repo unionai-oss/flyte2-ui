@@ -62,24 +62,55 @@ export const filterConfigs: FilterConfig[] = [
   },
 ]
 
-export const useStatusFilterMenuItems = () => {
+/**
+ * Statuses hidden from the *runs list* Status filter (see `StatusFilter` below).
+ *
+ * PAUSED is excluded there because that filter can't express it correctly:
+ *  - The runs-list Status filter turns each selection into a `phase` column
+ *    filter on the run's *root* action. A human-in-the-loop pause, however,
+ *    lives on a *child* gate action, so a root-only `phase = PAUSED` filter
+ *    never matches the runs users expect to see.
+ *  - The backend does expose `paused_actions_only` (a correlated EXISTS
+ *    subquery), but it's a top-level boolean flag on `ListRunsRequest`, not a
+ *    `Filter`. It is therefore not AND-composed with the other column filters
+ *    this dropdown builds, so it can't be wired into the multi-select alongside
+ *    the other phases without behaving incorrectly (e.g. combining "Paused" with
+ *    another status).
+ *
+ * Paused runs are surfaced instead via the dedicated "waiting for signal"
+ * banner/filter (PausedRunsBanner), which sends `paused_actions_only` on its
+ * own request.
+ *
+ * NOTE: this only applies to the runs list. On the run details page the filter
+ * operates on the run's individual actions, where a PAUSED gate action is a
+ * real, directly-filterable phase — so that filter keeps PAUSED (it does not
+ * pass `excludeValues`).
+ */
+const RUNS_LIST_HIDDEN_STATUS_VALUES: ReadonlySet<keyof typeof ActionPhase> =
+  new Set(['PAUSED'])
+
+export const useStatusFilterMenuItems = (
+  excludeValues?: ReadonlySet<keyof typeof ActionPhase>,
+) => {
   const { filters, toggleFilter } = useQueryFilters()
   const menuItems: MenuItem[] = useMemo(() => {
-    return filterConfigs.map((config) => ({
-      id: config.label,
-      label: config.label,
-      onClick: () => toggleFilter({ type: 'status', status: config.value }),
-      selected: !!filters.status?.includes(config.value),
-      type: 'item',
-      icon: <StatusIcon phase={config.phase} isStatic={true} />,
-    }))
-  }, [filters.status, toggleFilter])
+    return filterConfigs
+      .filter((config) => !excludeValues?.has(config.value))
+      .map((config) => ({
+        id: config.label,
+        label: config.label,
+        onClick: () => toggleFilter({ type: 'status', status: config.value }),
+        selected: !!filters.status?.includes(config.value),
+        type: 'item',
+        icon: <StatusIcon phase={config.phase} isStatic={true} />,
+      }))
+  }, [filters.status, toggleFilter, excludeValues])
   return menuItems
 }
 
 export const StatusFilter = () => {
   const { filters, clearFilter } = useQueryFilters()
-  const menuItems = useStatusFilterMenuItems()
+  const menuItems = useStatusFilterMenuItems(RUNS_LIST_HIDDEN_STATUS_VALUES)
   return (
     <PopoverMenu
       label="Status"

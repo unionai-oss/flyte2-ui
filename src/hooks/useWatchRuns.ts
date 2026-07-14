@@ -19,7 +19,16 @@ interface UseWatchRunsOptions {
   projectId?: ProjectIdentifier
   filters?: Filter[]
   enabled?: boolean
+  /**
+   * When true, only return runs that contain at least one action in the
+   * PAUSED phase (e.g. a human-in-the-loop gate node awaiting input).
+   */
+  pausedActionsOnly?: boolean
 }
+
+// Default page size for runs-list requests. Shared so the table and the paused
+// banner request stay in lockstep.
+export const RUNS_LIST_PAGE_LIMIT = 100
 
 // Polling interval for refreshing the runs list.
 // We poll listRuns rather than using the watchRuns stream because watchRuns
@@ -27,10 +36,11 @@ interface UseWatchRunsOptions {
 const POLLING_INTERVAL_MS = 2000 // Poll every 2 seconds
 
 export function useWatchRuns({
-  limit = 100,
+  limit = RUNS_LIST_PAGE_LIMIT,
   projectId,
   filters,
   enabled = true,
+  pausedActionsOnly = false,
 }: UseWatchRunsOptions = {}) {
   const client = useConnectRpcClient(RunService)
 
@@ -63,12 +73,13 @@ export function useWatchRuns({
           case: 'projectId',
           value: projectId,
         },
+        pausedActionsOnly,
       })
 
       const response = await client.listRuns(listRequest)
       return response
     },
-    [client, limit, projectId, filters],
+    [client, limit, projectId, filters, pausedActionsOnly],
   )
 
   const isQueryEnabled =
@@ -78,7 +89,7 @@ export function useWatchRuns({
     !!projectId?.organization
 
   const infiniteQuery = useInfiniteQuery({
-    queryKey: ['watchRuns', { projectId, limit, filters }],
+    queryKey: ['watchRuns', { projectId, limit, filters, pausedActionsOnly }],
     queryFn: fetchRunsPage,
     initialPageParam: '',
     getNextPageParam: (lastPage: ListRunsResponse) => {

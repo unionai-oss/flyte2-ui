@@ -51,6 +51,7 @@ export function ListRunsPage() {
                 owner,
               ]}
               className="bg-primary min-w-0 flex-1 gap-2 [&:first-child]:px-10 [&:first-child]:pb-6"
+              showPausedBanner={true}
             />
           </div>
         </NavPanelLayout>

@@ -21,6 +21,8 @@ interface ListRunsTableViewProps {
   noRowsMessage?: string
   enabled?: boolean
   hideLastRowBorder?: boolean
+  /** Restrict the list to runs with an action awaiting a signal (PAUSED). */
+  pausedActionsOnly?: boolean
 }
 
 export const ListRunsTableView = ({
@@ -30,13 +32,14 @@ export const ListRunsTableView = ({
   noRowsMessage = 'Get started by triggering a run with flyte from the CLI',
   enabled = true,
   hideLastRowBorder = false,
+  pausedActionsOnly = false,
 }: ListRunsTableViewProps) => {
   // Encapsulate the query inside the component
   const runsQuery = useWatchRuns({
-    limit: 100,
     projectId,
     filters,
     enabled,
+    pausedActionsOnly,
   })
 
   // Flatten all pages into a single array of runs
