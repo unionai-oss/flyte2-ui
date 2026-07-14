@@ -5,6 +5,7 @@
 import React, { ComponentProps, memo, useState } from 'react'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/Button'
+import { getDocument, getNavigator, getWindow } from '@/lib/windowUtils'
 import { CopyIcon } from './icons/CopyIcon'
 
 type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -73,15 +74,38 @@ export const useCopyToClipboard = ({
 }) => {
   const [copiedValue, setCopiedValue] = useState<string | null>(null)
 
-  const handleCopy = (
+  const handleCopy = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     value: string,
   ) => {
     event.stopPropagation()
     event.preventDefault()
-    navigator.clipboard.writeText(value)
-    setCopiedValue(value)
-    setTimeout(() => setCopiedValue(null), delayMs)
+
+    const win = getWindow()
+    const doc = getDocument()
+    const nav = getNavigator()
+
+    try {
+      if (nav?.clipboard && win?.isSecureContext) {
+        await nav.clipboard.writeText(value)
+      } else if (doc) {
+        // navigator.clipboard is only available in secure contexts (https or
+        // localhost). Fall back to execCommand for deployments served over http.
+        const textarea = doc.createElement('textarea')
+        textarea.value = value
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        doc.body.appendChild(textarea)
+        textarea.focus()
+        textarea.select()
+        doc.execCommand('copy')
+        doc.body.removeChild(textarea)
+      }
+      setCopiedValue(value)
+      setTimeout(() => setCopiedValue(null), delayMs)
+    } catch (err) {
+      console.error('Failed to copy to clipboard', err)
+    }
   }
 
   return { copiedValue, handleCopy }
