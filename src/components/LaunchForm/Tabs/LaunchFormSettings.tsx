@@ -68,6 +68,7 @@ export const LaunchFormSettings = () => {
     setValue,
     watch,
     setError,
+    trigger,
   } = useFormContext<LaunchFormState>()
   const params = useParams<{ domain?: string; project?: string }>()
   const org = useOrg()
@@ -185,6 +186,65 @@ export const LaunchFormSettings = () => {
         helpText={`String used to identify this run. If provided, ${RUN_NAME_MIN_LENGTH}–${RUN_NAME_MAX_LENGTH} characters; only letters, numbers, hyphens, and underscores (no spaces). If not specified, the name will be auto generated.`}
       />
 
+      <div className="pt-7">
+        <InputWithHelpText
+          id="max-action-concurrency"
+          input={
+            <>
+              <Input
+                id="max-action-concurrency"
+                type="number"
+                min={0}
+                step={1}
+                placeholder="Unlimited"
+                {...(errors.maxActionConcurrency
+                  ? { 'data-invalid': true }
+                  : {})}
+                aria-invalid={!!errors.maxActionConcurrency}
+                aria-describedby={
+                  errors.maxActionConcurrency
+                    ? 'max-action-concurrency-description max-action-concurrency-error'
+                    : 'max-action-concurrency-description'
+                }
+                {...register('maxActionConcurrency', {
+                  setValueAs: (value) => {
+                    if (value === '' || value === null || value === undefined) {
+                      return undefined
+                    }
+                    const parsed = Number(value)
+                    return Number.isFinite(parsed) ? parsed : undefined
+                  },
+                  validate: (value) => {
+                    if (value === undefined) return true
+                    if (
+                      !Number.isSafeInteger(value) ||
+                      value < 0 ||
+                      value > 4_294_967_295
+                    ) {
+                      return 'Max action concurrency must be an integer between 0 and 4294967295'
+                    }
+                    if (value === 1) {
+                      return 'Max action concurrency must be 0 (unlimited) or at least 2; a limit of 1 can deadlock runs whose parent action waits on child actions'
+                    }
+                    return true
+                  },
+                  onChange: () => {
+                    void trigger('maxActionConcurrency')
+                  },
+                })}
+              />
+              {errors.maxActionConcurrency ? (
+                <span id="max-action-concurrency-error" role="alert">
+                  <ErrorText>{errors.maxActionConcurrency.message}</ErrorText>
+                </span>
+              ) : null}
+            </>
+          }
+          labelText="Max action concurrency"
+          helpText="Maximum number of actions of this run that may execute concurrently. Leave empty or set to 0 for unlimited. Must be 0 or at least 2 (a limit of 1 can deadlock runs whose parent action waits on child actions)."
+        />
+      </div>
+
       <InputGroup className="py-7">
         <RadioGroup<OverwriteCache>
           id="overwrite-cache"
@@ -225,13 +285,20 @@ export const LaunchFormSettings = () => {
           }}
         />
       </InputGroup>
-      {/*
-      <InputWithHelpText
-        id="service-account"
-        input={<Input {...register('serviceAccount')} />}
-        labelText="Service account"
-        helpText={`The service account to use for this run eg “default-service-account.”`}
-      /> */}
+      <div className="pt-7">
+        <InputWithHelpText
+          id="service-account"
+          input={
+            <Input
+              id="service-account"
+              aria-describedby="service-account-description"
+              {...register('serviceAccount')}
+            />
+          }
+          labelText="Service account"
+          helpText={`The service account to use for this run eg “default-service-account.”`}
+        />
+      </div>
     </TabLayout>
   )
 }

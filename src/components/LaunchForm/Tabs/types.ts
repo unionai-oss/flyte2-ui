@@ -65,7 +65,12 @@ export type LaunchFormState = {
   interruptible?: boolean
   overwriteCache: boolean
   runName: string
-  // serviceAccount: string
+  /**
+   * Maximum number of actions of this run that may execute concurrently.
+   * Undefined / 0 means unlimited (RunSpec.maxActionConcurrency; proto: `max_action_concurrency`).
+   */
+  maxActionConcurrency?: number
+  serviceAccount?: string
   inputs?: Record<string, unknown>
   formData?: Record<string, unknown>
   context?: KeyValuePair[]

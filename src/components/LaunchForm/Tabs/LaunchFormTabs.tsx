@@ -27,7 +27,7 @@ export const TabLayout = ({ children }: { children: React.ReactNode }) => {
 const tabErrors: Record<LaunchFormTab, (keyof LaunchFormState)[]> = {
   inputs: ['inputs'],
   context: ['context'],
-  settings: ['runName'],
+  settings: ['runName', 'maxActionConcurrency'],
   'env-vars': ['envs'],
   labels: ['labels'],
   debug: [],
@@ -75,6 +75,7 @@ export const LaunchFormTabs = () => {
     errors.inputs,
     errors.context,
     errors.runName,
+    errors.maxActionConcurrency,
     errors.envs,
     errors.labels,
   ])

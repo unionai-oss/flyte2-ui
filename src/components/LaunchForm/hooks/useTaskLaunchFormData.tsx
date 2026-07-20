@@ -80,6 +80,9 @@ export const useTaskLaunchFormData = ({
     const jsonInputs = merge(taskQuery.data?.json, literalsQuery.data?.json, {})
     const { target, metadata } =
       taskDetails?.data?.details?.spec?.taskTemplate ?? {}
+    const serviceAccount =
+      taskDetails.data.details?.spec?.taskTemplate?.securityContext?.runAs
+        ?.k8sServiceAccount
     const isContainer = target?.case === 'container'
     const envs = isContainer ? target?.value?.env : undefined
     // Prepopulate interruptible from task spec when task defines it (TaskMetadata.interruptible_value)
@@ -96,9 +99,11 @@ export const useTaskLaunchFormData = ({
       labels: [],
       interruptible,
       overwriteCache: false,
+      maxActionConcurrency: undefined,
       inputs: jsonInputs,
       formData: getFormDataFromSchemaDefaults(jsonInputs),
       runName: '',
+      serviceAccount,
     } as LaunchFormState
   }, [
     taskQuery.data,
