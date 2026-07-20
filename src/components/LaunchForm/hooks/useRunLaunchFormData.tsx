@@ -96,10 +96,12 @@ export const useRunLaunchFormData = () => {
       labels: processedLabels,
       interruptible: runSpec?.interruptible ?? undefined,
       overwriteCache,
+      maxActionConcurrency: runSpec?.maxActionConcurrency || undefined,
       inputs: jsonInputs,
       formData: getFormDataFromSchemaDefaults(jsonInputs),
       runName: '',
       context: actionData?.inputs?.context ?? [],
+      serviceAccount: runSpec?.securityContext?.runAs?.k8sServiceAccount,
     } as LaunchFormState
   }, [
     taskQuery.isFetched,

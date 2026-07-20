@@ -183,6 +183,7 @@ export const LaunchFormButtons = () => {
         disabled={
           !!formState.errors.inputs ||
           !!formState.errors.runName ||
+          !!formState.errors.maxActionConcurrency ||
           !!formState.errors.context ||
           !!formState.errors.envs ||
           !!formState.errors.labels ||
@@ -193,13 +194,15 @@ export const LaunchFormButtons = () => {
             ? 'Please fix JSON errors in inputs before submitting'
             : formState.errors.runName
               ? 'Please fix run name validation errors'
-              : formState.errors.context
-                ? 'Please fix context validation errors'
-                : formState.errors.envs
-                  ? 'Please fix environment variable validation errors'
-                  : formState.errors.labels
-                    ? 'Please fix label validation errors'
-                    : 'Submit the form'
+              : formState.errors.maxActionConcurrency
+                ? 'Please fix max action concurrency validation errors'
+                : formState.errors.context
+                  ? 'Please fix context validation errors'
+                  : formState.errors.envs
+                    ? 'Please fix environment variable validation errors'
+                    : formState.errors.labels
+                      ? 'Please fix label validation errors'
+                      : 'Submit the form'
         }
       >
         {buttonText === 'Run' ? (

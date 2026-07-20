@@ -174,6 +174,14 @@ export function buildLaunchRunSubmitPayload({
       labels: formatLabels(formValues.labels),
       interruptible: formValues.interruptible,
       overwriteCache: formValues.overwriteCache,
+      maxActionConcurrency: formValues.maxActionConcurrency ?? 0,
+      ...(formValues.serviceAccount && {
+        securityContext: {
+          runAs: {
+            k8sServiceAccount: formValues.serviceAccount,
+          },
+        },
+      }),
     }),
   }
 }
