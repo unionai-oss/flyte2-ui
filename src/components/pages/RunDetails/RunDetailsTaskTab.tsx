@@ -3,7 +3,6 @@
  */
 
 import { DescriptionListWrapper } from '@/components/DescriptionListWrapper'
-import { useSelectedActionId } from '@/components/pages/RunDetails/hooks/useSelectedItem'
 import { TabSection } from '@/components/TabSection'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { useWatchActionDetails } from '@/hooks/useWatchActionDetails'
@@ -21,10 +20,14 @@ function taskTemplateToRawJson(
   }
 }
 
-export const RunDetailsTaskTab: React.FC = ({}) => {
-  const selectedActionId = useSelectedActionId()
-  const selectedActionDetails = useWatchActionDetails(selectedActionId)
-  const { spec } = selectedActionDetails.data || {}
+interface RunDetailsTaskTabProps {
+  selectedActionDetailsQuery: ReturnType<typeof useWatchActionDetails>
+}
+
+export const RunDetailsTaskTab: React.FC<RunDetailsTaskTabProps> = ({
+  selectedActionDetailsQuery,
+}) => {
+  const { spec } = selectedActionDetailsQuery.data || {}
   const { taskTemplate } = (spec?.value as TaskSpec) || {}
 
   const rawJson = useMemo(
