@@ -9,7 +9,10 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # PRs group by number so a new push cancels the stale run. Pushes to main
+  # group by commit SHA so each merged PR gets its own run that is never
+  # cancelled by a later merge.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
