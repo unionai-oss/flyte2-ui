@@ -41,7 +41,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          # Only build arm64 on release (push to main). PRs build amd64 only
+          # for validation — arm64 goes through slow QEMU emulation and PRs
+          # never push, so emulating it on every PR was pure wasted time.
+          platforms: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           build-args: |
             BUILDKITE_COMMIT=${{ github.sha }}
