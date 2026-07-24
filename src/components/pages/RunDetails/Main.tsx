@@ -182,7 +182,11 @@ export const RunDetailsPage = () => {
       {
         label: 'Task',
         icon: <TaskIcon width={14} />,
-        content: <RunDetailsTaskTab />,
+        content: (
+          <RunDetailsTaskTab
+            selectedActionDetailsQuery={selectedActionDetails}
+          />
+        ),
         path: RunDetailsTab.TASK,
       },
       {
