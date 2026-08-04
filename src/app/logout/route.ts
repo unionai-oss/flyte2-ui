@@ -12,11 +12,14 @@ export const dynamic = 'force-dynamic'
 /**
  * Session cookies expired on sign out, as `LOGOUT_CLEAR_COOKIES` (comma-separated).
  *
- * Defaults to AWS ALB's, which shards the session across `AWSELBAuthSessionCookie-0`,
- * `-1`, … as the token grows. They are expired unconditionally because ALB does NOT
- * forward its own session cookie to the target (verified: the request arrives with
- * none), so "expire what the request carries" clears nothing and leaves the user
- * signed in. Expiring a cookie that was never set is a no-op.
+ * Defaults to AWS ALB's four shards — it splits the session at 4K and supports 16K
+ * total, so `-0`…`-3` is the documented maximum, not a guess. Override this if the
+ * listener rule sets a custom `SessionCookieName`.
+ *
+ * They are expired unconditionally because ALB does NOT forward its own session
+ * cookie to the target (verified: the request arrives with none), so "expire what
+ * the request carries" clears nothing and leaves the user signed in. Expiring a
+ * cookie that was never set is a no-op.
  *
  * Most other proxies — oauth2-proxy (`/oauth2/sign_out`), GCP IAP
  * (`/_gcp_iap/clear_login_cookie`), Cloudflare Access (`/cdn-cgi/access/logout`) —
