@@ -30,7 +30,7 @@ const EXPIRED = 'Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpO
 /**
  * Signs the user out by expiring the ALB OIDC session cookies.
  *
- * ponytail: clearing the cookie only ends the *ALB* session. If the IdP session is
+ * Note: clearing the cookie only ends the *ALB* session. If the IdP session is
  * still live, the next request re-authenticates silently — set `OIDC_LOGOUT_URL`
  * (e.g. the Okta `/v1/logout` endpoint) to end that one too.
  */

@@ -123,7 +123,7 @@ export function getS3ConsoleUrl(
   return `${base}/s3/object/${encodedBucket}?prefix=${encodedKey}`
 }
 
-/** Post-login/logout landing path. Mirrors apiUtils' `LOGIN_REDIRECT_PATH`. */
+/** Post-login/logout landing path. Keep in sync with apiUtils.LOGIN_REDIRECT_PATH (apiUtils is client-only). */
 export const DEFAULT_REDIRECT_PATH = '/v2/projects'
 
 /**

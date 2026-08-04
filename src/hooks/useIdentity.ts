@@ -18,7 +18,7 @@ export function useIdentity() {
 
   return useQuery({
     queryKey: ['identity'],
-    // ponytail: swallow the error instead of letting it reach the query cache —
+    // Note: swallow the error instead of letting it reach the query cache —
     // an errored query trips AuthStatusProvider's refresh/login-panel flow, and
     // "this deployment has no auth" is not an expired session.
     queryFn: () => client.userInfo({}).catch(() => null),
