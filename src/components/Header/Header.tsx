@@ -7,9 +7,9 @@
 import React, { useMemo, useState } from 'react'
 
 import { type MenuItem, PopoverMenu } from '@/components/Popovers'
+import { SignOutPanel } from '@/components/SignOutPanel'
 import { UserIcon } from '@/components/UserIdentityInfo'
 import { useIdentity } from '@/hooks/useIdentity'
-import { getLogoutUrl } from '@/lib/apiUtils'
 import { resolveUserNameFields } from '@/lib/userIdentityUtils'
 
 interface HeaderProps {
@@ -20,6 +20,7 @@ interface HeaderProps {
 export function Header({ logoComponent }: HeaderProps) {
   const { data: identity } = useIdentity()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [signOutOpen, setSignOutOpen] = useState(false)
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -27,13 +28,16 @@ export function Header({ logoComponent }: HeaderProps) {
         id: 'logout',
         type: 'custom',
         component: (
-          <a
-            href={getLogoutUrl()}
-            className="flex w-full cursor-pointer items-center px-4.5 py-2 text-[13px] text-(--system-gray-6)"
-            onClick={() => setMenuOpen(false)}
+          <button
+            type="button"
+            className="flex w-full cursor-pointer items-center px-4.5 py-2 text-left text-[13px] text-(--system-gray-6)"
+            onClick={() => {
+              setMenuOpen(false)
+              setSignOutOpen(true)
+            }}
           >
             Sign out
-          </a>
+          </button>
         ),
       },
     ],
@@ -77,6 +81,8 @@ export function Header({ logoComponent }: HeaderProps) {
           </button>
         </PopoverMenu>
       )}
+      {/* Outside the menu so closing the popover doesn't unmount the dialog. */}
+      <SignOutPanel open={signOutOpen} onCancel={() => setSignOutOpen(false)} />
     </div>
   )
 }

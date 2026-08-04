@@ -19,15 +19,21 @@ describe('Header', () => {
     expect(screen.queryByLabelText('User menu')).not.toBeInTheDocument()
   })
 
-  it('shows the user name and a Sign out link', async () => {
-    identity.data = { givenName: 'Kevin', familyName: 'Su', email: '', subject: 'k' }
+  it('shows the user name and confirms before signing out', async () => {
+    identity.data = {
+      givenName: 'Kevin',
+      familyName: 'Su',
+      email: '',
+      subject: 'k',
+    }
     render(<Header />)
     expect(screen.getByText('Kevin Su')).toBeInTheDocument()
 
+    // The menu item opens the confirmation rather than signing out directly.
     await userEvent.click(screen.getByLabelText('User menu'))
-    expect(screen.getByRole('link', { name: 'Sign out' })).toHaveAttribute(
-      'href',
-      expect.stringContaining('/logout'),
-    )
+    expect(screen.queryByText('Sign out of Flyte?')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Sign out' }))
+    expect(screen.getByText('Sign out of Flyte?')).toBeInTheDocument()
   })
 })
