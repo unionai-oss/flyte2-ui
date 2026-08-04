@@ -59,6 +59,31 @@ describe('GET /v2/logout', () => {
     expect(setCookie[0]).toContain('AWSELBAuthSessionCookie-0=;')
   })
 
+  it('clears only what LOGOUT_CLEAR_COOKIES names, and nothing when it is empty', async () => {
+    // The route reads the env at module load, so exercise both via a fresh import.
+    vi.resetModules()
+    process.env.LOGOUT_CLEAR_COOKIES = '_oauth2_proxy'
+    cookieJar.names = ['_oauth2_proxy_0', 'AWSELBAuthSessionCookie-0']
+    const proxied = await import('./route')
+    let res = await proxied.GET(new Request('https://flyte.example/v2/logout'))
+    let setCookie = res.headers.getSetCookie()
+    expect(setCookie.map((c) => c.split('=')[0]).sort()).toEqual([
+      '_oauth2_proxy',
+      '_oauth2_proxy_0',
+    ])
+
+    vi.resetModules()
+    process.env.LOGOUT_CLEAR_COOKIES = ''
+    const redirectOnly = await import('./route')
+    res = await redirectOnly.GET(new Request('https://flyte.example/v2/logout'))
+    setCookie = res.headers.getSetCookie()
+    expect(setCookie).toHaveLength(0)
+    expect(res.status).toBe(302)
+
+    delete process.env.LOGOUT_CLEAR_COOKIES
+    vi.resetModules()
+  })
+
   it('redirects to the IdP when OIDC_LOGOUT_URL is set', async () => {
     process.env.OIDC_LOGOUT_URL = 'https://okta.example/oauth2/v1/logout'
     const res = await GET(new Request('https://flyte.example/v2/logout'))

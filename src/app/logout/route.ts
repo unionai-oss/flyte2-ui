@@ -10,27 +10,35 @@ import { safeRedirectPath } from '@/lib/urlUtils'
 export const dynamic = 'force-dynamic'
 
 /**
- * ALB shards the OIDC session across `AWSELBAuthSessionCookie-0`, `-1`, … as the
- * token grows, so we expire every cookie with this prefix rather than a fixed pair.
+ * Session cookies expired on sign out, as `LOGOUT_CLEAR_COOKIES` (comma-separated).
+ *
+ * Defaults to AWS ALB's, which shards the session across `AWSELBAuthSessionCookie-0`,
+ * `-1`, … as the token grows. They are expired unconditionally because ALB does NOT
+ * forward its own session cookie to the target (verified: the request arrives with
+ * none), so "expire what the request carries" clears nothing and leaves the user
+ * signed in. Expiring a cookie that was never set is a no-op.
+ *
+ * Most other proxies — oauth2-proxy (`/oauth2/sign_out`), GCP IAP
+ * (`/_gcp_iap/clear_login_cookie`), Cloudflare Access (`/cdn-cgi/access/logout`) —
+ * expose a sign-out endpoint that clears their own cookie. Point `OIDC_LOGOUT_URL`
+ * at it and set `LOGOUT_CLEAR_COOKIES=` (empty) so this route only redirects.
  */
-const ALB_SESSION_COOKIE_PREFIX = 'AWSELBAuthSessionCookie'
+const CLEAR_COOKIES = (
+  process.env.LOGOUT_CLEAR_COOKIES ??
+  'AWSELBAuthSessionCookie-0,AWSELBAuthSessionCookie-1,AWSELBAuthSessionCookie-2,AWSELBAuthSessionCookie-3'
+)
+  .split(',')
+  .map((name) => name.trim())
+  .filter(Boolean)
 
-/**
- * Shards expired unconditionally. AWS ALB does NOT forward its own session cookie
- * to the target (verified: the request arrives with none), so "expire what the
- * request carries" clears nothing and leaves the user signed in. Deleting a cookie
- * that was never set is a no-op, so covering the usual shard count is the cheap way
- * to be certain — anything a request does carry is expired on top of these.
- */
-const ALB_SESSION_COOKIE_SHARDS = 4
-
-/** ALB sets its session cookies host-only on `/`; deletion must match. */
+/** Proxy session cookies are host-only on `/`; deletion must match to overwrite. */
 const EXPIRED = 'Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax'
 
 /**
- * Signs the user out by expiring the ALB OIDC session cookies.
+ * Signs the user out by expiring the proxy's session cookies, then handing off to
+ * the identity provider.
  *
- * Note: clearing the cookie only ends the *ALB* session. If the IdP session is
+ * Note: clearing the cookie only ends the *proxy* session. If the IdP session is
  * still live, the next request re-authenticates silently — set `OIDC_LOGOUT_URL`
  * (e.g. the Okta `/v1/logout` endpoint) to end that one too.
  */
@@ -43,21 +51,21 @@ export async function GET(request: Request) {
 
   const response = NextResponse.redirect(target, 302)
 
-  // Empty behind ALB; non-empty behind proxies that do forward the session cookie.
+  // Shards past the configured names, for proxies that do forward their session
+  // cookie and split it further than the defaults cover.
   const forwarded = (await cookies())
     .getAll()
     .map((c) => c.name)
-    .filter((name) => name.startsWith(ALB_SESSION_COOKIE_PREFIX))
+    .filter((name) =>
+      CLEAR_COOKIES.some((base) => {
+        if (!name.startsWith(base)) return false
+        // `-0` (ALB) and `_0` (oauth2-proxy) are the shard suffixes in the wild.
+        const shard = name.slice(base.length)
+        return shard === '' || /^[-_]\d+$/.test(shard)
+      }),
+    )
 
-  const names = new Set([
-    ...forwarded,
-    ...Array.from(
-      { length: ALB_SESSION_COOKIE_SHARDS },
-      (_, i) => `${ALB_SESSION_COOKIE_PREFIX}-${i}`,
-    ),
-  ])
-
-  for (const name of names) {
+  for (const name of new Set([...CLEAR_COOKIES, ...forwarded])) {
     response.headers.append('set-cookie', `${name}=; ${EXPIRED}`)
   }
 
