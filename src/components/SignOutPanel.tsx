@@ -46,11 +46,13 @@ export function SignOutPanel({ open, onCancel }: SignOutPanelProps) {
             You will need to sign in again to continue.
           </p>
         </DialogBody>
-        <DialogActions className="flex sm:flex-col">
+        {/* !flex-col: DialogActions defaults to a row at sm+, which would sit the
+            two buttons side by side and overflow the dialog. */}
+        <DialogActions className="w-full !flex-col">
           <Button
             color="union"
             size="lg"
-            className="!w-[311px] justify-center"
+            className="!w-full justify-center"
             data-testid="signout-confirm"
             onClick={() => {
               const w = getWindow()
@@ -62,7 +64,7 @@ export function SignOutPanel({ open, onCancel }: SignOutPanelProps) {
           <Button
             outline
             size="lg"
-            className="!w-[311px] justify-center"
+            className="!w-full justify-center"
             data-testid="signout-cancel"
             onClick={onCancel}
           >
