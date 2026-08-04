@@ -15,6 +15,15 @@ export const dynamic = 'force-dynamic'
  */
 const ALB_SESSION_COOKIE_PREFIX = 'AWSELBAuthSessionCookie'
 
+/**
+ * Shards expired unconditionally. The load balancer does not necessarily forward
+ * its own session cookie to the target, so "expire what the request carries" can
+ * clear nothing at all and leave the user signed in. Deleting a cookie that was
+ * never set is a no-op, so covering the usual shard count is the cheap way to be
+ * certain — anything the request does carry is expired on top of these.
+ */
+const ALB_SESSION_COOKIE_SHARDS = 4
+
 /** ALB sets its session cookies host-only on `/`; deletion must match. */
 const EXPIRED = 'Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax'
 
@@ -34,12 +43,23 @@ export async function GET(request: Request) {
 
   const response = NextResponse.redirect(target, 302)
 
-  const names = (await cookies())
+  const forwarded = (await cookies())
     .getAll()
     .map((c) => c.name)
     .filter((name) => name.startsWith(ALB_SESSION_COOKIE_PREFIX))
 
-  // Nothing to clear (no ALB in front, or already signed out) — still redirect.
+  // Logged because whether the proxy forwards its session cookie decides whether
+  // the request-derived names above are ever non-empty.
+  console.log('[logout] proxy session cookies on request:', forwarded)
+
+  const names = new Set([
+    ...forwarded,
+    ...Array.from(
+      { length: ALB_SESSION_COOKIE_SHARDS },
+      (_, i) => `${ALB_SESSION_COOKIE_PREFIX}-${i}`,
+    ),
+  ])
+
   for (const name of names) {
     response.headers.append('set-cookie', `${name}=; ${EXPIRED}`)
   }

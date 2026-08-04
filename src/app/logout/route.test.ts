@@ -45,9 +45,18 @@ describe('GET /v2/logout', () => {
     expect(res.headers.get('location')).toBe('https://flyte.example/v2/projects')
 
     const setCookie = res.headers.getSetCookie()
-    expect(setCookie).toHaveLength(2)
     expect(setCookie.every((c) => c.includes('Max-Age=0'))).toBe(true)
     expect(setCookie.some((c) => c.includes('unrelated'))).toBe(false)
+    for (const name of ['AWSELBAuthSessionCookie-0', 'AWSELBAuthSessionCookie-1']) {
+      expect(setCookie.filter((c) => c.startsWith(`${name}=`))).toHaveLength(1)
+    }
+  })
+
+  it('expires the shards even when the proxy forwards no cookies', async () => {
+    const res = await GET(new Request('https://flyte.example/v2/logout'))
+    const setCookie = res.headers.getSetCookie()
+    expect(setCookie).toHaveLength(4)
+    expect(setCookie[0]).toContain('AWSELBAuthSessionCookie-0=;')
   })
 
   it('redirects to the IdP when OIDC_LOGOUT_URL is set', async () => {
