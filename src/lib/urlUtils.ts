@@ -122,3 +122,18 @@ export function getS3ConsoleUrl(
   const encodedKey = encodeURIComponent(keyPart)
   return `${base}/s3/object/${encodedBucket}?prefix=${encodedKey}`
 }
+
+/** Post-login/logout landing path. Mirrors apiUtils' `LOGIN_REDIRECT_PATH`. */
+export const DEFAULT_REDIRECT_PATH = '/v2/projects'
+
+/**
+ * Only same-origin absolute paths may be used as a post-logout redirect —
+ * the value comes off the query string, so anything else is an open redirect.
+ */
+export function safeRedirectPath(raw: string | null): string {
+  if (!raw) return DEFAULT_REDIRECT_PATH
+  if (!raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\')) {
+    return DEFAULT_REDIRECT_PATH
+  }
+  return raw
+}

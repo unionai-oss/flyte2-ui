@@ -21,6 +21,14 @@ export function getLoginUrl(): string {
   return `${baseUrl || ''}/login?redirect_url=${encodeURIComponent(LOGIN_REDIRECT_PATH)}`
 }
 
+/**
+ * Logout URL. Unlike login, this is served by this app (`src/app/logout/route.ts`,
+ * under the `/v2` basePath) — the proxy authenticates but has no logout endpoint.
+ */
+export function getLogoutUrl(): string {
+  return `/v2/logout?redirect_url=${encodeURIComponent(LOGIN_REDIRECT_PATH)}`
+}
+
 export function createTransport(_useBinaryFormat: boolean) {
   return createConnectTransport({
     baseUrl: BASE_ADMIN_API,
