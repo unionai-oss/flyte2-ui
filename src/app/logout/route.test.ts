@@ -1,0 +1,101 @@
+/**
+ * © Copyright Union Systems Inc 2026. All rights reserved.
+ */
+
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { safeRedirectPath } from '@/lib/urlUtils'
+
+import { GET } from './route'
+
+const cookieJar = vi.hoisted(() => ({ names: [] as string[] }))
+vi.mock('next/headers', () => ({
+  cookies: async () => ({
+    getAll: () => cookieJar.names.map((name) => ({ name, value: 'x' })),
+  }),
+}))
+
+describe('safeRedirectPath', () => {
+  it('keeps same-origin absolute paths', () => {
+    expect(safeRedirectPath('/v2/projects/foo')).toBe('/v2/projects/foo')
+  })
+
+  it('rejects off-site redirects', () => {
+    for (const bad of ['//evil.com', 'https://evil.com', '/\\evil.com', null]) {
+      expect(safeRedirectPath(bad)).toBe('/v2/projects')
+    }
+  })
+})
+
+describe('GET /v2/logout', () => {
+  beforeEach(() => {
+    cookieJar.names = []
+    delete process.env.OIDC_LOGOUT_URL
+  })
+
+  it('expires every ALB session cookie shard and redirects', async () => {
+    cookieJar.names = [
+      'AWSELBAuthSessionCookie-0',
+      'AWSELBAuthSessionCookie-1',
+      'unrelated',
+    ]
+    const res = await GET(new Request('https://flyte.example/v2/logout'))
+
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('https://flyte.example/v2/projects')
+
+    const setCookie = res.headers.getSetCookie()
+    expect(setCookie.every((c) => c.includes('Max-Age=0'))).toBe(true)
+    expect(setCookie.some((c) => c.includes('unrelated'))).toBe(false)
+    for (const name of ['AWSELBAuthSessionCookie-0', 'AWSELBAuthSessionCookie-1']) {
+      expect(setCookie.filter((c) => c.startsWith(`${name}=`))).toHaveLength(1)
+    }
+  })
+
+  it('expires the shards even when the proxy forwards no cookies', async () => {
+    const res = await GET(new Request('https://flyte.example/v2/logout'))
+    const setCookie = res.headers.getSetCookie()
+    expect(setCookie).toHaveLength(4)
+    expect(setCookie[0]).toContain('AWSELBAuthSessionCookie-0=;')
+  })
+
+  it('clears only what LOGOUT_CLEAR_COOKIES names, and nothing when it is empty', async () => {
+    // The route reads the env at module load, so exercise both via a fresh import.
+    vi.resetModules()
+    process.env.LOGOUT_CLEAR_COOKIES = '_oauth2_proxy'
+    cookieJar.names = ['_oauth2_proxy_0', 'AWSELBAuthSessionCookie-0']
+    const proxied = await import('./route')
+    let res = await proxied.GET(new Request('https://flyte.example/v2/logout'))
+    let setCookie = res.headers.getSetCookie()
+    expect(setCookie.map((c) => c.split('=')[0]).sort()).toEqual([
+      '_oauth2_proxy',
+      '_oauth2_proxy_0',
+    ])
+
+    vi.resetModules()
+    process.env.LOGOUT_CLEAR_COOKIES = ''
+    const redirectOnly = await import('./route')
+    res = await redirectOnly.GET(new Request('https://flyte.example/v2/logout'))
+    setCookie = res.headers.getSetCookie()
+    expect(setCookie).toHaveLength(0)
+    expect(res.status).toBe(302)
+
+    delete process.env.LOGOUT_CLEAR_COOKIES
+    vi.resetModules()
+  })
+
+  it('redirects to the IdP when OIDC_LOGOUT_URL is set', async () => {
+    process.env.OIDC_LOGOUT_URL = 'https://okta.example/oauth2/v1/logout'
+    const res = await GET(new Request('https://flyte.example/v2/logout'))
+    expect(res.headers.get('location')).toBe(
+      'https://okta.example/oauth2/v1/logout',
+    )
+  })
+
+  it('ignores an attacker-supplied redirect_url', async () => {
+    const res = await GET(
+      new Request('https://flyte.example/v2/logout?redirect_url=//evil.com'),
+    )
+    expect(res.headers.get('location')).toBe('https://flyte.example/v2/projects')
+  })
+})
