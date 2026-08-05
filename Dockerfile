@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
 
 # Base image setup
-FROM node:23-alpine AS base
-RUN apk add --no-cache libc6-compat rsync git
+FROM node:24-alpine AS base
+# apk upgrade picks up openssl (libssl3/libcrypto3) CVE fixes published after the base image tag
+RUN apk upgrade --no-cache && apk add --no-cache libc6-compat rsync git
 
 LABEL org.opencontainers.image.title="Flyte 2 Console"
 LABEL org.opencontainers.image.source=https://github.com/unionai-oss/flyte2-ui
