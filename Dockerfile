@@ -59,6 +59,12 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
   adduser -S nextjs -u 1001
 
+# The runtime only runs `node server.js` — drop npm/corepack/yarn so their bundled
+# deps (tar, brace-expansion, ip-address, undici, ...) stop tripping image CVE scans
+RUN rm -rf /usr/local/lib/node_modules /opt/yarn* \
+  /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+  /usr/local/bin/yarn /usr/local/bin/yarnpkg
+
 # Copy standalone server and dependencies
 COPY --from=deps --chown=nextjs:nodejs /app/.next/standalone ./
 # Copy static files for Next.js to serve
