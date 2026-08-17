@@ -6,19 +6,25 @@ import { useMemo } from 'react'
 
 import { create } from '@bufbuild/protobuf'
 import { createClient } from '@connectrpc/connect'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   SelectClusterRequest_Operation,
   SelectClusterRequestSchema,
 } from '@/gen/flyteidl2/cluster/payload_pb'
+import { ClusterService as Flyteidl2ClusterService } from '@/gen/flyteidl2/cluster/service_pb'
 import { DataProxyService } from '@/gen/flyteidl2/dataproxy/dataproxy_service_pb'
 import { ActionDetails } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { createClusterConnectTransport } from '@/lib/apiUtils'
 import { DATA_PLANE_CONNECTION_ERROR } from '@/lib/errorMessages'
 import { getRetryQueryOnNon404 } from '@/lib/errorUtils'
 
-import { getSelectClusterQueryKey, useSelectCluster } from './useSelectCluster'
+import { useConnectRpcClient } from './useConnectRpc'
+import {
+  getSelectClusterQueryKey,
+  selectClusterQueryOptions,
+  useSelectCluster,
+} from './useSelectCluster'
 
 export interface UseActionDataProps {
   actionDetails?: ActionDetails | null
@@ -34,6 +40,8 @@ export function useActionData({
   actionDetails,
   enabled = true,
 }: UseActionDataProps) {
+  const queryClient = useQueryClient()
+  const clusterServiceClient = useConnectRpcClient(Flyteidl2ClusterService)
   const actionId = actionDetails?.id
 
   const selectClusterRequest = useMemo(
@@ -59,12 +67,9 @@ export function useActionData({
     queryFn: async () => {
       if (!actionId || !selectClusterRequest) return null
 
-      const clusterEndpoint = clusterQuery.data
-      if (!clusterEndpoint) {
-        throw new Error(
-          'Unable to load action data because the cluster endpoint could not be resolved. Please try again.',
-        )
-      }
+      const clusterEndpoint = await queryClient.ensureQueryData(
+        selectClusterQueryOptions(clusterServiceClient, selectClusterRequest),
+      )
 
       const dataproxyClient = createClient(
         DataProxyService,
