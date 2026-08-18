@@ -12,6 +12,7 @@ import {
   SelectClusterRequest_Operation,
   SelectClusterRequestSchema,
 } from '@/gen/flyteidl2/cluster/payload_pb'
+import { ClusterService as Flyteidl2ClusterService } from '@/gen/flyteidl2/cluster/service_pb'
 import {
   DataProxyService,
   TailLogsRequestSchema,
@@ -22,7 +23,12 @@ import { ActionDetails } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { createClusterConnectTransport } from '@/lib/apiUtils'
 import { DATA_PLANE_CONNECTION_ERROR } from '@/lib/errorMessages'
 
-import { getSelectClusterQueryKey, useSelectCluster } from './useSelectCluster'
+import { useConnectRpcClient } from './useConnectRpc'
+import {
+  getSelectClusterQueryKey,
+  selectClusterQueryOptions,
+  useSelectCluster,
+} from './useSelectCluster'
 
 interface UseWatchLogsOptions {
   actionDetails?: ActionDetails
@@ -48,6 +54,7 @@ export function useWatchLogs({
   connectorEndpoint = '',
 }: UseWatchLogsOptions = {}) {
   const queryClient = useQueryClient()
+  const clusterServiceClient = useConnectRpcClient(Flyteidl2ClusterService)
 
   const attemptNumber = attempt ?? 0
 
@@ -225,12 +232,14 @@ export function useWatchLogs({
   const query = useQuery<LogsState>({
     queryKey,
     queryFn: async () => {
-      const clusterEndpoint = clusterQuery.data
-      if (!clusterEndpoint) {
+      if (!selectClusterRequest) {
         throw new Error(
-          'Unable to stream logs because the cluster endpoint could not be resolved. Please try again.',
+          'Unable to stream logs because the action identifier is incomplete.',
         )
       }
+      const clusterEndpoint = await queryClient.ensureQueryData(
+        selectClusterQueryOptions(clusterServiceClient, selectClusterRequest),
+      )
 
       const client = createClient(
         DataProxyService,
