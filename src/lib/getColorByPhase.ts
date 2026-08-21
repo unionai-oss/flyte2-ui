@@ -20,7 +20,8 @@ export const getColorsByPhase = (
     case ActionPhase.RUNNING: {
       return 'blue'
     }
-    case ActionPhase.SUCCEEDED: {
+    case ActionPhase.SUCCEEDED:
+    case ActionPhase.RECOVERED: {
       return 'green'
     }
     case ActionPhase.ABORTED: {

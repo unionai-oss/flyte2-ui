@@ -15,5 +15,6 @@ export const isAttemptTerminal = (attempt?: ActionAttempt | null) => {
     ActionPhase.ABORTED,
     ActionPhase.FAILED,
     ActionPhase.TIMED_OUT,
+    ActionPhase.RECOVERED,
   ].includes(attempt?.phase || ActionPhase.UNSPECIFIED)
 }

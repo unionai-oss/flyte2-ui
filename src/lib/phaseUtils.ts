@@ -26,6 +26,8 @@ export function getPhaseString(phase: ActionPhase | undefined) {
       return 'Timed out'
     case ActionPhase.PAUSED:
       return 'Paused'
+    case ActionPhase.RECOVERED:
+      return 'Recovered'
     case ActionPhase.UNSPECIFIED:
     default:
       return 'Unknown'
@@ -52,6 +54,8 @@ export function getPhaseClass(phase: ActionPhase | undefined): string {
       return 'phase-timed-out'
     case ActionPhase.PAUSED:
       return 'phase-paused'
+    case ActionPhase.RECOVERED:
+      return 'phase-recovered'
     case ActionPhase.UNSPECIFIED:
     default:
       return 'phase-unspecified'
@@ -80,6 +84,8 @@ export const getPhaseEnumValue = (
       return ActionPhase.WAITING_FOR_RESOURCES
     case 'PAUSED':
       return ActionPhase.PAUSED
+    case 'RECOVERED':
+      return ActionPhase.RECOVERED
     case 'UNSPECIFIED':
       return ActionPhase.UNSPECIFIED
     default: {
@@ -112,6 +118,8 @@ export const getPhaseFroπmEnum = (
       return 'WAITING_FOR_RESOURCES'
     case ActionPhase.PAUSED:
       return 'PAUSED'
+    case ActionPhase.RECOVERED:
+      return 'RECOVERED'
     default:
       return undefined
   }
