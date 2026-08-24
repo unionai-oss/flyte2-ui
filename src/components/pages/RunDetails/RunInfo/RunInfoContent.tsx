@@ -226,8 +226,8 @@ export const RunInfoContent = ({
             name: 'Run spec',
             items: [
               {
-                name: 'Cluster',
-                value: runSpec?.cluster,
+                name: 'Queue',
+                value: runSpec?.queue,
                 copyBtn: true,
               },
               {

@@ -15,9 +15,11 @@ import { useEffect, useState } from 'react'
 import { useRunLaunchFormData } from '../LaunchForm/hooks/useRunLaunchFormData'
 import { useTaskLaunchFormData } from '../LaunchForm/hooks/useTaskLaunchFormData'
 import { AbortModal } from './components/AbortModal'
+import { RecoverModal } from './components/RecoverModal'
 
 export const RunButton = () => {
   const [abortOpen, setAbortOpen] = useState(false)
+  const [recoverOpen, setRecoverOpen] = useState(false)
   const { setTaskSpec, setIsOpen } = useLaunchFormState()
 
   const { drawerMeta, isDataFetched, isTerminalPhase, formMethods, spec } =
@@ -36,7 +38,6 @@ export const RunButton = () => {
         options={
           isTerminalPhase
             ? [
-                // In terminal phase, show only rerun option
                 {
                   name: (
                     <span className="flex items-center">
@@ -45,6 +46,12 @@ export const RunButton = () => {
                     </span>
                   ),
                   onClick: () => setIsOpen(true),
+                },
+                // Recovery replays the run as-is and reuses its succeeded actions, so it
+                // takes no inputs and skips the launch form entirely.
+                {
+                  name: 'Recover',
+                  onClick: () => setRecoverOpen(true),
                 },
               ]
             : [
@@ -69,6 +76,7 @@ export const RunButton = () => {
         }
       />
       <AbortModal isOpen={abortOpen} setIsOpen={setAbortOpen} />
+      <RecoverModal isOpen={recoverOpen} setIsOpen={setRecoverOpen} />
       <LaunchFormDrawer {...{ drawerMeta, formMethods, isDataFetched }} />
     </>
   )
