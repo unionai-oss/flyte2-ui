@@ -16,6 +16,7 @@ import { TranslatorService } from '@/gen/flyteidl2/workflow/translator_service_p
 import { useConnectRpcClient } from '@/hooks/useConnectRpc'
 import { useLaunchFormState } from '@/hooks/useLaunchFormState'
 import { useOrg } from '@/hooks/useOrg'
+import { getRunIdentifier } from '@/hooks/useRunDetails'
 import { useTaskDetails } from '@/hooks/useTaskDetails'
 import { useUploadRunInputs } from '@/hooks/useUploadRunInputs'
 import { createRunRequestWithOffloadedInputs } from '@/lib/createRunRequestWithOffloadedInputs'
@@ -33,7 +34,10 @@ export const LaunchFormButtons = () => {
   const translatorClient = useConnectRpcClient(TranslatorService)
   const params = useParams<RunDetailsPageParams>()
   const org = useOrg()
-  const { buttonText, setIsOpen, taskSpec, triggerName } = useLaunchFormState()
+  const { buttonText, launchMode, setIsOpen, taskSpec, triggerName } =
+    useLaunchFormState()
+  const isRecover = launchMode === 'recover'
+  const submitText = isRecover ? 'Recover' : buttonText
 
   const { handleSubmit, getValues, setError, formState } =
     useFormContext<LaunchFormState>()
@@ -115,6 +119,16 @@ export const LaunchFormButtons = () => {
         name: projectDomain.project,
         taskSpec: taskSpec ?? undefined,
         triggerName: triggerName ?? undefined,
+        // A recovery is this same submission plus provenance: the new run points at the
+        // run it recovers, so the server can reuse that run's succeeded actions.
+        recoverFrom: isRecover
+          ? getRunIdentifier({
+              domain: projectDomain.domain,
+              name: params.runId || '',
+              org,
+              project: projectDomain.project,
+            })
+          : undefined,
       })
       if (!payload) {
         return
@@ -149,6 +163,8 @@ export const LaunchFormButtons = () => {
     }
   }, [
     getValues,
+    isRecover,
+    params.runId,
     formState.errors.inputs,
     formState.errors.context,
     formState.errors.envs,
@@ -205,12 +221,12 @@ export const LaunchFormButtons = () => {
                       : 'Submit the form'
         }
       >
-        {buttonText === 'Run' ? (
+        {submitText === 'Run' ? (
           <PlayIcon className="size-3" fill="currentColor" />
         ) : (
           <RerunIcon className="size-3" />
         )}
-        {buttonText}
+        {submitText}
       </Button>
     </>
   )

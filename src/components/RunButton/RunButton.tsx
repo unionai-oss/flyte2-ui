@@ -8,19 +8,25 @@ import { Button } from '@/components/Button'
 import ComboButton from '@/components/ComboButton'
 import { RerunIcon } from '@/components/icons/RerunIcon'
 import { LaunchFormDrawer } from '@/components/LaunchForm'
+import { LaunchFormMode } from '@/components/LaunchForm/Tabs/types'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { useLaunchFormState } from '@/hooks/useLaunchFormState'
-import { PlayIcon } from '@heroicons/react/24/solid'
+import { ArrowUturnLeftIcon, PlayIcon } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import { useRunLaunchFormData } from '../LaunchForm/hooks/useRunLaunchFormData'
 import { useTaskLaunchFormData } from '../LaunchForm/hooks/useTaskLaunchFormData'
 import { AbortModal } from './components/AbortModal'
-import { RecoverModal } from './components/RecoverModal'
 
 export const RunButton = () => {
   const [abortOpen, setAbortOpen] = useState(false)
-  const [recoverOpen, setRecoverOpen] = useState(false)
-  const { setTaskSpec, setIsOpen } = useLaunchFormState()
+  const { setTaskSpec, setIsOpen, setLaunchMode } = useLaunchFormState()
+
+  // Rerun and recover share the launch drawer — a recovery takes the same inputs and
+  // settings, and only differs in what the submit does with the source run.
+  const openLaunchForm = (mode: LaunchFormMode) => {
+    setLaunchMode(mode)
+    setIsOpen(true)
+  }
 
   const { drawerMeta, isDataFetched, isTerminalPhase, formMethods, spec } =
     useRunLaunchFormData()
@@ -45,13 +51,16 @@ export const RunButton = () => {
                       Rerun
                     </span>
                   ),
-                  onClick: () => setIsOpen(true),
+                  onClick: () => openLaunchForm('rerun'),
                 },
-                // Recovery replays the run as-is and reuses its succeeded actions, so it
-                // takes no inputs and skips the launch form entirely.
                 {
-                  name: 'Recover',
-                  onClick: () => setRecoverOpen(true),
+                  name: (
+                    <span className="flex items-center">
+                      <ArrowUturnLeftIcon className="mr-2 size-3" />
+                      Recover
+                    </span>
+                  ),
+                  onClick: () => openLaunchForm('recover'),
                 },
               ]
             : [
@@ -70,13 +79,12 @@ export const RunButton = () => {
                 },
                 {
                   name: 'Rerun',
-                  onClick: () => setIsOpen(true),
+                  onClick: () => openLaunchForm('rerun'),
                 },
               ]
         }
       />
       <AbortModal isOpen={abortOpen} setIsOpen={setAbortOpen} />
-      <RecoverModal isOpen={recoverOpen} setIsOpen={setRecoverOpen} />
       <LaunchFormDrawer {...{ drawerMeta, formMethods, isDataFetched }} />
     </>
   )

@@ -17,7 +17,7 @@ import { KVPair, LaunchFormState } from '../Tabs/types'
 
 export const useRunLaunchFormData = () => {
   const run = useRunStore((s) => s.run?.action)
-  const { taskSpec } = useLaunchFormState()
+  const { launchMode, taskSpec } = useLaunchFormState()
   const runId = run?.id?.run?.name || ''
   const runData = useRunDetails(runId)
   const isTerminalPhase =
@@ -131,7 +131,7 @@ export const useRunLaunchFormData = () => {
 
   const drawerMeta = useMemo(
     () => ({
-      title: 'Rerun:',
+      title: launchMode === 'recover' ? 'Recover:' : 'Rerun:',
       breadcrumbs: [
         { value: run?.id?.name },
         {
@@ -141,7 +141,7 @@ export const useRunLaunchFormData = () => {
         { label: 'Run ID:', value: run?.id?.run?.name },
       ],
     }),
-    [run, taskSpec],
+    [launchMode, run, taskSpec],
   )
 
   return {

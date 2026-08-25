@@ -85,6 +85,13 @@ export type LaunchFormTab =
   | 'debug'
 
 /**
+ * How the launch drawer submits. `recover` reuses the source run's succeeded actions
+ * (RunSpec.relation = RECOVER) instead of re-executing everything; the form itself is the
+ * same, because a recovery accepts changed inputs exactly like a rerun.
+ */
+export type LaunchFormMode = 'rerun' | 'recover'
+
+/**
  * Phases that the user can select notifications for. The proto allows any
  * `ActionPhase`, but only terminal phases (success/failure variants) make
  * sense in the run-completed notification context, matching the design.
