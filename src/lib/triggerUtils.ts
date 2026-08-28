@@ -16,6 +16,15 @@ import dayjs from 'dayjs'
 import { getDateObject, getFormatDate } from './dateUtils'
 
 /**
+ * Reserved `Inputs.context` key under which a scheduled trigger stashes the name of its
+ * kickoff-time-bound input arg. At fire time the runtime fills that input from the run start
+ * time (the stored inputs never carry the per-fire value). It is internal plumbing and is
+ * excluded from the user-facing context. Mirrors the SDK constant
+ * (`flyte._internal.runtime.convert.KICKOFF_TIME_INPUT_ARG_CONTEXT_KEY`).
+ */
+export const KICKOFF_TIME_INPUT_ARG_CONTEXT_KEY = '_u_kickoff_time_input_arg'
+
+/**
  * Gets the abbreviated timezone name (e.g., "PST", "PDT", "CST", "CDT")
  * @param timezone IANA timezone string (e.g., "America/Los_Angeles")
  * @param date Optional date to determine DST (defaults to current date)

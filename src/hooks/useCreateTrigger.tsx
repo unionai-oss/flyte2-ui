@@ -208,8 +208,11 @@ export const useCreateTrigger = ({
       const triggerSpecReq = create(TriggerSpecSchema, {
         active: createTriggerState.activeOnCreation === false ? false : true,
         description: createTriggerState.description,
-        inputs: {
-          literals: literals,
+        // The console has no trigger-input offload path, so it always writes the
+        // inline arm of TriggerSpec.input_wrapper.
+        inputWrapper: {
+          case: 'inputs',
+          value: { literals },
         },
         runSpec: {
           ...(createTriggerState.labels &&

@@ -48,12 +48,16 @@ export const LaunchFormButtons = () => {
   )
 
   const { latestVersion } = useTriggerRun(triggerName ?? undefined)
+  // A trigger's TriggerName carries no org, and useTaskDetails disables itself on an empty org
+  // (`enabled: ... && !!org`). Falling back to the session org keeps this query enabled — without
+  // it the task interface never loads, JsonValuesToLiterals gets no variables and returns zero
+  // literals, and the run silently launches with the task's defaults instead of the form values.
   const { data: triggerTaskDetailsData } = useTaskDetails({
     version: latestVersion || '',
     name: triggerName?.taskName ?? '',
     project: triggerName?.project ?? '',
     domain: triggerName?.domain ?? '',
-    org: triggerName?.org ?? '',
+    org: triggerName?.org || org,
     enabled: !!triggerName,
   })
 
