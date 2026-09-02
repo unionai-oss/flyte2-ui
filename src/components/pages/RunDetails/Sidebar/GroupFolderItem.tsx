@@ -23,6 +23,7 @@ export function useGroupPhase(counts: ChildPhaseCounts): ActionPhase | null {
       ActionPhase.FAILED,
       ActionPhase.ABORTED,
       ActionPhase.TIMED_OUT,
+      ActionPhase.RECOVERED,
     ]
     const hasTerminal = terminalPhases.some((phase) => getCount(phase) > 0)
 
@@ -54,7 +55,14 @@ export function useGroupPhase(counts: ChildPhaseCounts): ActionPhase | null {
     if (getCount(ActionPhase.FAILED) > 0) return ActionPhase.FAILED
     if (getCount(ActionPhase.TIMED_OUT) > 0) return ActionPhase.TIMED_OUT
     if (getCount(ActionPhase.ABORTED) > 0) return ActionPhase.ABORTED
-    if (getCount(ActionPhase.SUCCEEDED) === total) return ActionPhase.SUCCEEDED
+    if (
+      getCount(ActionPhase.SUCCEEDED) + getCount(ActionPhase.RECOVERED) ===
+      total
+    ) {
+      return getCount(ActionPhase.SUCCEEDED) > 0
+        ? ActionPhase.SUCCEEDED
+        : ActionPhase.RECOVERED
+    }
 
     return null
   }, [counts])

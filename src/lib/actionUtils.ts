@@ -32,6 +32,7 @@ export const isActionTerminal = (action?: Action | ActionDetails) => {
     ActionPhase.ABORTED,
     ActionPhase.FAILED,
     ActionPhase.TIMED_OUT,
+    ActionPhase.RECOVERED,
   ].includes(action?.status?.phase || ActionPhase.UNSPECIFIED)
 }
 

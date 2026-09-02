@@ -47,6 +47,7 @@ export const FolderGroup = ({
     case ActionPhase.FAILED: {
       return <ErrorFolderIcon {...props} />
     }
+    case ActionPhase.RECOVERED:
     case ActionPhase.SUCCEEDED:
       return <SuccessStatusFolder {...props} />
     default: {

@@ -2,7 +2,10 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { LaunchFormTab } from '@/components/LaunchForm/Tabs/types'
+import {
+  LaunchFormMode,
+  LaunchFormTab,
+} from '@/components/LaunchForm/Tabs/types'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { useSearchParams } from 'next/navigation'
 import { useQueryState } from 'nuqs'
@@ -18,6 +21,9 @@ import { TriggerName } from '@/gen/flyteidl2/common/identifier_pb'
 type Ctx = {
   buttonText: string
   isOpen: boolean
+  /** Whether the drawer submits a plain rerun or a recovery. */
+  launchMode: LaunchFormMode
+  setLaunchMode: (mode: LaunchFormMode) => void
   launchFormTab: LaunchFormTab
   setLaunchFormTab: (tab?: LaunchFormTab | null) => void
   setIsOpen: (newState: boolean) => void
@@ -48,6 +54,7 @@ export const LaunchFormStateProvider: React.FC<{
     TriggerName | null | undefined
   >()
   const [isOpen, setIsOpen] = useState(!!searchParams.get('launchTab'))
+  const [launchMode, setLaunchMode] = useState<LaunchFormMode>('rerun')
 
   const setLaunchFormTab = useCallback(
     (newValue: LaunchFormTab | null = 'inputs') =>
@@ -59,6 +66,8 @@ export const LaunchFormStateProvider: React.FC<{
     () => ({
       buttonText,
       isOpen,
+      launchMode,
+      setLaunchMode,
       launchFormTab: launchFormTabParam as LaunchFormTab,
       setIsOpen,
       setLaunchFormTab,
@@ -70,6 +79,7 @@ export const LaunchFormStateProvider: React.FC<{
     [
       buttonText,
       isOpen,
+      launchMode,
       launchFormTabParam,
       setLaunchFormTab,
       taskSpec,

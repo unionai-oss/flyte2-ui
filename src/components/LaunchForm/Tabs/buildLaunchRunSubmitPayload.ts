@@ -10,6 +10,7 @@ import {
   type TriggerName,
   TriggerNameSchema,
 } from '@/gen/flyteidl2/common/identifier_pb'
+import { RelationSchema, RelationType } from '@/gen/flyteidl2/common/run_pb'
 import { KeyValuePair } from '@/gen/flyteidl2/core/literals_pb'
 import {
   type Inputs,
@@ -96,6 +97,12 @@ export type BuildLaunchRunSubmitPayloadProps = {
   name: string
   taskSpec?: TaskSpec
   triggerName?: TriggerName
+  /**
+   * The run being recovered. Set to submit a recovery instead of a plain run: the new run
+   * reuses that run's succeeded actions (RunSpec.relation = RECOVER) and re-executes only
+   * what failed or never ran.
+   */
+  recoverFrom?: RunIdentifier
 }
 
 export type LaunchRunSubmitPayload = {
@@ -118,6 +125,7 @@ export function buildLaunchRunSubmitPayload({
   name,
   taskSpec,
   triggerName,
+  recoverFrom,
 }: BuildLaunchRunSubmitPayloadProps): LaunchRunSubmitPayload | null {
   const taskField = triggerName
     ? {
@@ -181,6 +189,12 @@ export function buildLaunchRunSubmitPayload({
             k8sServiceAccount: formValues.serviceAccount,
           },
         },
+      }),
+      ...(recoverFrom && {
+        relation: create(RelationSchema, {
+          relatedTo: recoverFrom,
+          relationType: RelationType.RECOVER,
+        }),
       }),
     }),
   }

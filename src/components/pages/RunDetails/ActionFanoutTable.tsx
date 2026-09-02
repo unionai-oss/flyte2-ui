@@ -75,7 +75,8 @@ export const ActionFanoutTable = ({
 
   const shouldShowRareStatusCol =
     childPhaseCounts[ActionPhase.TIMED_OUT] ||
-    childPhaseCounts[ActionPhase.ABORTED]
+    childPhaseCounts[ActionPhase.ABORTED] ||
+    childPhaseCounts[ActionPhase.RECOVERED]
 
   return (
     <div className="flex flex-col gap-2 px-5 py-4 text-xs font-semibold text-(--system-gray-5)">
@@ -146,6 +147,12 @@ export const ActionFanoutTable = ({
                 label={mapPhaseToDisplayString[ActionPhase.ABORTED]}
                 valueColor="var(--accent-orange)"
                 value={displayCounts[ActionPhase.ABORTED]}
+              />
+              <Divider />
+              <Cell
+                label={mapPhaseToDisplayString[ActionPhase.RECOVERED]}
+                valueColor="var(--accent-green)"
+                value={displayCounts[ActionPhase.RECOVERED]}
               />
             </div>
           </div>

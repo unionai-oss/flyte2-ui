@@ -2,10 +2,9 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { Fragment } from 'react'
 import { FormProvider, UseFormReturn } from 'react-hook-form'
-import { ChevronRightIcon } from '@/components/icons/ChevronRightIcon'
 import Drawer from '@/components/Drawer'
+import { DrawerBreadcrumbs } from '@/components/DrawerBreadcrumbs'
 import { LaunchFormTabs } from './Tabs/LaunchFormTabs'
 import { LaunchFormState } from './Tabs/types'
 import { useLaunchFormState } from '@/hooks/useLaunchFormState'
@@ -45,28 +44,7 @@ export const LaunchFormDrawer = ({
       size={818}
       hasFullscreen
       title={drawerMeta.title}
-      titleSection={
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
-          {drawerMeta.breadcrumbs.map(({ label, value }, index, arr) => (
-            <Fragment key={`${label}-${value}-${index}`}>
-              <div className="flex min-w-0 gap-1 rounded-md bg-(--bg-gray) px-2 py-0.5">
-                {label ? (
-                  <span className="shrink-0 text-2xs dark:text-(--system-gray-5)">
-                    {label}
-                  </span>
-                ) : null}
-                <span className="truncate text-2xs dark:text-(--system-white)">
-                  {value}
-                </span>
-              </div>
-
-              {index + 1 === arr.length ? null : (
-                <ChevronRightIcon className="shrink-0" height={6} />
-              )}
-            </Fragment>
-          ))}
-        </div>
-      }
+      titleSection={<DrawerBreadcrumbs breadcrumbs={drawerMeta.breadcrumbs} />}
     />
   )
 }

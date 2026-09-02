@@ -97,6 +97,7 @@ export const StatusIconComponent = ({
             />
           </div>
         )
+      case ActionPhase.RECOVERED:
       case ActionPhase.SUCCEEDED:
         return (
           <div className={wrapperClass} style={{ color: accent }}>
