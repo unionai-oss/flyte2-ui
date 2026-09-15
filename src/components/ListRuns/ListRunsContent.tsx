@@ -114,12 +114,14 @@ export const ListRunsContent = ({
   const queryParamFilters = useMemo(() => {
     const list: Filter[] = []
 
-    // Search term filter
+    // Search term filter. "search" is a synthetic field the run service resolves
+    // to `run_name OR task_name`; it is not an actions column, so the request
+    // needs a backend that accepts it (flyte runs service with SplitSearchFilters).
     if (searchTerm) {
       list.push(
         getFilter({
           function: Filter_Function.CONTAINS_CASE_INSENSITIVE,
-          field: 'task_name',
+          field: 'search',
           values: [searchTerm],
         }),
       )
