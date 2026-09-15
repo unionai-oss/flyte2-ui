@@ -5,10 +5,14 @@
 import { useRunStore } from '@/components/pages/RunDetails/state/RunStore'
 import { Filter, Filter_Function } from '@/gen/flyteidl2/common/list_pb'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
-import { EnrichedAction } from '@/gen/flyteidl2/workflow/run_definition_pb'
+import {
+  EnrichedAction,
+  EnrichedActionSchema,
+} from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { RunService } from '@/gen/flyteidl2/workflow/run_service_pb'
 import { useSearchTerm } from '@/hooks/useQueryParamState'
 import { isActionTerminal } from '@/lib/actionUtils'
+import { create } from '@bufbuild/protobuf'
 import { useQueryState } from 'nuqs'
 import { useEffect } from 'react'
 import { useConnectRpcClient } from './useConnectRpc'
@@ -72,6 +76,36 @@ export const useRunDetailState = ({
     let buffer: EnrichedAction[] = []
     let flushInterval: NodeJS.Timeout | null = null
 
+    // Fetch all actions once when the run completes.
+    const fetchFinalActions = async (signal: AbortSignal) => {
+      const collected: EnrichedAction[] = []
+      let token = ''
+      do {
+        const response = await client.listActions(
+          {
+            runId: {
+              domain,
+              name: runId,
+              org: orgId,
+              project: projectId,
+            },
+            request: {
+              token,
+              filters: getFilters(statusValue, searchTerm),
+            },
+          },
+          { signal },
+        )
+        for (const action of response.actions) {
+          collected.push(
+            create(EnrichedActionSchema, { action, meetsFilter: true }),
+          )
+        }
+        token = response.token
+      } while (token)
+      return collected
+    }
+
     const flushBuffer = () => {
       if (buffer.length > 0) {
         const batch = [...buffer.flat()]
@@ -81,7 +115,8 @@ export const useRunDetailState = ({
     }
 
     const start = () => {
-      controller = new AbortController()
+      const streamController = new AbortController()
+      controller = streamController
       flushInterval = setInterval(() => {
         flushBuffer()
       }, 250)
@@ -99,7 +134,7 @@ export const useRunDetailState = ({
                 filter: getFilters(statusValue, searchTerm),
               }),
             },
-            { signal: controller.signal },
+            { signal: streamController.signal },
           )
 
           for await (const event of stream) {
@@ -107,7 +142,7 @@ export const useRunDetailState = ({
             buffer.push(...event.enrichedActions)
           }
         } catch (e) {
-          if (!controller.signal.aborted) {
+          if (!streamController.signal.aborted) {
             console.error('error watching actions', e)
           }
         }
@@ -119,15 +154,27 @@ export const useRunDetailState = ({
     // Heartbeat: check every 5s, reset if >10s since last event
     const heartbeat = setInterval(() => {
       const isTerminal = isActionTerminal(useRunStore.getState()?.run?.action)
-      // stop polling if we've reached terminal state
       if (isTerminal) {
-        controller.abort()
         clearInterval(heartbeat)
+        controller.abort()
         if (flushInterval) {
           clearInterval(flushInterval)
           flushInterval = null
         }
         flushBuffer()
+
+        const finalController = new AbortController()
+        controller = finalController
+        fetchFinalActions(finalController.signal)
+          .then((finalActions) => upsert(finalActions))
+          .catch((e) => {
+            if (!finalController.signal.aborted) {
+              console.error('error fetching final actions', e)
+            }
+          })
+          .finally(() => {
+            finalController.abort()
+          })
         return
       }
       // after 5 minutes with no activity, restart the connection
