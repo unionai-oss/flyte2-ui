@@ -4,7 +4,7 @@
 
 'use client'
 
-import { DatePickerPopover, quickRanges30Days } from '@/components/DatePicker'
+import { DatePickerPopover } from '@/components/DatePicker'
 import { Header } from '@/components/Header'
 import { listRunsColumns, ListRunsContent } from '@/components/ListRuns'
 import { ListRunsSearch } from '@/components/ListRuns/filters/ListRunsSearch'
@@ -31,11 +31,7 @@ export function ListRunsPage() {
             <div className="flex items-center justify-between gap-2 px-10 pt-6 pb-3">
               <div className="flex flex-col gap-1">
                 <h1 className="text-xl font-medium">Runs</h1>
-                <DatePickerPopover
-                  labelPrefix="Runs"
-                  maxDaysBack={30}
-                  quickRanges={quickRanges30Days}
-                />
+                <DatePickerPopover labelPrefix="Runs" />
               </div>
               <ListRunsSearch />
             </div>

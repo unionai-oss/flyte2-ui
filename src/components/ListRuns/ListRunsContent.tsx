@@ -60,11 +60,10 @@ export interface ListRunsContentProps {
 }
 
 /**
- * Component that renders a list of runs with filtering and view options.
- * Supports both table and grouped views, with configurable filters and columns.
+ * Component that renders a list of runs with filtering.
  *
  * @param props - The component props
- * @returns JSX element containing the runs list with filters and view options
+ * @returns JSX element containing the runs list with filters
  */
 export const ListRunsContent = ({
   additionalFilters = [],
@@ -156,8 +155,6 @@ export const ListRunsContent = ({
     }
 
     // Date range filters (created_at >= from AND created_at <= to)
-    // Only add for table view - grouped view handles this internally with 30-day constraint
-
     if (dateRange?.from) {
       list.push(
         getFilter({
