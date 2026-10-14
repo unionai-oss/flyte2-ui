@@ -14,6 +14,7 @@ import {
   Resources_ResourceName,
 } from '@/gen/flyteidl2/core/tasks_pb'
 import { getStatus } from '@/lib/appUtils'
+import { getAcceleratorSummary } from '@/lib/taskUtils'
 import { useMemo } from 'react'
 import stringify from 'safe-stable-stringify'
 
@@ -78,6 +79,11 @@ export const AppSpecTab = ({ app }: { app: App | undefined }) => {
     [containerResources?.limits],
   )
 
+  const accelerator = useMemo(
+    () => getAcceleratorSummary(app?.spec?.extendedResources?.gpuAccelerator),
+    [app?.spec?.extendedResources?.gpuAccelerator],
+  )
+
   const aboutRawJson = useMemo(() => {
     if (!app?.spec) return {}
     try {
@@ -126,6 +132,12 @@ export const AppSpecTab = ({ app }: { app: App | undefined }) => {
       <TabSection heading="Limits">
         <DescriptionListWrapper rawJson={limitsJson} />
       </TabSection>
+
+      {accelerator && (
+        <TabSection heading="Accelerator">
+          <DescriptionListWrapper rawJson={accelerator} />
+        </TabSection>
+      )}
     </div>
   )
 }

@@ -4,6 +4,7 @@
 
 import {
   GPUAccelerator,
+  GPUAccelerator_DeviceClass,
   Resources,
   Resources_ResourceName,
   TaskTemplate,
@@ -134,6 +135,46 @@ export const getAcceleratorPartitionSizeValue = (
     default:
       return '-'
   }
+}
+
+/**
+ * APPLE_SILICON is newer than the generated enum in this checkout. protobuf-es keeps
+ * an enum value it does not know as its number, so it is matched by value here.
+ */
+export const APPLE_SILICON_DEVICE_CLASS = 5
+
+const DEVICE_CLASS_LABELS: Record<number, string> = {
+  [GPUAccelerator_DeviceClass.NVIDIA_GPU]: 'NVIDIA GPU',
+  [GPUAccelerator_DeviceClass.GOOGLE_TPU]: 'Google TPU',
+  [GPUAccelerator_DeviceClass.AMAZON_NEURON]: 'AWS Neuron',
+  [GPUAccelerator_DeviceClass.AMD_GPU]: 'AMD GPU',
+  [GPUAccelerator_DeviceClass.HABANA_GAUDI]: 'Habana Gaudi',
+  [APPLE_SILICON_DEVICE_CLASS]: 'Apple Silicon (MX)',
+}
+
+/**
+ * Summarizes a task's or app's accelerator for display, or returns undefined when
+ * it requests none. An Apple Silicon (MX) accelerator is devbox-local: its ML work
+ * runs in an MLX daemon on the devbox host's Metal GPU, which is called out so it
+ * is not mistaken for a cluster-schedulable GPU.
+ */
+export function getAcceleratorSummary(
+  accelerator?: GPUAccelerator,
+): Record<string, unknown> | undefined {
+  if (!accelerator) return undefined
+  const deviceClass = accelerator.deviceClass as number
+  const summary: Record<string, unknown> = {
+    Class: DEVICE_CLASS_LABELS[deviceClass] ?? `Unknown (${deviceClass})`,
+    Device: accelerator.device || '-',
+  }
+  if (deviceClass === APPLE_SILICON_DEVICE_CLASS) {
+    summary.Runs = 'On the devbox host GPU, through its MLX daemon'
+  } else if (accelerator.partitionSizeValue?.case) {
+    summary.Partition = getAcceleratorPartitionSizeValue(
+      accelerator.partitionSizeValue,
+    )
+  }
+  return summary
 }
 
 /** Result of extracting resource values from a task target (container or k8sPod). */
