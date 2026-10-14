@@ -3,6 +3,7 @@
  */
 
 import { Providers } from '@/app/providers'
+import { isTelemetryDisabled } from '@/lib/telemetry'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { type Metadata } from 'next'
 
@@ -27,10 +28,11 @@ export default async function RootLayout({
     GTM_ENV: env('GTM_ENV'),
     GTM_PREVIEW: env('GTM_PREVIEW'),
   }
+  const telemetryDisabled = isTelemetryDisabled(env)
 
   return (
     <html lang="en" className="h-full min-h-full" suppressHydrationWarning>
-      {envLoader.NODE_ENV !== 'development' && (
+      {envLoader.NODE_ENV !== 'development' && !telemetryDisabled && (
         <GoogleTagManager
           gtmId="GTM-WC8V9XS"
           auth={env('GTM_ENV')}

@@ -242,6 +242,20 @@ docker run -p 8080:8080 my-storybook
 # Access at http://localhost:8080
 ```
 
+## 📊 Telemetry
+
+Production builds load a Google Tag Manager container for product analytics.
+To turn it off, set the cross-tool [`DO_NOT_TRACK`](https://donottrack.sh)
+variable on the console container (no rebuild needed):
+
+```bash
+DO_NOT_TRACK=1
+```
+
+`FLYTE_DISABLE_TELEMETRY=true` works too. The same variable turns off telemetry
+in flyte-sdk and the Flyte backend; the Flyte Helm charts set it everywhere with
+`telemetry.enabled: false`.
+
 ## 📄 License
 
 Canonical repository: [github.com/unionai-oss/flyte2-ui](https://github.com/unionai-oss/flyte2-ui).
