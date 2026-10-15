@@ -142,7 +142,7 @@ describe('taskUtils', () => {
       expect(getAcceleratorSummary(accelerator)).toEqual({
         Class: 'Apple Silicon',
         Device: 'AppleSilicon',
-        Runs: 'On the devbox host GPU, through its MLX daemon',
+        Runs: 'Natively on the devbox host (Mac), on its Metal GPU',
       })
     })
 

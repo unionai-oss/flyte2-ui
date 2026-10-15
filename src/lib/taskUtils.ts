@@ -155,7 +155,7 @@ const DEVICE_CLASS_LABELS: Record<number, string> = {
 /**
  * Summarizes a task's or app's accelerator for display, or returns undefined when
  * it requests none. An Apple Silicon accelerator is devbox-local: its ML work
- * runs in an MLX daemon on the devbox host's Metal GPU, which is called out so it
+ * runs natively on the devbox host's Metal GPU, which is called out so it
  * is not mistaken for a cluster-schedulable GPU.
  */
 export function getAcceleratorSummary(
@@ -168,7 +168,7 @@ export function getAcceleratorSummary(
     Device: accelerator.device || '-',
   }
   if (deviceClass === APPLE_SILICON_DEVICE_CLASS) {
-    summary.Runs = 'On the devbox host GPU, through its MLX daemon'
+    summary.Runs = 'Natively on the devbox host (Mac), on its Metal GPU'
   } else if (accelerator.partitionSizeValue?.case) {
     summary.Partition = getAcceleratorPartitionSizeValue(
       accelerator.partitionSizeValue,
