@@ -23,7 +23,8 @@ export const FLYTE_DOCS_FLYTE_CLI_DEPLOY_URL =
   'https://www.union.ai/docs/v2/flyte/api-reference/flyte-cli/#flyte-deploy'
 
 /** Licensed edition / upgrade CTA. */
-export const FLYTE_LICENSED_EDITION_INFO_URL = 'https://www.union.ai/pricing'
+export const FLYTE_LICENSED_EDITION_INFO_URL =
+  'http://union.ai/signup?utm_source=flytedevbox'
 
 /** Granular `source` query param values for licensed-edition upgrade links. */
 export const LICENSED_EDITION_UPGRADE_SOURCES = {

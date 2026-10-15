@@ -12,10 +12,10 @@ import {
 } from './constants'
 
 describe('getLicensedEditionInfoUrl', () => {
-  it('appends the source query param to the pricing URL', () => {
+  it('appends the source query param to the signup URL', () => {
     expect(
       getLicensedEditionInfoUrl(RUN_METRICS_UPGRADE_SOURCES.gpuMemory),
-    ).toBe(`${FLYTE_LICENSED_EDITION_INFO_URL}?source=run-metrics-gpu-memory`)
+    ).toBe(`${FLYTE_LICENSED_EDITION_INFO_URL}&source=run-metrics-gpu-memory`)
   })
 
   it('supports each defined upgrade source', () => {
@@ -27,7 +27,9 @@ describe('getLicensedEditionInfoUrl', () => {
 
     for (const source of allSources) {
       const url = new URL(getLicensedEditionInfoUrl(source))
-      expect(url.origin + url.pathname).toBe(FLYTE_LICENSED_EDITION_INFO_URL)
+      const base = new URL(FLYTE_LICENSED_EDITION_INFO_URL)
+      expect(url.origin + url.pathname).toBe(base.origin + base.pathname)
+      expect(url.searchParams.get('utm_source')).toBe('flytedevbox')
       expect(url.searchParams.get('source')).toBe(source)
     }
   })
