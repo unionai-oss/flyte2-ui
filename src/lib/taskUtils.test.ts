@@ -136,12 +136,12 @@ describe('taskUtils', () => {
 
     it('calls out the devbox-local Apple Silicon accelerator', () => {
       const accelerator = create(GPUAcceleratorSchema, {
-        device: 'MX',
+        device: 'AppleSilicon',
         deviceClass: APPLE_SILICON_DEVICE_CLASS as GPUAccelerator_DeviceClass,
       })
       expect(getAcceleratorSummary(accelerator)).toEqual({
-        Class: 'Apple Silicon (MX)',
-        Device: 'MX',
+        Class: 'Apple Silicon',
+        Device: 'AppleSilicon',
         Runs: 'On the devbox host GPU, through its MLX daemon',
       })
     })
