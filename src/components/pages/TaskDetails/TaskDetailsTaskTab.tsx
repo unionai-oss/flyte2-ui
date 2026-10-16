@@ -10,6 +10,7 @@ import { TabSection } from '@/components/TabSection'
 import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { useOrg } from '@/hooks/useOrg'
 import { useTaskDetails } from '@/hooks/useTaskDetails'
+import { getAcceleratorSummary } from '@/lib/taskUtils'
 import { useParams } from 'next/navigation'
 import React, { useMemo } from 'react'
 import stringify from 'safe-stable-stringify'
@@ -53,6 +54,12 @@ export const TaskDetailsTaskTab: React.FC<{
     [taskTemplate],
   )
 
+  const accelerator = useMemo(
+    () =>
+      getAcceleratorSummary(taskTemplate?.extendedResources?.gpuAccelerator),
+    [taskTemplate?.extendedResources?.gpuAccelerator],
+  )
+
   const copyButtonContent = stringify(taskTemplate || {}, null, 2)
   const sourceLink =
     taskDetails.data?.details?.spec?.documentation?.sourceCode?.link ?? ''
@@ -72,6 +79,11 @@ export const TaskDetailsTaskTab: React.FC<{
           }
         />
       </TabSection>
+      {accelerator && (
+        <TabSection heading="Accelerator">
+          <DescriptionListWrapper rawJson={accelerator} />
+        </TabSection>
+      )}
       <TabSection copyButtonContent={copyButtonContent} heading="Spec">
         <DescriptionListWrapper rawJson={rawJson} />
       </TabSection>

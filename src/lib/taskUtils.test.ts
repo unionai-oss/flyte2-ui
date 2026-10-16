@@ -3,12 +3,19 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { Resources_ResourceName } from '@/gen/flyteidl2/core/tasks_pb'
+import { create } from '@bufbuild/protobuf'
+import {
+  GPUAcceleratorSchema,
+  GPUAccelerator_DeviceClass,
+  Resources_ResourceName,
+} from '@/gen/flyteidl2/core/tasks_pb'
 import type { TaskTemplate } from '@/gen/flyteidl2/core/tasks_pb'
 import {
   flattenCustom,
   getTaskTargetImage,
   getAcceleratorPartitionSizeValue,
+  getAcceleratorSummary,
+  APPLE_SILICON_DEVICE_CLASS,
   getTaskTargetResources,
   getTaskTargetArgValue,
   getTaskTargetLabels,
@@ -106,6 +113,45 @@ describe('taskUtils', () => {
     it('returns undefined for missing or invalid target', () => {
       expect(getTaskTargetImage(undefined)).toBeUndefined()
       expect(getTaskTargetImage({ case: 'sql', value: {} })).toBeUndefined()
+    })
+  })
+
+  describe('getAcceleratorSummary', () => {
+    it('returns undefined without an accelerator', () => {
+      expect(getAcceleratorSummary(undefined)).toBeUndefined()
+    })
+
+    it('labels a cluster GPU with its partition', () => {
+      const accelerator = create(GPUAcceleratorSchema, {
+        device: 'nvidia-tesla-a100',
+        deviceClass: GPUAccelerator_DeviceClass.NVIDIA_GPU,
+        partitionSizeValue: { case: 'partitionSize', value: '1g.5gb' },
+      })
+      expect(getAcceleratorSummary(accelerator)).toEqual({
+        Class: 'NVIDIA GPU',
+        Device: 'nvidia-tesla-a100',
+        Partition: '1g.5gb',
+      })
+    })
+
+    it('calls out the devbox-local Apple Silicon accelerator', () => {
+      const accelerator = create(GPUAcceleratorSchema, {
+        device: 'AppleSilicon',
+        deviceClass: APPLE_SILICON_DEVICE_CLASS as GPUAccelerator_DeviceClass,
+      })
+      expect(getAcceleratorSummary(accelerator)).toEqual({
+        Class: 'Apple Silicon',
+        Device: 'AppleSilicon',
+        Runs: 'On the Metal GPU of the devbox host (Mac), through the Apple Silicon bridge',
+      })
+    })
+
+    it('does not hide a device class it does not know', () => {
+      const accelerator = create(GPUAcceleratorSchema, {
+        device: 'x',
+        deviceClass: 42 as GPUAccelerator_DeviceClass,
+      })
+      expect(getAcceleratorSummary(accelerator)?.Class).toBe('Unknown (42)')
     })
   })
 
