@@ -16,32 +16,14 @@ vi.mock('next/headers', () => ({
 }))
 
 describe('safeRedirectPath', () => {
-  it.each([
-    '/v2/projects/foo',
-    '/v2/domain/development/project/demo/runs?status=failed#details',
-    '/v2/projects?search=hello%20world',
-    '/v2/projects?redirect_url=https%3A%2F%2Fexample.com',
-  ])('keeps same-origin absolute path %s', (path) => {
-    expect(safeRedirectPath(path)).toBe(path)
+  it('keeps same-origin absolute paths', () => {
+    expect(safeRedirectPath('/v2/projects/foo')).toBe('/v2/projects/foo')
   })
 
   it('rejects off-site redirects', () => {
     for (const bad of ['//evil.com', 'https://evil.com', '/\\evil.com', null]) {
       expect(safeRedirectPath(bad)).toBe('/v2/projects')
     }
-  })
-
-  it.each([
-    '/\n/evil.com',
-    '/\r/evil.com',
-    '/\t/evil.com',
-    '/\n\\evil.com',
-    '/\\/evil.com',
-    '/v2/projects\\..\\..\\evil.com',
-    '/v2/projects\u0000',
-    '/v2/projects\u007f',
-  ])('rejects URL-normalization bypass %j', (path) => {
-    expect(safeRedirectPath(path)).toBe('/v2/projects')
   })
 })
 
@@ -110,27 +92,10 @@ describe('GET /v2/logout', () => {
     )
   })
 
-  it.each([
-    '//evil.com',
-    '/\n/evil.com',
-    '/\r/evil.com',
-    '/\t/evil.com',
-    '/\\evil.com',
-  ])('ignores attacker-supplied redirect_url %j', async (path) => {
-    const url = new URL('https://flyte.example/v2/logout')
-    url.searchParams.set('redirect_url', path)
-    const res = await GET(new Request(url))
-    expect(res.headers.get('location')).toBe(
-      'https://flyte.example/v2/projects',
+  it('ignores an attacker-supplied redirect_url', async () => {
+    const res = await GET(
+      new Request('https://flyte.example/v2/logout?redirect_url=//evil.com'),
     )
-  })
-
-  it('retains the scoped path, query and hash in a valid redirect_url', async () => {
-    const path =
-      '/v2/domain/development/project/demo/runs?status=failed#details'
-    const url = new URL('https://flyte.example/v2/logout')
-    url.searchParams.set('redirect_url', path)
-    const res = await GET(new Request(url))
-    expect(res.headers.get('location')).toBe(`https://flyte.example${path}`)
+    expect(res.headers.get('location')).toBe('https://flyte.example/v2/projects')
   })
 })

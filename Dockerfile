@@ -25,12 +25,11 @@ WORKDIR /app
 
 # Copy only files needed to install dependencies first (better cache)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY patches ./patches
 
 # Install dependencies (cached if lockfile unchanged)
 RUN \
   --mount=type=cache,target=/root/.local/share/pnpm/store \
-  pnpm install --frozen-lockfile --prod=false
+  pnpm install --frozen-lockfile
 
 # Now copy the full app code
 COPY . .
