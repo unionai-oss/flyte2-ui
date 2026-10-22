@@ -24,11 +24,13 @@ async function flushLogViewerTimers() {
 }
 
 // ResizeObserver is not available in jsdom
-const MockResizeObserver = vi.fn(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
+const MockResizeObserver = vi.fn(function ResizeObserverMock() {
+  return {
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }
+})
 
 const makeLogs = (count: number) =>
   Array.from({ length: count }, (_, i) =>

@@ -6,7 +6,7 @@ import {
   FLYTE_LIGHT_THEME,
   registerFlyteLightTheme,
 } from '@/utils/monacoThemes'
-import MonacoEditor from '@monaco-editor/react'
+import MonacoEditor from '@/utils/monacoLoader'
 import { useFormContext } from 'react-hook-form'
 import stringify from 'safe-stable-stringify'
 import { TabLayout } from './LaunchFormTabs'

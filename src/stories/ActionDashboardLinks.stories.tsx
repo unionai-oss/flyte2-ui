@@ -2,7 +2,7 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { ActionDashboardLinks } from '@/components/pages/RunDetails/ActionDashboardLinks'
 import { ActionAttempt } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { TaskLog, TaskLog_LinkType } from '@/gen/flyteidl/core/execution_pb'

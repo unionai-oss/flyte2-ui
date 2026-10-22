@@ -11,7 +11,7 @@ import {
 } from '@/gen/flyteidl2/logs/dataplane/payload_pb'
 import { create } from '@bufbuild/protobuf'
 import { timestampFromDate } from '@bufbuild/protobuf/wkt'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 
 const meta: Meta<typeof LogViewer> = {
   title: 'components/LogViewer',

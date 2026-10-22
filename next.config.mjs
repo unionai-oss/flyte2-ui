@@ -11,6 +11,9 @@ const nextConfig = {
   output: 'standalone', // Creates a minimal server for Docker
   basePath: '/v2',
 
+  // Match `pnpm typecheck`: validate production sources separately from test mocks.
+  typescript: { tsconfigPath: 'tsconfig.typecheck.json' },
+
   // Set workspace root to avoid Next.js inference warnings
   // This is needed because we're in a monorepo with lockfiles at multiple levels
   // Even though Turbopack isn't enabled, this config helps Next.js correctly identify
@@ -39,12 +42,18 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: '/:path*',
+        headers: [
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+        ],
+      },
+      {
         // Disable caching for Monaco editor assets.
         // Monaco's worker initialization is sensitive to how cached assets are served.
         // Cached assets can load in different timing/order, causing race conditions
         // that lead to initialization hangs. Disabling cache ensures consistent,
         // predictable loading behavior.
-        source: '/v2/monaco/:path*',
+        source: '/monaco/:path*',
         headers: [
           {
             key: 'Cache-Control',

@@ -3,7 +3,7 @@
  */
 
 import { ComponentType, SVGProps } from 'react'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 
 // require.context is a Webpack API that discovers modules at build time.
 // This means the gallery automatically includes any new icon added to the directory.

@@ -4,7 +4,7 @@
 
 import { CatalogCacheStatus } from '@/gen/flyteidl/core/catalog_pb'
 import { CacheStatusIcon } from '@/components/StatusIcons'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { iconSizeMap } from '@/components/StatusIcons/iconSize'
 
 const statusInfo: Record<

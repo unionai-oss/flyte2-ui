@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Base image setup
-FROM node:24-alpine AS base
+FROM node:24.22.1-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d AS base
 # apk upgrade picks up openssl (libssl3/libcrypto3) CVE fixes published after the base image tag
 RUN apk upgrade --no-cache && apk add --no-cache libc6-compat rsync git
 
@@ -25,11 +25,12 @@ WORKDIR /app
 
 # Copy only files needed to install dependencies first (better cache)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches ./patches
 
 # Install dependencies (cached if lockfile unchanged)
 RUN \
   --mount=type=cache,target=/root/.local/share/pnpm/store \
-  pnpm install --frozen-lockfile
+  pnpm install --frozen-lockfile --prod=false
 
 # Now copy the full app code
 COPY . .

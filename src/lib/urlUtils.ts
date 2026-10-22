@@ -132,7 +132,13 @@ export const DEFAULT_REDIRECT_PATH = '/v2/projects'
  */
 export function safeRedirectPath(raw: string | null): string {
   if (!raw) return DEFAULT_REDIRECT_PATH
-  if (!raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\')) {
+  // URL parsing strips tabs/newlines and treats backslashes as slashes. Reject
+  // them before resolving the path so `/\n/host` cannot become `//host`.
+  if (
+    !raw.startsWith('/') ||
+    raw.startsWith('//') ||
+    /[\\\u0000-\u001f\u007f]/.test(raw)
+  ) {
     return DEFAULT_REDIRECT_PATH
   }
   return raw

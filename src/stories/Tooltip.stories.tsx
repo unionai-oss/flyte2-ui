@@ -7,7 +7,7 @@
 import { Tooltip } from '@/components/Tooltip'
 import { Placement } from '@floating-ui/react'
 import { ChatBubbleLeftIcon } from '@heroicons/react/24/solid'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
 type Story = StoryObj<typeof Tooltip>
 

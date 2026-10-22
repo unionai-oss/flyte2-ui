@@ -1,5 +1,38 @@
-# pnpm settings — see https://pnpm.io/settings
-# Delay installing newly published versions by 7200 minutes (5 days) to
-# mitigate supply-chain attacks where malicious releases are typically
-# detected and unpublished within a day.
+# Keep new npm releases quarantined for five days.
 minimumReleaseAge: 7200
+
+# pnpm 10: permit install scripts only for required native tooling.
+onlyBuiltDependencies:
+  - esbuild
+  - msgpackr-extract
+  - sharp
+  - unrs-resolver
+
+# Keep security overrides here so a future pnpm 11 upgrade also honors them.
+overrides:
+  # Next only uses globSync; tinyglobby removes the unpatched braces chain.
+  '@next/eslint-plugin-next>fast-glob': npm:tinyglobby@^0.2.17
+  # Typography pins a vulnerable parser major; its used API is compatible.
+  '@tailwindcss/typography>postcss-selector-parser': ^7.1.6
+  '@types/react': 19.1.2
+  '@types/react-dom': 19.1.2
+  browserslist: '>=4.28.7'
+  compression: ^1.8.2
+  # npm dependency; the Monaco ESM patch and asset script fix its bundled copies.
+  dompurify: ^3.4.17
+  fast-uri: ^3.1.8
+  nanoid: ^3.3.18
+  pbkdf2: '>=3.1.7'
+  postcss: '>=8.5.18'
+  rollup: ^4.59.0
+  serialize-javascript: '>=7.0.5'
+  sha.js: '>=2.4.12'
+  sharp: '>=0.35.5'
+  tar: ^7.5.21
+  vite: ^7.3.5
+
+patchedDependencies:
+  monaco-editor@0.55.0-rc: patches/monaco-editor@0.55.0-rc.patch
+
+# Fail on drift between node_modules and the checked-in lockfile.
+verifyDepsBeforeRun: error
