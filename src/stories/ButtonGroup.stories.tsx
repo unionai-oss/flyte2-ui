@@ -3,7 +3,7 @@
  */
 
 import ButtonGroup from '@/components/ButtonGroup'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useState } from 'react'
 
 const meta: Meta<typeof ButtonGroup> = {

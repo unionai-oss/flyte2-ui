@@ -2,7 +2,7 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Input, InputGroup } from '@/components/Input'
 import {
   MagnifyingGlassIcon,

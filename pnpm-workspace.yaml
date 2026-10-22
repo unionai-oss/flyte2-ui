@@ -3,3 +3,23 @@
 # mitigate supply-chain attacks where malicious releases are typically
 # detected and unpublished within a day.
 minimumReleaseAge: 7200
+
+# Security overrides for patched transitive dependencies.
+overrides:
+  '@types/react': '19.1.2'
+  '@types/react-dom': '19.1.2'
+  'pbkdf2': '>=3.1.7'
+  'sha.js': '>=2.4.12'
+  'serialize-javascript': '^7.0.5'
+  'rollup': '^4.59.0'
+  'postcss': '>=8.5.18'
+  'sharp': '0.35.5'
+  'fast-uri': '^3.1.5'
+  'browserslist': '>=4.28.7'
+  'nanoid': '^3.3.18'
+  'compression': '^1.8.2'
+  'dompurify': '^3.4.17'
+  'tar': '^7.5.21'
+  'vite': '^7.3.5'
+  '@tailwindcss/typography>postcss-selector-parser': '^7.1.6'
+  '@next/eslint-plugin-next>fast-glob': 'npm:tinyglobby@^0.2.17'
