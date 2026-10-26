@@ -12,7 +12,7 @@ import {
   useNotifications,
 } from '@/providers/notifications'
 import { Transition } from '@headlessui/react'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Fragment } from 'react'
 
 // Component mimics the behavior of the Dialog & DialogPanel which won't show up properly inside Storybook

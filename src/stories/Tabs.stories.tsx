@@ -5,7 +5,7 @@
 'use client'
 
 import { Tabs } from '@/components/Tabs'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { ComponentType, useState } from 'react'
 
 const meta = {

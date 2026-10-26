@@ -6,7 +6,7 @@
 
 import { CopyButtonWithTooltip } from '@/components/CopyButtonWithTooltip'
 import { Tooltip } from '@/components/Tooltip'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
 type Story = StoryObj<typeof Tooltip>
 

@@ -11,6 +11,9 @@ const nextConfig = {
   output: 'standalone', // Creates a minimal server for Docker
   basePath: '/v2',
 
+  // Check production sources using the existing typecheck configuration.
+  typescript: { tsconfigPath: 'tsconfig.typecheck.json' },
+
   // Set workspace root to avoid Next.js inference warnings
   // This is needed because we're in a monorepo with lockfiles at multiple levels
   // Even though Turbopack isn't enabled, this config helps Next.js correctly identify

@@ -3,16 +3,13 @@
  */
 
 import { ComponentType, SVGProps } from 'react'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 
-// require.context is a Webpack API that discovers modules at build time.
+// import.meta.glob is a Vite API that discovers modules at build time.
 // This means the gallery automatically includes any new icon added to the directory.
-// eslint-disable-next-line
-const iconContext = (require as any).context(
-  '../components/icons',
-  false,
-  /\.tsx$/,
-)
+const iconModules = import.meta.glob('../components/icons/*.tsx', {
+  eager: true,
+})
 
 type IconEntry = {
   exportName: string
@@ -20,12 +17,10 @@ type IconEntry = {
   Component: ComponentType<SVGProps<SVGSVGElement>>
 }
 
-const icons: IconEntry[] = iconContext
-  .keys()
-  .flatMap((key: string) => {
-    const mod = iconContext(key) as Record<string, unknown>
-    const fileName = key.replace('./', '').replace('.tsx', '')
-    return Object.entries(mod)
+const icons: IconEntry[] = Object.entries(iconModules)
+  .flatMap(([key, mod]) => {
+    const fileName = key.replace('../components/icons/', '').replace('.tsx', '')
+    return Object.entries(mod as Record<string, unknown>)
       .filter(([, value]) => typeof value === 'function')
       .map(([exportName, Component]) => ({
         exportName,

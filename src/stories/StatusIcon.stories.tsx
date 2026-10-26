@@ -2,7 +2,7 @@
  * © Copyright Union Systems Inc 2026. All rights reserved.
  */
 
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { StatusIcon } from '@/components/StatusIcons/StatusIcon'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 

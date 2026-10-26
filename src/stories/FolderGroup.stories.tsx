@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { FolderGroup } from '@/components/FolderGroup'
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 

@@ -6,7 +6,7 @@ import { ActionTimeline } from '@/components/pages/RunDetails/ActionPhaseTimelin
 import { ActionPhase } from '@/gen/flyteidl2/common/phase_pb'
 import { PhaseTransition } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { Timestamp } from '@bufbuild/protobuf/wkt'
-import { Meta, StoryObj } from '@storybook/nextjs'
+import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import React from 'react'
 
 type Story = StoryObj<typeof ActionTimeline>
