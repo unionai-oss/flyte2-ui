@@ -13,7 +13,7 @@ import { TaskLog, TaskLog_LinkType } from '@/gen/flyteidl/core/execution_pb'
  *
  * ## Features
  *
- * - Automatically detects and displays dashboard links from log info
+ * - Displays dashboard and external provider links from log info
  * - Supports various integration types (Spark UI, Ray Dashboard, Weights & Biases, etc.)
  * - Renders appropriate icons for each integration type
  * - Only shows when dashboard links are available
@@ -25,8 +25,8 @@ import { TaskLog, TaskLog_LinkType } from '@/gen/flyteidl/core/execution_pb'
  * <ActionDashboardLinks attempt={actionAttempt} />
  * ```
  *
- * The component automatically filters logs by DASHBOARD link type and renders
- * external links with appropriate icons based on the log name.
+ * The component renders DASHBOARD and EXTERNAL link types with appropriate
+ * icons based on the log name and removes duplicate links.
  */
 const meta: Meta<typeof ActionDashboardLinks> = {
   title: 'Components/ActionDashboardLinks',
@@ -41,7 +41,7 @@ and monitoring tools based on the action attempt's log information.
 
 ## Features
 
-- Automatically detects and displays dashboard links from log info
+- Displays dashboard and external provider links from log info
 - Supports various integration types (Spark UI, Ray Dashboard, Weights & Biases, etc.)
 - Renders appropriate icons for each integration type
 - Only shows when dashboard links are available
@@ -68,8 +68,8 @@ and monitoring tools based on the action attempt's log information.
 <ActionDashboardLinks attempt={actionAttempt} />
 \`\`\`
 
-The component automatically filters logs by DASHBOARD link type and renders
-external links with appropriate icons based on the log name.
+The component renders DASHBOARD and EXTERNAL link types with appropriate icons
+based on the log name and removes duplicate links.
         `,
       },
     },
