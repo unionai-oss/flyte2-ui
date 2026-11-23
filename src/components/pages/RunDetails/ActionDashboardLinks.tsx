@@ -11,8 +11,21 @@ import React from 'react'
 export const ActionDashboardLinks: React.FC<{
   attempt?: ActionAttempt | null
 }> = ({ attempt }) => {
-  const urls = useExternalLogUrls(attempt?.logInfo, TaskLog_LinkType.DASHBOARD)
-  const validUrls = urls.filter(({ url }) => Boolean(url))
+  const dashboardUrls = useExternalLogUrls(
+    attempt?.logInfo,
+    TaskLog_LinkType.DASHBOARD,
+  )
+  const externalUrls = useExternalLogUrls(
+    attempt?.logInfo,
+    TaskLog_LinkType.EXTERNAL,
+  )
+  const validUrls = Array.from(
+    new Map(
+      [...dashboardUrls, ...externalUrls]
+        .filter(({ url }) => Boolean(url))
+        .map((item) => [`${item.name}:${item.url}`, item]),
+    ).values(),
+  )
 
   return validUrls.length > 0 ? (
     <div>
