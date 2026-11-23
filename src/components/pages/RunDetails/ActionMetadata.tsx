@@ -10,6 +10,7 @@ import { TaskSpec } from '@/gen/flyteidl2/task/task_definition_pb'
 import { ActionDetails } from '@/gen/flyteidl2/workflow/run_definition_pb'
 import { useOrg } from '@/hooks/useOrg'
 import { useTaskDetails } from '@/hooks/useTaskDetails'
+import { getTaskType } from '@/lib/actionUtils'
 import { getLocation } from '@/lib/windowUtils'
 import Link from 'next/link'
 
@@ -54,6 +55,7 @@ export const ActionMetadata = ({
     actionDetails?.metadata?.spec?.case === 'task'
       ? actionDetails?.metadata?.spec?.value?.id?.name || ''
       : ''
+  const taskType = getTaskType(actionDetails?.metadata)
   const taskCopyValue =
     actionDetails?.metadata?.spec?.case === 'task'
       ? actionDetails?.metadata?.spec?.value?.id?.name || ''
@@ -116,6 +118,11 @@ export const ActionMetadata = ({
               size="sm"
               value={taskCopyValue || taskName}
             />
+          </div>
+        )}
+        {taskType && (
+          <div>
+            Task type: <span data-testid="action-task-type">{taskType}</span>
           </div>
         )}
         {cluster && <div>Cluster: {cluster}</div>}
